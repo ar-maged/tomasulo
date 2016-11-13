@@ -133,6 +133,20 @@ public class AssemblyParser {
 		return instructionDecoded;
 	}
 
+	public ArrayList getDecodedInstructions() {
+		return decodedInstructions;
+	}
+
+
+
+
+	public ArrayList getDecodedCacheInfo() {
+		return decodedCacheInfo;
+	}
+
+
+
+
 	public static void main(String[] args) { //for testing
 		AssemblyParser a = new AssemblyParser();
 		
