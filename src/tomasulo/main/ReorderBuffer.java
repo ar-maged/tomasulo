@@ -2,38 +2,129 @@ package tomasulo.main;
 
 public class ReorderBuffer {
 
-	private Instruction[] instruction;
-	private int[] destinationReg;
-	private int[] value;
+	private ROBEntry[] entries;
+	private int head;
+	private int tail;
 
-	public ReorderBuffer(int numOfFUs) {
-
-		instruction = new Instruction[numOfFUs];
-		destinationReg = new int[numOfFUs];
-		value = new int[numOfFUs];
+	public ReorderBuffer(int n) {
+		entries = new ROBEntry[n];
+		head = tail = 0;
 	}
 
-	public Instruction[] getInstruction() {
-		return instruction;
+	// TODO commit
+
+	public boolean addInstruction(Instruction instruction, int reg) {
+		if (isFull())
+			return false;
+
+		entries[tail++] = new ROBEntry(instruction, reg);
+		tail %= entries.length;
+
+		return true;
 	}
 
-	public void setInstruction(int index, Instruction instruction) {
-		this.instruction[index] = instruction;
+	public void flush() {
+		head = tail;
 	}
 
-	public int[] getDestinationReg() {
-		return destinationReg;
+	public boolean isEmpty() {
+		return head == tail;
 	}
 
-	public void setDestinationReg(int index, int destinationReg) {
-		this.destinationReg[index] = destinationReg;
+	public boolean isFull() {
+		return head == ((tail + 1) % entries.length);
 	}
 
-	public int[] getValue() {
-		return value;
+	public ROBEntry[] getEntries() {
+		return entries;
 	}
 
-	public void setValue(int index, int value) {
-		this.value[index] = value;
+	public ROBEntry getFirst() {
+		if (isEmpty())
+			return null;
+		return entries[head];
 	}
+
+	public ROBEntry getEntry(int address) {
+		return entries[address];
+	}
+
+	public int getRegisterValue(int address) {
+		return entries[address].getValue();
+	}
+
+	public void setEntries(ROBEntry[] entries) {
+		this.entries = entries;
+	}
+
+	public void setRegisterValue(int address, int value) {
+		entries[address].setRegister(value);
+		entries[address].setReady(true);
+	}
+
+	public int getHead() {
+		return head;
+	}
+
+	public void setHead(int head) {
+		this.head = head;
+	}
+
+	public int getTail() {
+		return tail;
+	}
+
+	public void setTail(int tail) {
+		this.tail = tail;
+	}
+
+	class ROBEntry {
+
+		private Instruction instruction;
+		private int register;
+		private int value;
+		private boolean ready;
+
+		public ROBEntry(Instruction inst, int reg) {
+
+			instruction = inst;
+			register = reg;
+			ready = false;
+
+		}
+
+		public Instruction getInstruction() {
+			return instruction;
+		}
+
+		public void setInstruction(Instruction instruction) {
+			this.instruction = instruction;
+		}
+
+		public int getRegister() {
+			return register;
+		}
+
+		public void setRegister(int register) {
+			this.register = register;
+		}
+
+		public int getValue() {
+			return value;
+		}
+
+		public void setValue(int value) {
+			this.value = value;
+		}
+
+		public boolean isReady() {
+			return ready;
+		}
+
+		public void setReady(boolean ready) {
+			this.ready = ready;
+		}
+
+	}
+
 }
