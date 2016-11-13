@@ -44,10 +44,19 @@ public class AssemblyParser {
 			System.out.println("Please enter cache 2 geometry");
 			cache2Info = sc.nextLine();
 		}
-		System.out.println("Enter the instructions"); //instruction format should be ex: add r1,r2,r3
+		System.out.println("Enter the instructions"); //one instruction format should be ex: add r1,r2,r3
 		instructions = sc.nextLine();
+		 //several instructions should be ex: add r1,r2,r3 . sub r4,r5,6
+
+		String [] instructionsSeperate = instructions.split(" . ");
 		
-		parseInstruction(instructions);
+		System.out.println(instructionsSeperate.length);
+
+		for(int i = 0; i< instructionsSeperate.length; i++)
+		{
+			parseInstruction(instructionsSeperate[i]);
+
+		}
 		
 	}
 	
