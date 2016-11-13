@@ -1,24 +1,54 @@
 package tomasulo.main;
 
 import java.util.ArrayList;
+import java.util.Scanner;
+
+
 
 public class AssemblyParser {
 
+	static String instructions;
+	 static String cacheInfo;
+	static String cache2Info;
 	
-	
-	public ArrayList parseInstruction(String s)
+	public static ArrayList parseInstruction(String s)
 	{
 		ArrayList instructionDecoded = new ArrayList();
 		
 		String[]  inst = s.split(" ");
 		instructionDecoded.add(inst[0]); //the instruction 
 		
-		String [] regs = inst[1].split(", "); //the registers
+		String [] regs = inst[1].split(","); //the registers
 		for(int i = 0; i<regs.length; i++)
 		{
 			instructionDecoded.add(regs[i]);
 		}
 		
+		for(int i = 0; i<instructionDecoded.size();i++)
+		{
+			System.out.println(instructionDecoded.get(i));
+		}
 		return instructionDecoded;
 	}
+	
+	
+	public static void main(String [] args) //for testing
+	{
+		Scanner sc = new Scanner (System.in);
+		System.out.println("Please enter cache geometry");
+		cacheInfo = sc.nextLine();
+		System.out.print("Do you want another level of cache?");
+		String newcache = sc.nextLine();
+		if(newcache.equalsIgnoreCase("yes")||newcache.equalsIgnoreCase("true"))
+		{
+			System.out.println("Please enter cache 2 geometry");
+			cache2Info = sc.nextLine();
+		}
+		System.out.println("Enter the instructions"); //instruction format should be ex: add r1,r2,r3
+		instructions = sc.nextLine();
+		
+		parseInstruction(instructions);
+		
+	}
+	
 }
