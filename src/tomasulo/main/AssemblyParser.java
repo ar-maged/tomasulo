@@ -11,31 +11,29 @@ public class AssemblyParser {
 	static int numOfInstructions;
 	ArrayList decodedInstructions;
 	ArrayList decodedCacheInfo;
-	
-	
-	
-	public AssemblyParser() //constructor
+
+	public AssemblyParser() // constructor
 	{
-		
-		
+
 		decodedInstructions = new ArrayList();
 		decodedCacheInfo = new ArrayList();
-		
-		
+
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Please enter cache geometry");
 		cacheInfo = sc.nextLine();
-		
-		
-		decodedCacheInfo.add(parseCacheInfo(cacheInfo));
-		
+
+		if (parseCacheInfo(cacheInfo) != null) {
+			decodedCacheInfo.add(parseCacheInfo(cacheInfo));
+		}
+
 		System.out.print("Do you want another level of cache?");
 		String newcache = sc.nextLine();
 		if (newcache.equalsIgnoreCase("yes")
 				|| newcache.equalsIgnoreCase("true")) {
 			System.out.println("Please enter cache 2 geometry");
 			cache2Info = sc.nextLine();
-			decodedCacheInfo.add(parseCacheInfo(cache2Info));
+			if (parseCacheInfo(cache2Info) != null)
+				decodedCacheInfo.add(parseCacheInfo(cache2Info));
 
 		}
 		System.out.println("Enter the instructions"); // one instruction format
@@ -49,14 +47,14 @@ public class AssemblyParser {
 		numOfInstructions = instructionsSeperate.length;
 
 		for (int i = 0; i < instructionsSeperate.length; i++) {
-			decodedInstructions.add(parseInstruction(instructionsSeperate[i]));
+			if (parseInstruction(instructionsSeperate[i]) != null) {
+				decodedInstructions
+						.add(parseInstruction(instructionsSeperate[i]));
+			}
 
 		}
 
 	}
-	
-	
-	
 
 	public static int getNumOfInstructions() {
 		return numOfInstructions;
@@ -69,19 +67,17 @@ public class AssemblyParser {
 	public static String getCache2Info() {
 		return cache2Info;
 	}
-	
-	public static ArrayList parseCacheInfo(String s)
-	{
+
+	public static ArrayList parseCacheInfo(String s) {
 		ArrayList cacheInfoDecoded = new ArrayList();
-		
-		String [] info = s.split(", ");
-		
-		for(int i = 0; i<info.length; i++)
-		{
+
+		String[] info = s.split(", ");
+
+		for (int i = 0; i < info.length; i++) {
 			System.out.println(info[i]);
 			cacheInfoDecoded.add(info[i]);
 		}
-		
+
 		return cacheInfoDecoded;
 	}
 
@@ -91,40 +87,90 @@ public class AssemblyParser {
 		String[] inst = s.split(" ");
 		instructionDecoded.add(inst[0]); // the instruction
 
+		switch (inst[0]) {
+		case "ADD":
+			Instruction add = Instruction.ADD;
+			instructionDecoded.add(add);
+			break;
+		case "SUB":
+			Instruction sub = Instruction.SUB;
+			instructionDecoded.add(sub);
+			break;
+		case "ADDI":
+			Instruction addi = Instruction.ADDI;
+			instructionDecoded.add(addi);
+			break;
+		case "NAND":
+			Instruction nand = Instruction.NAND;
+			instructionDecoded.add(nand);
+			break;
+		case "LW":
+			Instruction lw = Instruction.LW;
+			instructionDecoded.add(lw);
+			break;
+		case "SW":
+			Instruction sw = Instruction.SW;
+			instructionDecoded.add(sw);
+			break;
+		case "MULT":
+			Instruction mult = Instruction.MULT;
+			instructionDecoded.add(mult);
+			break;
+		case "JMP":
+			Instruction jmp = Instruction.JMP;
+			instructionDecoded.add(jmp);
+			break;
+		case "JALR":
+			Instruction jalr = Instruction.JALR;
+			instructionDecoded.add(jalr);
+			break;
+		case "RET":
+			Instruction ret = Instruction.RET;
+			instructionDecoded.add(ret);
+			break;
+		case "BEQ":
+			Instruction beq = Instruction.BEQ;
+			instructionDecoded.add(beq);
+			break;
+		default:
+			System.out.println("invalid instruction");
+			return null;
+		}
 
-     switch(inst[0])
-     {
-     case "ADD": instructionDecoded.add(inst[0]); break;
-     case "SUB": instructionDecoded.add(inst[0]); break;
-     case "ADDI": instructionDecoded.add(inst[0]); break;
-     case "NAND":instructionDecoded.add(inst[0]); break;
-     case "LW":instructionDecoded.add(inst[0]); break;
-     case "SW":instructionDecoded.add(inst[0]); break;
-     case "MULT":instructionDecoded.add(inst[0]); break;
-     case "JMP":instructionDecoded.add(inst[0]); break;
-     case "JALR":instructionDecoded.add(inst[0]); break;
-     case "RET":instructionDecoded.add(inst[0]); break;
-     case "BEQ":instructionDecoded.add(inst[0]); break;
-     default:System.out.println("invalid instruction"); return null;
-     }
-		
-		
 		String[] regs = inst[1].split(","); // the registers
 		for (int i = 0; i < regs.length; i++) {
-			
-			switch(regs[i])
-			{
-			case"R0":instructionDecoded.add(regs[i]); break;
-			case"R1":instructionDecoded.add(regs[i]); break;
-			case"R2":instructionDecoded.add(regs[i]); break;
-			case"R3":instructionDecoded.add(regs[i]); break;
-			case"R4":instructionDecoded.add(regs[i]); break;
-			case"R5":instructionDecoded.add(regs[i]); break;
-			case"R6":instructionDecoded.add(regs[i]); break;
-			case"R7":instructionDecoded.add(regs[i]); break;
-			default: System.out.println("invalid registers, only registers from 0 to 7"); return null;
+
+			switch (regs[i]) {
+			case "R0":
+				instructionDecoded.add(regs[i]);
+				break;
+			case "R1":
+				instructionDecoded.add(regs[i]);
+				break;
+			case "R2":
+				instructionDecoded.add(regs[i]);
+				break;
+			case "R3":
+				instructionDecoded.add(regs[i]);
+				break;
+			case "R4":
+				instructionDecoded.add(regs[i]);
+				break;
+			case "R5":
+				instructionDecoded.add(regs[i]);
+				break;
+			case "R6":
+				instructionDecoded.add(regs[i]);
+				break;
+			case "R7":
+				instructionDecoded.add(regs[i]);
+				break;
+			default:
+				System.out
+						.println("invalid registers, only registers from 0 to 7");
+				return null;
 			}
-			
+
 		}
 
 		for (int i = 0; i < instructionDecoded.size(); i++) {
@@ -137,19 +183,13 @@ public class AssemblyParser {
 		return decodedInstructions;
 	}
 
-
-
-
 	public ArrayList getDecodedCacheInfo() {
 		return decodedCacheInfo;
 	}
 
-
-
-
-	public static void main(String[] args) { //for testing
+	public static void main(String[] args) { // for testing
 		AssemblyParser a = new AssemblyParser();
-		
+
 	}
 
 }
