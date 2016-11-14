@@ -7,7 +7,7 @@ import java.util.Stack;
 
 public class MainMemory {
 	public static int memoryCapacity = 64 * 1024;
-	public Block[] blocks;
+	private Block[] blocks;
 	private int blockSizeInBytes;
 
 	public MainMemory(int blockSizeInBytes) {
@@ -26,28 +26,28 @@ public class MainMemory {
 		return instructionsStack;
 	}
 
-	public void readProgram(String[] instructions, int startAddress) {
+	public void readProgram(String[] instructions, int startAddressInBytes) {
 		Stack<String> instructionsStack = this.convertInstructionsToStack(instructions);
 		while (!instructionsStack.isEmpty()) {
 			for (int i = 0; i < this.blockSizeInBytes / 4; i++) {
 				if (!instructionsStack.isEmpty())
-					this.blocks[startAddress].addData(instructionsStack.pop(), i);
+					this.blocks[(int)startAddressInBytes / 4].addData(instructionsStack.pop(), i);
 			}
-			startAddress++;
+			startAddressInBytes += 4;
 		}
 	}
 
-	public Block readBlock(int address) {
-		return this.blocks[address];
+	public Block readBlock(int addressInBytes) {
+		return this.blocks[(int)addressInBytes/4];
 	}
 
 	public static void main(String[] args) {
 		MainMemory memory = new MainMemory(12);
 		String[] instructions = { "ADD R2, R4, R5", "SUB R9, R8, R7", "MUL R2, R4, R4", "DIV R0, R1, R5", "ADDI R2, R2, 45" };
 		
-		memory.readProgram(instructions, 2);
+		memory.readProgram(instructions, 0);
 		for (int i = 0; i < instructions.length; i++) {
-			System.out.println(memory.readBlock(i));
+			System.out.println(memory.readBlock(i*4));
 		}
 	}
 }
