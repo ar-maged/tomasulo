@@ -9,13 +9,13 @@ public class AssemblyParser {
 	static String cacheInfo;
 	static String cache2Info;
 	static int numOfInstructions;
-	ArrayList decodedInstructions;
+	ArrayList<Instruction> decodedInstructions;
 	ArrayList decodedCacheInfo;
 
 	public AssemblyParser() // constructor
 	{
 
-		decodedInstructions = new ArrayList();
+		decodedInstructions = new ArrayList<Instruction>();
 		decodedCacheInfo = new ArrayList();
 
 		Scanner sc = new Scanner(System.in);
@@ -54,6 +54,14 @@ public class AssemblyParser {
 
 		}
 
+		for (int i = 0; i < decodedInstructions.size(); i++) {
+			System.out.println(decodedInstructions.get(i).name + " "
+					+ decodedInstructions.get(i).destination + " "
+					+ decodedInstructions.get(i).source1 + " "
+					+ decodedInstructions.get(i).source2+" "+
+					decodedInstructions.get(i).immediate);
+		}
+
 	}
 
 	public static int getNumOfInstructions() {
@@ -81,56 +89,56 @@ public class AssemblyParser {
 		return cacheInfoDecoded;
 	}
 
-	public static ArrayList parseInstruction(String s) {
-		ArrayList instructionDecoded = new ArrayList();
+	public static Instruction parseInstruction(String s) {
 
+		Instruction instruction = new Instruction();
 		String[] inst = s.split(" ");
-		instructionDecoded.add(inst[0]); // the instruction
+		// instructionDecoded.add(inst[0]); // the instruction
 
 		switch (inst[0]) {
 		case "ADD":
-			Instruction add = Instruction.ADD;
-			instructionDecoded.add(add);
+			InstructionName add = InstructionName.ADD;
+			instruction.setName(add);
 			break;
 		case "SUB":
-			Instruction sub = Instruction.SUB;
-			instructionDecoded.add(sub);
+			InstructionName sub = InstructionName.SUB;
+			instruction.setName(sub);
 			break;
 		case "ADDI":
-			Instruction addi = Instruction.ADDI;
-			instructionDecoded.add(addi);
+			InstructionName addi = InstructionName.ADDI;
+			instruction.setName(addi);
 			break;
 		case "NAND":
-			Instruction nand = Instruction.NAND;
-			instructionDecoded.add(nand);
+			InstructionName nand = InstructionName.NAND;
+			instruction.setName(nand);
 			break;
 		case "LW":
-			Instruction lw = Instruction.LW;
-			instructionDecoded.add(lw);
+			InstructionName lw = InstructionName.LW;
+			instruction.setName(lw);
 			break;
 		case "SW":
-			Instruction sw = Instruction.SW;
-			instructionDecoded.add(sw);
+			InstructionName sw = InstructionName.SW;
+			instruction.setName(sw);
 			break;
 		case "MULT":
-			Instruction mult = Instruction.MULT;
-			instructionDecoded.add(mult);
+			InstructionName mult = InstructionName.MULT;
+			instruction.setName(mult);
 			break;
 		case "JMP":
-			Instruction jmp = Instruction.JMP;
-			instructionDecoded.add(jmp);
+			InstructionName jmp = InstructionName.JMP;
+			instruction.setName(jmp);
 			break;
 		case "JALR":
-			Instruction jalr = Instruction.JALR;
-			instructionDecoded.add(jalr);
+			InstructionName jalr = InstructionName.JALR;
+			instruction.setName(jalr);
 			break;
 		case "RET":
-			Instruction ret = Instruction.RET;
-			instructionDecoded.add(ret);
+			InstructionName ret = InstructionName.RET;
+			instruction.setName(ret);
 			break;
 		case "BEQ":
-			Instruction beq = Instruction.BEQ;
-			instructionDecoded.add(beq);
+			InstructionName beq = InstructionName.BEQ;
+			instruction.setName(beq);
 			break;
 		default:
 			System.out.println("invalid instruction");
@@ -138,45 +146,106 @@ public class AssemblyParser {
 		}
 
 		String[] regs = inst[1].split(","); // the registers
-		for (int i = 0; i < regs.length; i++) {
 
-			switch (regs[i]) {
-			case "R0":
-				instructionDecoded.add(regs[i]);
-				break;
-			case "R1":
-				instructionDecoded.add(regs[i]);
-				break;
-			case "R2":
-				instructionDecoded.add(regs[i]);
-				break;
-			case "R3":
-				instructionDecoded.add(regs[i]);
-				break;
-			case "R4":
-				instructionDecoded.add(regs[i]);
-				break;
-			case "R5":
-				instructionDecoded.add(regs[i]);
-				break;
-			case "R6":
-				instructionDecoded.add(regs[i]);
-				break;
-			case "R7":
-				instructionDecoded.add(regs[i]);
-				break;
-			default:
+		if (instruction.getName().equals(InstructionName.ADD)
+				|| instruction.getName().equals(InstructionName.ADDI)
+				|| instruction.getName().equals(InstructionName.SUB)
+				|| instruction.getName().equals(InstructionName.MULT)
+				|| instruction.getName().equals(InstructionName.NAND)) {
+			if (regs.length != 3) {
 				System.out
-						.println("invalid registers, only registers from 0 to 7");
+						.println("invalid instruction, insufficiant registers");
 				return null;
+			} else {
+				if (!(instruction.getName().equals(InstructionName.ADDI))) {
+					instruction.destination =  Integer.parseInt((regs[0].substring(1, 2)));
+					instruction.source1 = Integer.parseInt((regs[1].substring(1,2)));
+					instruction.source2 = Integer.parseInt((regs[2].substring(1,2)));
+					instruction.immediate = null;
+				} else {
+					instruction.destination = Integer.parseInt((regs[0].substring(1,2)));
+					instruction.source1 = Integer.parseInt((regs[1].substring(1,2)));
+					instruction.source2 = null;
+					instruction.immediate = Integer.parseInt(regs[2]);
+				}
+
+			}
+			return instruction;
+
+		} else {
+			if (instruction.getName().equals(InstructionName.BEQ)
+					|| instruction.getName().equals(InstructionName.LW)
+					|| instruction.getName().equals(InstructionName.SW)) {
+				if (regs.length != 3) {
+					System.out
+							.println("invalid instruction, insufficiant registers ");
+					return null;
+				} else {
+					switch (instruction.getName())
+
+					{
+					case LW:
+						instruction.destination = Integer.parseInt((regs[0].substring(1,2)));
+						instruction.source1 = Integer.parseInt((regs[1].substring(1,2)));
+						instruction.source2 = null;
+						instruction.immediate = Integer.parseInt(regs[2]);
+						break;
+					case SW:
+						instruction.destination = null;
+						instruction.source1 = Integer.parseInt((regs[0].substring(1,2)));
+						instruction.source2 = Integer.parseInt((regs[1].substring(1,2)));
+						instruction.immediate = Integer.parseInt(regs[2]);
+						break;
+					case BEQ:
+						instruction.destination = null;
+						instruction.source1 = Integer.parseInt( (regs[0].substring(1,2)));
+						instruction.source2 = Integer.parseInt((regs[1].substring(1,2)));
+						instruction.immediate = Integer.parseInt(regs[2]);
+						break;
+					}
+				}
+				return instruction;
+			} else {
+				if (instruction.getName().equals(InstructionName.JALR)
+						|| instruction.getName().equals(InstructionName.JMP)) {
+					if (regs.length != 2) {
+						System.out
+								.println("invalid instruction, insufficiant registors");
+						return null;
+					} else {
+						switch (instruction.name) {
+						case JALR:
+							instruction.destination = Integer.parseInt(( regs[0].substring(1,2)));
+							instruction.source1 = Integer.parseInt ((regs[1].substring(1,2)));
+							instruction.source2 = null;
+							instruction.immediate = null;
+							break;
+						case JMP:
+							instruction.destination = null;
+							instruction.source1 = Integer.parseInt((regs[0].substring(1,2)));
+							instruction.source2 = null;
+							instruction.immediate = Integer.parseInt((regs[1].substring(1,2)));
+							break;
+						}
+					}
+					return instruction;
+				} else { // RET
+					if (regs.length != 1) {
+						System.out
+								.println("invalid instruction, insufficiant registors");
+						return null;
+					} else {
+						instruction.destination = null;
+						instruction.source1 = Integer.parseInt((regs[0].substring(1,2)));
+						instruction.source2 = null;
+						instruction.immediate = null;
+					}
+					return instruction;
+				}
 			}
 
 		}
 
-		for (int i = 0; i < instructionDecoded.size(); i++) {
-			System.out.println(instructionDecoded.get(i));
-		}
-		return instructionDecoded;
 	}
 
 	public ArrayList getDecodedInstructions() {
