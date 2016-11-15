@@ -6,12 +6,20 @@ public class ReorderBuffer {
 	private int head;
 	private int tail;
 
-	public ReorderBuffer(int n) {
+	public ReorderBuffer(int n) { // n is user defined
 		entries = new ROBEntry[n];
 		head = tail = 0;
 	}
 
-	// TODO commit
+	public boolean commit() {
+		if (entries[head].isReady()) {
+			// TODO sendToDataBus(entries[head].getRegister(),
+			// entries[head].getValue());
+			incrementHead();
+			return true;
+		}
+		return false;
+	}
 
 	public boolean addInstruction(Instruction instruction, int reg) {
 		if (isFull())
@@ -70,6 +78,11 @@ public class ReorderBuffer {
 		this.head = head;
 	}
 
+	public void incrementHead() {
+		head++;
+		head %= entries.length;
+	}
+
 	public int getTail() {
 		return tail;
 	}
@@ -80,25 +93,25 @@ public class ReorderBuffer {
 
 	class ROBEntry {
 
-		private Instruction instruction;
+		private Type type;
 		private int register;
 		private int value;
 		private boolean ready;
 
 		public ROBEntry(Instruction inst, int reg) {
 
-			instruction = inst;
+			type = instructionType(inst);
 			register = reg;
 			ready = false;
 
 		}
 
-		public Instruction getInstruction() {
-			return instruction;
+		public Type getInstructionType() {
+			return type;
 		}
 
-		public void setInstruction(Instruction instruction) {
-			this.instruction = instruction;
+		public void setInstructionType(Instruction instruction) {
+			this.type = instructionType(instruction);
 		}
 
 		public int getRegister() {
@@ -125,6 +138,34 @@ public class ReorderBuffer {
 			this.ready = ready;
 		}
 
+		private Type instructionType(Instruction instruction) {
+
+			if (instruction == Instruction.LW) {
+				return Type.LW;
+			}
+			if (instruction == Instruction.SW) {
+				return Type.SW;
+			}
+			if (instruction == Instruction.BEQ) {
+				return Type.BRANCH;
+			}
+			if (instruction == Instruction.JMP
+					|| instruction == Instruction.JALR
+					|| instruction == Instruction.RET) {
+				return Type.JUMP;
+			}
+			if (instruction == Instruction.ADD
+					|| instruction == Instruction.SUB
+					|| instruction == Instruction.ADDI
+					|| instruction == Instruction.NAND
+					|| instruction == Instruction.MUL) {
+				return Type.INT;
+			}
+		}
+	}
+
+	enum Type {
+		FP, INT, LW, SW, BRANCH, JUMP
 	}
 
 }
