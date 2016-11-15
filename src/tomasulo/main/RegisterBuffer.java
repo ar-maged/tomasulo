@@ -2,7 +2,8 @@ package tomasulo.main;
 
 public class RegisterBuffer {
 
-	private int[] registrsEntries = { -1, -1, -1, -1, -1, -1, -1 };
+	private Integer[] registrsEntries = { null, null, null, null, null, null,
+			null, null };
 
 	public int getROBIndexOfReg(int reg) {
 		return registrsEntries[reg];
@@ -13,7 +14,7 @@ public class RegisterBuffer {
 	}
 
 	public void clearROBIndexOfReg(int reg) {
-		registrsEntries[reg] = -1;
+		registrsEntries[reg] = null;
 	}
 
 }
