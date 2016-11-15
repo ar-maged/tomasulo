@@ -21,23 +21,28 @@ public class AssemblyParser {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Please enter cache geometry");
 		cacheInfo = sc.nextLine();
-
-		if (parseCacheInfo(cacheInfo) != null) {
-			decodedCacheInfo.add(parseCacheInfo(cacheInfo));
+		ArrayList cache1arr = new ArrayList();
+		cache1arr = parseCacheInfo(cacheInfo);
+		if (cache1arr != null) {
+			decodedCacheInfo.add(cache1arr);
 		}
 
 		System.out.print("Do you want another level of cache?");
 		String newcache = sc.nextLine();
+
 		if (newcache.equalsIgnoreCase("yes")
 				|| newcache.equalsIgnoreCase("true")) {
 			System.out.println("Please enter cache 2 geometry");
+
 			cache2Info = sc.nextLine();
-			if (parseCacheInfo(cache2Info) != null)
-				decodedCacheInfo.add(parseCacheInfo(cache2Info));
+			ArrayList cache2arr = new ArrayList();
+			cache2arr = parseCacheInfo(cache2Info);
+			if (cache2arr != null)
+				decodedCacheInfo.add(cache2arr);
 
 		}
 		System.out.println("Enter the instructions"); // one instruction format
-														// should be ex: add
+														// should be ex: ADD
 														// r1,r2,r3
 		instructions = sc.nextLine();
 		// several instructions should be ex: add r1,r2,r3 , sub r4,r5,6
@@ -46,10 +51,11 @@ public class AssemblyParser {
 
 		numOfInstructions = instructionsSeperate.length;
 
+		Instruction ins = new Instruction();
 		for (int i = 0; i < instructionsSeperate.length; i++) {
-			if (parseInstruction(instructionsSeperate[i]) != null) {
-				decodedInstructions
-						.add(parseInstruction(instructionsSeperate[i]));
+			ins = parseInstruction(instructionsSeperate[i]);
+			if (ins != null) {
+				decodedInstructions.add(ins);
 			}
 
 		}
@@ -58,8 +64,8 @@ public class AssemblyParser {
 			System.out.println(decodedInstructions.get(i).name + " "
 					+ decodedInstructions.get(i).destination + " "
 					+ decodedInstructions.get(i).source1 + " "
-					+ decodedInstructions.get(i).source2+" "+
-					decodedInstructions.get(i).immediate);
+					+ decodedInstructions.get(i).source2 + " "
+					+ decodedInstructions.get(i).immediate);
 		}
 
 	}
@@ -158,13 +164,18 @@ public class AssemblyParser {
 				return null;
 			} else {
 				if (!(instruction.getName().equals(InstructionName.ADDI))) {
-					instruction.destination =  Integer.parseInt((regs[0].substring(1, 2)));
-					instruction.source1 = Integer.parseInt((regs[1].substring(1,2)));
-					instruction.source2 = Integer.parseInt((regs[2].substring(1,2)));
+					instruction.destination = Integer.parseInt((regs[0]
+							.substring(1, 2)));
+					instruction.source1 = Integer.parseInt((regs[1].substring(
+							1, 2)));
+					instruction.source2 = Integer.parseInt((regs[2].substring(
+							1, 2)));
 					instruction.immediate = null;
 				} else {
-					instruction.destination = Integer.parseInt((regs[0].substring(1,2)));
-					instruction.source1 = Integer.parseInt((regs[1].substring(1,2)));
+					instruction.destination = Integer.parseInt((regs[0]
+							.substring(1, 2)));
+					instruction.source1 = Integer.parseInt((regs[1].substring(
+							1, 2)));
 					instruction.source2 = null;
 					instruction.immediate = Integer.parseInt(regs[2]);
 				}
@@ -185,21 +196,27 @@ public class AssemblyParser {
 
 					{
 					case LW:
-						instruction.destination = Integer.parseInt((regs[0].substring(1,2)));
-						instruction.source1 = Integer.parseInt((regs[1].substring(1,2)));
+						instruction.destination = Integer.parseInt((regs[0]
+								.substring(1, 2)));
+						instruction.source1 = Integer.parseInt((regs[1]
+								.substring(1, 2)));
 						instruction.source2 = null;
 						instruction.immediate = Integer.parseInt(regs[2]);
 						break;
 					case SW:
 						instruction.destination = null;
-						instruction.source1 = Integer.parseInt((regs[0].substring(1,2)));
-						instruction.source2 = Integer.parseInt((regs[1].substring(1,2)));
+						instruction.source1 = Integer.parseInt((regs[0]
+								.substring(1, 2)));
+						instruction.source2 = Integer.parseInt((regs[1]
+								.substring(1, 2)));
 						instruction.immediate = Integer.parseInt(regs[2]);
 						break;
 					case BEQ:
 						instruction.destination = null;
-						instruction.source1 = Integer.parseInt( (regs[0].substring(1,2)));
-						instruction.source2 = Integer.parseInt((regs[1].substring(1,2)));
+						instruction.source1 = Integer.parseInt((regs[0]
+								.substring(1, 2)));
+						instruction.source2 = Integer.parseInt((regs[1]
+								.substring(1, 2)));
 						instruction.immediate = Integer.parseInt(regs[2]);
 						break;
 					}
@@ -215,16 +232,20 @@ public class AssemblyParser {
 					} else {
 						switch (instruction.name) {
 						case JALR:
-							instruction.destination = Integer.parseInt(( regs[0].substring(1,2)));
-							instruction.source1 = Integer.parseInt ((regs[1].substring(1,2)));
+							instruction.destination = Integer.parseInt((regs[0]
+									.substring(1, 2)));
+							instruction.source1 = Integer.parseInt((regs[1]
+									.substring(1, 2)));
 							instruction.source2 = null;
 							instruction.immediate = null;
 							break;
 						case JMP:
 							instruction.destination = null;
-							instruction.source1 = Integer.parseInt((regs[0].substring(1,2)));
+							instruction.source1 = Integer.parseInt((regs[0]
+									.substring(1, 2)));
 							instruction.source2 = null;
-							instruction.immediate = Integer.parseInt((regs[1].substring(1,2)));
+							instruction.immediate = Integer.parseInt((regs[1]
+									.substring(1, 2)));
 							break;
 						}
 					}
@@ -236,7 +257,8 @@ public class AssemblyParser {
 						return null;
 					} else {
 						instruction.destination = null;
-						instruction.source1 = Integer.parseInt((regs[0].substring(1,2)));
+						instruction.source1 = Integer.parseInt((regs[0]
+								.substring(1, 2)));
 						instruction.source2 = null;
 						instruction.immediate = null;
 					}
