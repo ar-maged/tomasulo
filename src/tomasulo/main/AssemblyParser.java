@@ -26,6 +26,10 @@ public class AssemblyParser {
 		
 		Scanner sc = new Scanner(System.in);
 		
+		
+		
+		
+		
 		//CACHE 1
 		System.out.println("Please enter cache geometry");
 		cacheInfo = sc.nextLine();
@@ -54,10 +58,8 @@ public class AssemblyParser {
 		
 		//ROB ENTRIES
 		System.out.println("Please enter number of ROB entries");
-		ROBentries = sc.nextInt();
-		
-		
-		
+		String ROBentries_ = sc.nextLine();
+		ROBentries = Integer.parseInt(ROBentries_);
 		
 		//INSTRUCTIONS
 		System.out.println("Enter the instructions"); // one instruction format
