@@ -6,7 +6,7 @@ public class FunctionalUnit {
 	public String OP;//assigned according to the incoming instruction type
 	public String Name=this.OP; //name of the FU corresponds to the operation and Qj/Qk
 	
-	public int Vk;
+	public int Vk; //assigned according to the incoming operands values from scoreboard/instruction
 	public int Vj; 
 	public int A;   
 	public int offset;
