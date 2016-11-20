@@ -5,12 +5,17 @@ import java.util.Scanner;
 
 public class AssemblyParser {
 
-	static String instructions;
-	static String cacheInfo;
-	static String cache2Info;
-	static int numOfInstructions;
-	ArrayList<Instruction> decodedInstructions;
-	ArrayList decodedCacheInfo;
+	private static String instructions;
+	private static String cacheInfo;
+	private static String cache2Info;
+	private static int numOfInstructions;
+	private ArrayList<Instruction> decodedInstructions;
+	private ArrayList decodedCacheInfo;
+	private int ROBentries;
+	
+	
+	
+	
 
 	public AssemblyParser() // constructor
 	{
@@ -18,7 +23,10 @@ public class AssemblyParser {
 		decodedInstructions = new ArrayList<Instruction>();
 		decodedCacheInfo = new ArrayList();
 
+		
 		Scanner sc = new Scanner(System.in);
+		
+		//CACHE 1
 		System.out.println("Please enter cache geometry");
 		cacheInfo = sc.nextLine();
 		ArrayList cache1arr = new ArrayList();
@@ -27,6 +35,7 @@ public class AssemblyParser {
 			decodedCacheInfo.add(cache1arr);
 		}
 
+		//CACHE 2
 		System.out.print("Do you want another level of cache?");
 		String newcache = sc.nextLine();
 
@@ -41,6 +50,16 @@ public class AssemblyParser {
 				decodedCacheInfo.add(cache2arr);
 
 		}
+		
+		
+		//ROB ENTRIES
+		System.out.println("Please enter number of ROB entries");
+		ROBentries = sc.nextInt();
+		
+		
+		
+		
+		//INSTRUCTIONS
 		System.out.println("Enter the instructions"); // one instruction format
 														// should be ex: ADD
 														// r1,r2,r3
@@ -67,6 +86,8 @@ public class AssemblyParser {
 					+ decodedInstructions.get(i).source2 + " "
 					+ decodedInstructions.get(i).immediate);
 		}
+		
+		
 
 	}
 
@@ -278,6 +299,9 @@ public class AssemblyParser {
 		return decodedCacheInfo;
 	}
 
+	public int getROBentries() {
+		return ROBentries;
+	}
 	public static void main(String[] args) { // for testing
 		AssemblyParser a = new AssemblyParser();
 
