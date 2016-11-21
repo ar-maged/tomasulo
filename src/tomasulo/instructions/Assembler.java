@@ -13,7 +13,7 @@ public class Assembler {
 	private ArrayList<ArrayList<String>> decodedCacheInfo;
 	private int ROBentries;
 
-	public Assembler() { // constructor
+	public Assembler() {
 		decodedInstructions = new ArrayList<Instruction>();
 		decodedCacheInfo = new ArrayList<ArrayList<String>>();
 
