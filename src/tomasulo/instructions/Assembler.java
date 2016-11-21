@@ -3,7 +3,7 @@ package tomasulo.instructions;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class AssemblyParser {
+public class Assembler {
 
 	private static String instructions;
 	private static String cacheInfo;
@@ -17,7 +17,7 @@ public class AssemblyParser {
 	
 	
 
-	public AssemblyParser() // constructor
+	public Assembler() // constructor
 	{
 
 		decodedInstructions = new ArrayList<Instruction>();
@@ -305,7 +305,7 @@ public class AssemblyParser {
 		return ROBentries;
 	}
 	public static void main(String[] args) { // for testing
-		AssemblyParser a = new AssemblyParser();
+		Assembler a = new Assembler();
 
 	}
 
