@@ -23,6 +23,11 @@ public class Assembler {
 		Instruction instruction = new Instruction();
 		String[] splitStringInstruction = stringInstruction.split(" ");
 
+		for(int i = 0 ; i<splitStringInstruction.length; i++)
+		{
+			System.out.println(splitStringInstruction[i]);
+		}
+		
 		splitStringInstruction[0] = splitStringInstruction[0].trim();
 		switch (splitStringInstruction[0]) {
 		case "ADD":
@@ -62,10 +67,15 @@ public class Assembler {
 			throw new InvalidInstructionException("Unsupported instruction");
 		}
 
+		
 		String[] operands = splitStringInstruction[1].split(",");
 		
-		for(int i = 0; i<operands.length; i++)
+		
+		for(int i = 0; i<operands.length; i++){
+			
 			operands[i]  = operands[i].trim();
+		
+		}
 		
 
 		if (instruction.getName().equals(InstructionName.ADD)
