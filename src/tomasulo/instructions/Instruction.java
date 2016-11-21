@@ -3,11 +3,22 @@ package tomasulo.instructions;
 public class Instruction {
 
 	InstructionName name;
-	Integer source1;
-	Integer source2;
-
-	Integer destination;
+	Integer sourceRegister1;
+	Integer sourceRegister2;
+	Integer destinationRegister;
 	Integer immediate;
+
+	public Instruction() {
+
+	}
+
+	public Instruction(InstructionName name, Integer sourceRegister1, Integer sourceRegister2, Integer destinationRegister, Integer immediate) {
+		this.name = name;
+		this.sourceRegister1 = sourceRegister1;
+		this.sourceRegister2 = sourceRegister2;
+		this.destinationRegister = destinationRegister;
+		this.immediate = immediate;
+	}
 
 	public InstructionName getName() {
 		return name;
@@ -17,28 +28,28 @@ public class Instruction {
 		this.name = name;
 	}
 
-	public Integer getSource1() {
-		return source1;
+	public Integer getSourceRegister1() {
+		return sourceRegister1;
 	}
 
-	public void setSource1(Integer source1) {
-		this.source1 = source1;
+	public void setSourceRegister1(Integer sourceRegister1) {
+		this.sourceRegister1 = sourceRegister1;
 	}
 
-	public Integer getSource2() {
-		return source2;
+	public Integer getSourceRegister2() {
+		return sourceRegister2;
 	}
 
-	public void setSource2(Integer source2) {
-		this.source2 = source2;
+	public void setSourceRegister2(Integer sourceRegister2) {
+		this.sourceRegister2 = sourceRegister2;
 	}
 
-	public Integer getDestination() {
-		return destination;
+	public Integer getDestinationRegister() {
+		return destinationRegister;
 	}
 
-	public void setDestination(Integer destination) {
-		this.destination = destination;
+	public void setDestinationRegister(Integer destinationRegister) {
+		this.destinationRegister = destinationRegister;
 	}
 
 	public Integer getImmediate() {

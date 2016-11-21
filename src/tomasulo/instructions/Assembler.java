@@ -71,9 +71,9 @@ public class Assembler {
 
 		for (int i = 0; i < decodedInstructions.size(); i++) {
 			System.out.println(decodedInstructions.get(i).name + " "
-					+ decodedInstructions.get(i).destination + " "
-					+ decodedInstructions.get(i).source1 + " "
-					+ decodedInstructions.get(i).source2 + " "
+					+ decodedInstructions.get(i).destinationRegister + " "
+					+ decodedInstructions.get(i).sourceRegister1 + " "
+					+ decodedInstructions.get(i).sourceRegister2 + " "
 					+ decodedInstructions.get(i).immediate);
 		}
 	}
@@ -172,19 +172,19 @@ public class Assembler {
 				return null;
 			} else {
 				if (!(instruction.getName().equals(InstructionName.ADDI))) {
-					instruction.destination = Integer.parseInt((regs[0]
+					instruction.destinationRegister = Integer.parseInt((regs[0]
 							.substring(1, 2)));
-					instruction.source1 = Integer.parseInt((regs[1].substring(
+					instruction.sourceRegister1 = Integer.parseInt((regs[1].substring(
 							1, 2)));
-					instruction.source2 = Integer.parseInt((regs[2].substring(
+					instruction.sourceRegister2 = Integer.parseInt((regs[2].substring(
 							1, 2)));
 					instruction.immediate = null;
 				} else {
-					instruction.destination = Integer.parseInt((regs[0]
+					instruction.destinationRegister = Integer.parseInt((regs[0]
 							.substring(1, 2)));
-					instruction.source1 = Integer.parseInt((regs[1].substring(
+					instruction.sourceRegister1 = Integer.parseInt((regs[1].substring(
 							1, 2)));
-					instruction.source2 = null;
+					instruction.sourceRegister2 = null;
 					instruction.immediate = Integer.parseInt(regs[2]);
 				}
 
@@ -201,26 +201,26 @@ public class Assembler {
 				} else {
 					switch (instruction.getName()) {
 					case LW:
-						instruction.destination = Integer.parseInt((regs[0]
+						instruction.destinationRegister = Integer.parseInt((regs[0]
 								.substring(1, 2)));
-						instruction.source1 = Integer.parseInt((regs[1]
+						instruction.sourceRegister1 = Integer.parseInt((regs[1]
 								.substring(1, 2)));
-						instruction.source2 = null;
+						instruction.sourceRegister2 = null;
 						instruction.immediate = Integer.parseInt(regs[2]);
 						break;
 					case SW:
-						instruction.destination = null;
-						instruction.source1 = Integer.parseInt((regs[0]
+						instruction.destinationRegister = null;
+						instruction.sourceRegister1 = Integer.parseInt((regs[0]
 								.substring(1, 2)));
-						instruction.source2 = Integer.parseInt((regs[1]
+						instruction.sourceRegister2 = Integer.parseInt((regs[1]
 								.substring(1, 2)));
 						instruction.immediate = Integer.parseInt(regs[2]);
 						break;
 					case BEQ:
-						instruction.destination = null;
-						instruction.source1 = Integer.parseInt((regs[0]
+						instruction.destinationRegister = null;
+						instruction.sourceRegister1 = Integer.parseInt((regs[0]
 								.substring(1, 2)));
-						instruction.source2 = Integer.parseInt((regs[1]
+						instruction.sourceRegister2 = Integer.parseInt((regs[1]
 								.substring(1, 2)));
 						instruction.immediate = Integer.parseInt(regs[2]);
 						break;
@@ -237,18 +237,18 @@ public class Assembler {
 					} else {
 						switch (instruction.name) {
 						case JALR:
-							instruction.destination = Integer.parseInt((regs[0]
+							instruction.destinationRegister = Integer.parseInt((regs[0]
 									.substring(1, 2)));
-							instruction.source1 = Integer.parseInt((regs[1]
+							instruction.sourceRegister1 = Integer.parseInt((regs[1]
 									.substring(1, 2)));
-							instruction.source2 = null;
+							instruction.sourceRegister2 = null;
 							instruction.immediate = null;
 							break;
 						case JMP:
-							instruction.destination = null;
-							instruction.source1 = Integer.parseInt((regs[0]
+							instruction.destinationRegister = null;
+							instruction.sourceRegister1 = Integer.parseInt((regs[0]
 									.substring(1, 2)));
-							instruction.source2 = null;
+							instruction.sourceRegister2 = null;
 							instruction.immediate = Integer.parseInt((regs[1]
 									.substring(1, 2)));
 							break;
@@ -261,10 +261,10 @@ public class Assembler {
 								.println("invalid instruction, insufficiant registors");
 						return null;
 					} else {
-						instruction.destination = null;
-						instruction.source1 = Integer.parseInt((regs[0]
+						instruction.destinationRegister = null;
+						instruction.sourceRegister1 = Integer.parseInt((regs[0]
 								.substring(1, 2)));
-						instruction.source2 = null;
+						instruction.sourceRegister2 = null;
 						instruction.immediate = null;
 					}
 					return instruction;
