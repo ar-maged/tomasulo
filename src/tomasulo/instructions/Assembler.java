@@ -10,19 +10,19 @@ public class Assembler {
 	private static String cache2Info;
 	private static int numOfInstructions;
 	private ArrayList<Instruction> decodedInstructions;
-	private ArrayList decodedCacheInfo;
+	private ArrayList<ArrayList<String>> decodedCacheInfo;
 	private int ROBentries;
 
 	public Assembler() { // constructor
 		decodedInstructions = new ArrayList<Instruction>();
-		decodedCacheInfo = new ArrayList();
+		decodedCacheInfo = new ArrayList<ArrayList<String>>();
 
 		Scanner sc = new Scanner(System.in);
 
 		// CACHE 1
 		System.out.println("Please enter cache geometry");
 		cacheInfo = sc.nextLine();
-		ArrayList cache1arr = new ArrayList();
+		ArrayList<String> cache1arr = new ArrayList<String>();
 		cache1arr = parseCacheInfo(cacheInfo);
 
 		if (cache1arr != null) {
@@ -38,7 +38,7 @@ public class Assembler {
 			System.out.println("Please enter cache 2 geometry");
 
 			cache2Info = sc.nextLine();
-			ArrayList cache2arr = new ArrayList();
+			ArrayList<String> cache2arr = new ArrayList<String>();
 			cache2arr = parseCacheInfo(cache2Info);
 
 			if (cache2arr != null)
@@ -55,6 +55,7 @@ public class Assembler {
 														// should be ex: ADD
 														// r1,r2,r3
 		instructions = sc.nextLine();
+		sc.close();
 		// several instructions should be ex: add r1,r2,r3 , sub r4,r5,6
 
 		String[] instructionsSeperate = instructions.split(" , ");
@@ -90,8 +91,8 @@ public class Assembler {
 		return cache2Info;
 	}
 
-	public static ArrayList parseCacheInfo(String s) {
-		ArrayList cacheInfoDecoded = new ArrayList();
+	public static ArrayList<String> parseCacheInfo(String s) {
+		ArrayList<String> cacheInfoDecoded = new ArrayList<String>();
 
 		String[] info = s.split(", ");
 
@@ -224,6 +225,8 @@ public class Assembler {
 								.substring(1, 2)));
 						instruction.immediate = Integer.parseInt(regs[2]);
 						break;
+					default:
+						break;
 					}
 				}
 				return instruction;
@@ -252,6 +255,8 @@ public class Assembler {
 							instruction.immediate = Integer.parseInt((regs[1]
 									.substring(1, 2)));
 							break;
+						default:
+							break;
 						}
 					}
 					return instruction;
@@ -275,11 +280,11 @@ public class Assembler {
 
 	}
 
-	public ArrayList getDecodedInstructions() {
+	public ArrayList<Instruction> getDecodedInstructions() {
 		return decodedInstructions;
 	}
 
-	public ArrayList getDecodedCacheInfo() {
+	public ArrayList<ArrayList<String>> getDecodedCacheInfo() {
 		return decodedCacheInfo;
 	}
 
