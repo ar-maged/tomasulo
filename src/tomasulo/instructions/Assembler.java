@@ -6,60 +6,17 @@ import java.util.Scanner;
 public class Assembler {
 
 	private static String instructions;
-	private static String cacheInfo;
-	private static String cache2Info;
-	private static int numOfInstructions;
 	private ArrayList<Instruction> decodedInstructions;
-	private ArrayList<ArrayList<String>> decodedCacheInfo;
-	private int ROBentries;
 
 	public Assembler() {
-		decodedInstructions = new ArrayList<Instruction>();
-		decodedCacheInfo = new ArrayList<ArrayList<String>>();
 
 		Scanner sc = new Scanner(System.in);
+		decodedInstructions = new ArrayList<Instruction>();
 
-		// CACHE 1
-		System.out.println("Please enter cache geometry");
-		cacheInfo = sc.nextLine();
-		ArrayList<String> cache1arr = new ArrayList<String>();
-		cache1arr = parseCacheInfo(cacheInfo);
-
-		if (cache1arr != null) {
-			decodedCacheInfo.add(cache1arr);
-		}
-
-		// CACHE 2
-		System.out.print("Do you want another level of cache?");
-		String newcache = sc.nextLine();
-
-		if (newcache.equalsIgnoreCase("yes")
-				|| newcache.equalsIgnoreCase("true")) {
-			System.out.println("Please enter cache 2 geometry");
-
-			cache2Info = sc.nextLine();
-			ArrayList<String> cache2arr = new ArrayList<String>();
-			cache2arr = parseCacheInfo(cache2Info);
-
-			if (cache2arr != null)
-				decodedCacheInfo.add(cache2arr);
-		}
-
-		// ROB ENTRIES
-		System.out.println("Please enter number of ROB entries");
-		String ROBentries_ = sc.nextLine();
-		ROBentries = Integer.parseInt(ROBentries_);
-
-		// INSTRUCTIONS
-		System.out.println("Enter the instructions"); // one instruction format
-														// should be ex: ADD
-														// r1,r2,r3
 		instructions = sc.nextLine();
 		sc.close();
-		// several instructions should be ex: add r1,r2,r3 , sub r4,r5,6
 
 		String[] instructionsSeperate = instructions.split(" , ");
-		numOfInstructions = instructionsSeperate.length;
 
 		Instruction ins = new Instruction();
 
@@ -77,31 +34,6 @@ public class Assembler {
 					+ decodedInstructions.get(i).sourceRegister2 + " "
 					+ decodedInstructions.get(i).immediate);
 		}
-	}
-
-	public static int getNumOfInstructions() {
-		return numOfInstructions;
-	}
-
-	public static String getCacheInfo() {
-		return cacheInfo;
-	}
-
-	public static String getCache2Info() {
-		return cache2Info;
-	}
-
-	public static ArrayList<String> parseCacheInfo(String s) {
-		ArrayList<String> cacheInfoDecoded = new ArrayList<String>();
-
-		String[] info = s.split(", ");
-
-		for (int i = 0; i < info.length; i++) {
-			System.out.println(info[i]);
-			cacheInfoDecoded.add(info[i]);
-		}
-
-		return cacheInfoDecoded;
 	}
 
 	public static Instruction parseInstruction(String s) {
@@ -282,14 +214,6 @@ public class Assembler {
 
 	public ArrayList<Instruction> getDecodedInstructions() {
 		return decodedInstructions;
-	}
-
-	public ArrayList<ArrayList<String>> getDecodedCacheInfo() {
-		return decodedCacheInfo;
-	}
-
-	public int getROBentries() {
-		return ROBentries;
 	}
 
 }

@@ -1,5 +1,7 @@
 package tomasulo.memory;
 
+import tomasulo.configuration.memory.WritingPolicy;
+
 public class Cache {
 
 	private WritingPolicy writingPolicy;
