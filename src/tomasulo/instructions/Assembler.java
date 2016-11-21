@@ -1,219 +1,145 @@
 package tomasulo.instructions;
 
 import java.util.ArrayList;
-import java.util.Scanner;
+
+import tomasulo.exceptions.InvalidInstructionException;
 
 public class Assembler {
 
-	private static String instructions;
-	private ArrayList<Instruction> decodedInstructions;
+	public ArrayList<Instruction> parseInstructions(String[] stringInstructions) {
 
-	public Assembler() {
+		ArrayList<Instruction> parsedInstructions = new ArrayList<Instruction>();
 
-		Scanner sc = new Scanner(System.in);
-		decodedInstructions = new ArrayList<Instruction>();
-
-		instructions = sc.nextLine();
-		sc.close();
-
-		String[] instructionsSeperate = instructions.split(" , ");
-
-		Instruction ins = new Instruction();
-
-		for (int i = 0; i < instructionsSeperate.length; i++) {
-			ins = parseInstruction(instructionsSeperate[i]);
-
-			if (ins != null)
-				decodedInstructions.add(ins);
+		for (int i = 0; i < stringInstructions.length; i++) {
+			parsedInstructions.add(parseInstruction(stringInstructions[i]));
 		}
 
-		for (int i = 0; i < decodedInstructions.size(); i++) {
-			System.out.println(decodedInstructions.get(i).name + " "
-					+ decodedInstructions.get(i).destinationRegister + " "
-					+ decodedInstructions.get(i).sourceRegister1 + " "
-					+ decodedInstructions.get(i).sourceRegister2 + " "
-					+ decodedInstructions.get(i).immediate);
-		}
+		return parsedInstructions;
+
 	}
 
-	public static Instruction parseInstruction(String s) {
+	private Instruction parseInstruction(String stringInstruction) {
 
 		Instruction instruction = new Instruction();
-		String[] inst = s.split(" ");
-		// instructionDecoded.add(inst[0]); // the instruction
+		String[] splitStringInstruction = stringInstruction.split(" ");
 
-		switch (inst[0]) {
+		switch (splitStringInstruction[0]) {
 		case "ADD":
-			InstructionName add = InstructionName.ADD;
-			instruction.setName(add);
+			instruction.setName(InstructionName.ADD);
 			break;
 		case "SUB":
-			InstructionName sub = InstructionName.SUB;
-			instruction.setName(sub);
+			instruction.setName(InstructionName.SUB);
 			break;
 		case "ADDI":
-			InstructionName addi = InstructionName.ADDI;
-			instruction.setName(addi);
+			instruction.setName(InstructionName.ADDI);
 			break;
 		case "NAND":
-			InstructionName nand = InstructionName.NAND;
-			instruction.setName(nand);
+			instruction.setName(InstructionName.NAND);
 			break;
 		case "LW":
-			InstructionName lw = InstructionName.LW;
-			instruction.setName(lw);
+			instruction.setName(InstructionName.LW);
 			break;
 		case "SW":
-			InstructionName sw = InstructionName.SW;
-			instruction.setName(sw);
+			instruction.setName(InstructionName.SW);
 			break;
 		case "MULT":
-			InstructionName mult = InstructionName.MULT;
-			instruction.setName(mult);
+			instruction.setName(InstructionName.MULT);
 			break;
 		case "JMP":
-			InstructionName jmp = InstructionName.JMP;
-			instruction.setName(jmp);
+			instruction.setName(InstructionName.JMP);
 			break;
 		case "JALR":
-			InstructionName jalr = InstructionName.JALR;
-			instruction.setName(jalr);
+			instruction.setName(InstructionName.JALR);
 			break;
 		case "RET":
-			InstructionName ret = InstructionName.RET;
-			instruction.setName(ret);
+			instruction.setName(InstructionName.RET);
 			break;
 		case "BEQ":
-			InstructionName beq = InstructionName.BEQ;
-			instruction.setName(beq);
+			instruction.setName(InstructionName.BEQ);
 			break;
 		default:
-			System.out.println("invalid instruction");
-			return null;
+			throw new InvalidInstructionException("Unsupported instruction");
 		}
 
-		String[] regs = inst[1].split(","); // the registers
+		String[] operands = splitStringInstruction[1].split(",");
 
 		if (instruction.getName().equals(InstructionName.ADD)
 				|| instruction.getName().equals(InstructionName.ADDI)
 				|| instruction.getName().equals(InstructionName.SUB)
 				|| instruction.getName().equals(InstructionName.MULT)
 				|| instruction.getName().equals(InstructionName.NAND)) {
-			if (regs.length != 3) {
-				System.out
-						.println("invalid instruction, insufficiant registers");
-				return null;
+			if (operands.length != 3) {
+				throw new InvalidInstructionException("Erroneous number of operands (" + operands.length + " not 3)");
 			} else {
 				if (!(instruction.getName().equals(InstructionName.ADDI))) {
-					instruction.destinationRegister = Integer.parseInt((regs[0]
-							.substring(1, 2)));
-					instruction.sourceRegister1 = Integer.parseInt((regs[1].substring(
-							1, 2)));
-					instruction.sourceRegister2 = Integer.parseInt((regs[2].substring(
-							1, 2)));
-					instruction.immediate = null;
+					instruction.destinationRegister = Integer.parseInt((operands[0].substring(1, 2)));
+					instruction.sourceRegister1 = Integer.parseInt((operands[1].substring(1, 2)));
+					instruction.sourceRegister2 = Integer.parseInt((operands[2].substring(1, 2)));
 				} else {
-					instruction.destinationRegister = Integer.parseInt((regs[0]
-							.substring(1, 2)));
-					instruction.sourceRegister1 = Integer.parseInt((regs[1].substring(
-							1, 2)));
-					instruction.sourceRegister2 = null;
-					instruction.immediate = Integer.parseInt(regs[2]);
+					instruction.destinationRegister = Integer.parseInt((operands[0].substring(1, 2)));
+					instruction.sourceRegister1 = Integer.parseInt((operands[1].substring(1, 2)));
+					instruction.immediate = Integer.parseInt(operands[2]);
 				}
-
 			}
-			return instruction;
 		} else {
 			if (instruction.getName().equals(InstructionName.BEQ)
 					|| instruction.getName().equals(InstructionName.LW)
 					|| instruction.getName().equals(InstructionName.SW)) {
-				if (regs.length != 3) {
-					System.out
-							.println("invalid instruction, insufficiant registers ");
-					return null;
+				if (operands.length != 3) {
+					throw new InvalidInstructionException("Erroneous number of operands (" + operands.length + " not 3)");
 				} else {
 					switch (instruction.getName()) {
 					case LW:
-						instruction.destinationRegister = Integer.parseInt((regs[0]
-								.substring(1, 2)));
-						instruction.sourceRegister1 = Integer.parseInt((regs[1]
-								.substring(1, 2)));
-						instruction.sourceRegister2 = null;
-						instruction.immediate = Integer.parseInt(regs[2]);
+						instruction.destinationRegister = Integer.parseInt((operands[0].substring(1, 2)));
+						instruction.sourceRegister1 = Integer.parseInt((operands[1].substring(1, 2)));
+						instruction.immediate = Integer.parseInt(operands[2]);
 						break;
 					case SW:
-						instruction.destinationRegister = null;
-						instruction.sourceRegister1 = Integer.parseInt((regs[0]
-								.substring(1, 2)));
-						instruction.sourceRegister2 = Integer.parseInt((regs[1]
-								.substring(1, 2)));
-						instruction.immediate = Integer.parseInt(regs[2]);
+						instruction.sourceRegister1 = Integer.parseInt((operands[0].substring(1, 2)));
+						instruction.sourceRegister2 = Integer.parseInt((operands[1].substring(1, 2)));
+						instruction.immediate = Integer.parseInt(operands[2]);
 						break;
 					case BEQ:
-						instruction.destinationRegister = null;
-						instruction.sourceRegister1 = Integer.parseInt((regs[0]
-								.substring(1, 2)));
-						instruction.sourceRegister2 = Integer.parseInt((regs[1]
-								.substring(1, 2)));
-						instruction.immediate = Integer.parseInt(regs[2]);
+						instruction.sourceRegister1 = Integer.parseInt((operands[0].substring(1, 2)));
+						instruction.sourceRegister2 = Integer.parseInt((operands[1].substring(1, 2)));
+						instruction.immediate = Integer.parseInt(operands[2]);
 						break;
 					default:
 						break;
 					}
 				}
-				return instruction;
 			} else {
 				if (instruction.getName().equals(InstructionName.JALR)
 						|| instruction.getName().equals(InstructionName.JMP)) {
-					if (regs.length != 2) {
-						System.out
-								.println("invalid instruction, insufficiant registors");
-						return null;
+					if (operands.length != 2) {
+						throw new InvalidInstructionException("Erroneous number of operands (" + operands.length + " not 2)");
 					} else {
 						switch (instruction.name) {
 						case JALR:
-							instruction.destinationRegister = Integer.parseInt((regs[0]
-									.substring(1, 2)));
-							instruction.sourceRegister1 = Integer.parseInt((regs[1]
-									.substring(1, 2)));
-							instruction.sourceRegister2 = null;
-							instruction.immediate = null;
+							instruction.destinationRegister = Integer.parseInt((operands[0].substring(1, 2)));
+							instruction.sourceRegister1 = Integer.parseInt((operands[1].substring(1, 2)));
 							break;
 						case JMP:
-							instruction.destinationRegister = null;
-							instruction.sourceRegister1 = Integer.parseInt((regs[0]
-									.substring(1, 2)));
-							instruction.sourceRegister2 = null;
-							instruction.immediate = Integer.parseInt((regs[1]
-									.substring(1, 2)));
+							instruction.sourceRegister1 = Integer.parseInt((operands[0].substring(1, 2)));
+							instruction.immediate = Integer.parseInt((operands[1].substring(1, 2)));
 							break;
 						default:
 							break;
 						}
 					}
-					return instruction;
-				} else { // RET
-					if (regs.length != 1) {
-						System.out
-								.println("invalid instruction, insufficiant registors");
-						return null;
+				} else {
+					if (operands.length != 1) {
+						throw new InvalidInstructionException("Erroneous number of operands (" + operands.length + " not 1)");
 					} else {
-						instruction.destinationRegister = null;
-						instruction.sourceRegister1 = Integer.parseInt((regs[0]
-								.substring(1, 2)));
-						instruction.sourceRegister2 = null;
-						instruction.immediate = null;
+						instruction.sourceRegister1 = Integer.parseInt((operands[0].substring(1, 2)));
 					}
-					return instruction;
 				}
 			}
 
 		}
 
-	}
+		return instruction;
 
-	public ArrayList<Instruction> getDecodedInstructions() {
-		return decodedInstructions;
 	}
 
 }
