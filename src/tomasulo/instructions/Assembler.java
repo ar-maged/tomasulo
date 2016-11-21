@@ -23,12 +23,12 @@ public class Assembler {
 		Instruction instruction = new Instruction();
 		String[] splitStringInstruction = stringInstruction.split(" ");
 
-		for(int i = 0 ; i<splitStringInstruction.length; i++)
-		{
-			System.out.println(splitStringInstruction[i]);
+		for (int i = 0; i < splitStringInstruction.length; i++) {
+
+			splitStringInstruction[i] = splitStringInstruction[i].trim();
+
 		}
-		
-		splitStringInstruction[0] = splitStringInstruction[0].trim();
+
 		switch (splitStringInstruction[0]) {
 		case "ADD":
 			instruction.setName(InstructionName.ADD);
@@ -48,8 +48,8 @@ public class Assembler {
 		case "SW":
 			instruction.setName(InstructionName.SW);
 			break;
-		case "MULT":
-			instruction.setName(InstructionName.MULT);
+		case "MUL":
+			instruction.setName(InstructionName.MUL);
 			break;
 		case "JMP":
 			instruction.setName(InstructionName.JMP);
@@ -67,57 +67,78 @@ public class Assembler {
 			throw new InvalidInstructionException("Unsupported instruction");
 		}
 
-		
-		String[] operands = splitStringInstruction[1].split(",");
-		
-		
-		for(int i = 0; i<operands.length; i++){
-			
-			operands[i]  = operands[i].trim();
-		
-		}
-		
-
 		if (instruction.getName().equals(InstructionName.ADD)
 				|| instruction.getName().equals(InstructionName.ADDI)
 				|| instruction.getName().equals(InstructionName.SUB)
-				|| instruction.getName().equals(InstructionName.MULT)
+				|| instruction.getName().equals(InstructionName.MUL)
 				|| instruction.getName().equals(InstructionName.NAND)) {
-			if (operands.length != 3) {
-				throw new InvalidInstructionException("Erroneous number of operands (" + operands.length + " not 3)");
+			if (splitStringInstruction.length != 4) {
+				throw new InvalidInstructionException(
+						"Erroneous number of operands ("
+								+ (splitStringInstruction.length - 1)
+								+ " not 3)");
 			} else {
 				if (!(instruction.getName().equals(InstructionName.ADDI))) {
-					instruction.setDestinationRegister(Integer.parseInt((operands[0].substring(1, 2))));
-					instruction.setSourceRegister1(Integer.parseInt((operands[1].substring(1, 2))));
-					instruction.setSourceRegister2(Integer.parseInt((operands[2].substring(1, 2))));
+					instruction.setDestinationRegister(Integer
+							.parseInt((splitStringInstruction[1]
+									.substring(1, 2))));
+					instruction.setSourceRegister1(Integer
+							.parseInt((splitStringInstruction[2]
+									.substring(1, 2))));
+					instruction.setSourceRegister2(Integer
+							.parseInt((splitStringInstruction[3]
+									.substring(1, 2))));
 				} else {
-					instruction.setDestinationRegister(Integer.parseInt((operands[0].substring(1, 2))));
-					instruction.setSourceRegister1(Integer.parseInt((operands[1].substring(1, 2))));
-					instruction.setImmediate(Integer.parseInt(operands[2]));
+					instruction.setDestinationRegister(Integer
+							.parseInt((splitStringInstruction[1]
+									.substring(1, 2))));
+					instruction.setSourceRegister1(Integer
+							.parseInt((splitStringInstruction[2]
+									.substring(1, 2))));
+					instruction.setImmediate(Integer
+							.parseInt(splitStringInstruction[3]));
 				}
 			}
 		} else {
 			if (instruction.getName().equals(InstructionName.BEQ)
 					|| instruction.getName().equals(InstructionName.LW)
 					|| instruction.getName().equals(InstructionName.SW)) {
-				if (operands.length != 3) {
-					throw new InvalidInstructionException("Erroneous number of operands (" + operands.length + " not 3)");
+				if (splitStringInstruction.length != 4) {
+					throw new InvalidInstructionException(
+							"Erroneous number of operands ("
+									+ (splitStringInstruction.length - 1)
+									+ " not 3)");
 				} else {
 					switch (instruction.getName()) {
 					case LW:
-						instruction.setDestinationRegister(Integer.parseInt((operands[0].substring(1, 2))));
-						instruction.setSourceRegister1(Integer.parseInt((operands[1].substring(1, 2))));
-						instruction.setImmediate(Integer.parseInt(operands[2]));
+						instruction.setDestinationRegister(Integer
+								.parseInt((splitStringInstruction[1].substring(
+										1, 2))));
+						instruction.setSourceRegister1(Integer
+								.parseInt((splitStringInstruction[2].substring(
+										1, 2))));
+						instruction.setImmediate(Integer
+								.parseInt(splitStringInstruction[3]));
 						break;
 					case SW:
-						instruction.setSourceRegister1(Integer.parseInt((operands[0].substring(1, 2))));
-						instruction.setSourceRegister2(Integer.parseInt((operands[1].substring(1, 2))));
-						instruction.setImmediate(Integer.parseInt(operands[2]));
+						instruction.setSourceRegister1(Integer
+								.parseInt((splitStringInstruction[1].substring(
+										1, 2))));
+						instruction.setSourceRegister2(Integer
+								.parseInt((splitStringInstruction[2].substring(
+										1, 2))));
+						instruction.setImmediate(Integer
+								.parseInt(splitStringInstruction[3]));
 						break;
 					case BEQ:
-						instruction.setSourceRegister1(Integer.parseInt((operands[0].substring(1, 2))));
-						instruction.setSourceRegister2(Integer.parseInt((operands[1].substring(1, 2))));
-						instruction.setImmediate(Integer.parseInt(operands[2]));
+						instruction.setSourceRegister1(Integer
+								.parseInt((splitStringInstruction[1].substring(
+										1, 2))));
+						instruction.setSourceRegister2(Integer
+								.parseInt((splitStringInstruction[2].substring(
+										1, 2))));
+						instruction.setImmediate(Integer
+								.parseInt(splitStringInstruction[3]));
 						break;
 					default:
 						break;
@@ -126,32 +147,53 @@ public class Assembler {
 			} else {
 				if (instruction.getName().equals(InstructionName.JALR)
 						|| instruction.getName().equals(InstructionName.JMP)) {
-					if (operands.length != 2) {
-						throw new InvalidInstructionException("Erroneous number of operands (" + operands.length + " not 2)");
+					if (splitStringInstruction.length != 3) {
+						throw new InvalidInstructionException(
+								"Erroneous number of operands ("
+										+ (splitStringInstruction.length - 1)
+										+ " not 2)");
 					} else {
 						switch (instruction.getName()) {
 						case JALR:
-							instruction.setDestinationRegister(Integer.parseInt((operands[0].substring(1, 2))));
-							instruction.setSourceRegister1(Integer.parseInt((operands[1].substring(1, 2))));
+							instruction.setDestinationRegister(Integer
+									.parseInt((splitStringInstruction[1]
+											.substring(1, 2))));
+							instruction.setSourceRegister1(Integer
+									.parseInt((splitStringInstruction[2]
+											.substring(1, 2))));
 							break;
 						case JMP:
-							instruction.setSourceRegister1(Integer.parseInt((operands[0].substring(1, 2))));
-							instruction.setImmediate(Integer.parseInt((operands[1].substring(1, 2))));
+							instruction.setSourceRegister1(Integer
+									.parseInt((splitStringInstruction[1]
+											.substring(1, 2))));
+							instruction.setImmediate(Integer
+									.parseInt((splitStringInstruction[2]
+											)));
 							break;
 						default:
 							break;
 						}
 					}
 				} else {
-					if (operands.length != 1) {
-						throw new InvalidInstructionException("Erroneous number of operands (" + operands.length + " not 1)");
+					if (splitStringInstruction.length != 2) {
+						throw new InvalidInstructionException(
+								"Erroneous number of operands ("
+										+ (splitStringInstruction.length - 1)
+										+ " not 1)");
 					} else {
-						instruction.setSourceRegister1(Integer.parseInt((operands[0].substring(1, 2))));
+						instruction.setSourceRegister1(Integer
+								.parseInt((splitStringInstruction[1].substring(
+										1, 2))));
 					}
 				}
 			}
 
 		}
+		System.out.println(instruction.getName() + " "
+				+ instruction.getDestinationRegister() + " "
+				+ instruction.getSourceRegister1() + " "
+				+ instruction.getSourceRegister2() + " "
+				+ instruction.getImmediate());
 
 		return instruction;
 
