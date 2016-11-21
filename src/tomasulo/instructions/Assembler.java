@@ -72,13 +72,13 @@ public class Assembler {
 				throw new InvalidInstructionException("Erroneous number of operands (" + operands.length + " not 3)");
 			} else {
 				if (!(instruction.getName().equals(InstructionName.ADDI))) {
-					instruction.destinationRegister = Integer.parseInt((operands[0].substring(1, 2)));
-					instruction.sourceRegister1 = Integer.parseInt((operands[1].substring(1, 2)));
-					instruction.sourceRegister2 = Integer.parseInt((operands[2].substring(1, 2)));
+					instruction.setDestinationRegister(Integer.parseInt((operands[0].substring(1, 2))));
+					instruction.setSourceRegister1(Integer.parseInt((operands[1].substring(1, 2))));
+					instruction.setSourceRegister2(Integer.parseInt((operands[2].substring(1, 2))));
 				} else {
-					instruction.destinationRegister = Integer.parseInt((operands[0].substring(1, 2)));
-					instruction.sourceRegister1 = Integer.parseInt((operands[1].substring(1, 2)));
-					instruction.immediate = Integer.parseInt(operands[2]);
+					instruction.setDestinationRegister(Integer.parseInt((operands[0].substring(1, 2))));
+					instruction.setSourceRegister1(Integer.parseInt((operands[1].substring(1, 2))));
+					instruction.setImmediate(Integer.parseInt(operands[2]));
 				}
 			}
 		} else {
@@ -90,19 +90,19 @@ public class Assembler {
 				} else {
 					switch (instruction.getName()) {
 					case LW:
-						instruction.destinationRegister = Integer.parseInt((operands[0].substring(1, 2)));
-						instruction.sourceRegister1 = Integer.parseInt((operands[1].substring(1, 2)));
-						instruction.immediate = Integer.parseInt(operands[2]);
+						instruction.setDestinationRegister(Integer.parseInt((operands[0].substring(1, 2))));
+						instruction.setSourceRegister1(Integer.parseInt((operands[1].substring(1, 2))));
+						instruction.setImmediate(Integer.parseInt(operands[2]));
 						break;
 					case SW:
-						instruction.sourceRegister1 = Integer.parseInt((operands[0].substring(1, 2)));
-						instruction.sourceRegister2 = Integer.parseInt((operands[1].substring(1, 2)));
-						instruction.immediate = Integer.parseInt(operands[2]);
+						instruction.setSourceRegister1(Integer.parseInt((operands[0].substring(1, 2))));
+						instruction.setSourceRegister2(Integer.parseInt((operands[1].substring(1, 2))));
+						instruction.setImmediate(Integer.parseInt(operands[2]));
 						break;
 					case BEQ:
-						instruction.sourceRegister1 = Integer.parseInt((operands[0].substring(1, 2)));
-						instruction.sourceRegister2 = Integer.parseInt((operands[1].substring(1, 2)));
-						instruction.immediate = Integer.parseInt(operands[2]);
+						instruction.setSourceRegister1(Integer.parseInt((operands[0].substring(1, 2))));
+						instruction.setSourceRegister2(Integer.parseInt((operands[1].substring(1, 2))));
+						instruction.setImmediate(Integer.parseInt(operands[2]));
 						break;
 					default:
 						break;
@@ -114,14 +114,14 @@ public class Assembler {
 					if (operands.length != 2) {
 						throw new InvalidInstructionException("Erroneous number of operands (" + operands.length + " not 2)");
 					} else {
-						switch (instruction.name) {
+						switch (instruction.getName()) {
 						case JALR:
-							instruction.destinationRegister = Integer.parseInt((operands[0].substring(1, 2)));
-							instruction.sourceRegister1 = Integer.parseInt((operands[1].substring(1, 2)));
+							instruction.setDestinationRegister(Integer.parseInt((operands[0].substring(1, 2))));
+							instruction.setSourceRegister1(Integer.parseInt((operands[1].substring(1, 2))));
 							break;
 						case JMP:
-							instruction.sourceRegister1 = Integer.parseInt((operands[0].substring(1, 2)));
-							instruction.immediate = Integer.parseInt((operands[1].substring(1, 2)));
+							instruction.setSourceRegister1(Integer.parseInt((operands[0].substring(1, 2))));
+							instruction.setImmediate(Integer.parseInt((operands[1].substring(1, 2))));
 							break;
 						default:
 							break;
@@ -131,7 +131,7 @@ public class Assembler {
 					if (operands.length != 1) {
 						throw new InvalidInstructionException("Erroneous number of operands (" + operands.length + " not 1)");
 					} else {
-						instruction.sourceRegister1 = Integer.parseInt((operands[0].substring(1, 2)));
+						instruction.setSourceRegister1(Integer.parseInt((operands[0].substring(1, 2))));
 					}
 				}
 			}

@@ -2,11 +2,11 @@ package tomasulo.instructions;
 
 public class Instruction {
 
-	InstructionName name;
-	Integer sourceRegister1;
-	Integer sourceRegister2;
-	Integer destinationRegister;
-	Integer immediate;
+	private InstructionName name;
+	private Integer sourceRegister1;
+	private Integer sourceRegister2;
+	private Integer destinationRegister;
+	private Integer immediate;
 
 	public Instruction() {
 
