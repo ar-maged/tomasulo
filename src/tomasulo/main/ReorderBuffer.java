@@ -21,7 +21,7 @@ public class ReorderBuffer {
 		return false;
 	}
 
-	public boolean addInstruction(Instruction instruction, int reg) {
+	public boolean addInstruction(InstructionName instruction, int reg) {
 		if (isFull())
 			return false;
 
@@ -98,7 +98,7 @@ public class ReorderBuffer {
 		private int value;
 		private boolean ready;
 
-		public ROBEntry(Instruction inst, int reg) {
+		public ROBEntry(InstructionName inst, int reg) {
 
 			type = instructionType(inst);
 			register = reg;
@@ -110,7 +110,7 @@ public class ReorderBuffer {
 			return type;
 		}
 
-		public void setInstructionType(Instruction instruction) {
+		public void setInstructionType(InstructionName instruction) {
 			this.type = instructionType(instruction);
 		}
 
@@ -138,29 +138,23 @@ public class ReorderBuffer {
 			this.ready = ready;
 		}
 
-		private Type instructionType(Instruction instruction) {
+		private Type instructionType(InstructionName instruction) {
 
-			if (instruction == Instruction.LW) {
+			if (instruction == InstructionName.LW) {
 				return Type.LW;
 			}
-			if (instruction == Instruction.SW) {
+			if (instruction == InstructionName.SW) {
 				return Type.SW;
 			}
-			if (instruction == Instruction.BEQ) {
+			if (instruction == InstructionName.BEQ) {
 				return Type.BRANCH;
 			}
-			if (instruction == Instruction.JMP
-					|| instruction == Instruction.JALR
-					|| instruction == Instruction.RET) {
+			if (instruction == InstructionName.JMP
+					|| instruction == InstructionName.JALR
+					|| instruction == InstructionName.RET) {
 				return Type.JUMP;
 			}
-			if (instruction == Instruction.ADD
-					|| instruction == Instruction.SUB
-					|| instruction == Instruction.ADDI
-					|| instruction == Instruction.NAND
-					|| instruction == Instruction.MUL) {
-				return Type.INT;
-			}
+			return Type.INT;
 		}
 	}
 
