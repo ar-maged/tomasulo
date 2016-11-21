@@ -11,6 +11,13 @@ public class CacheConfig {
 
 	}
 
+	public CacheConfig(int sizeBytes, int lineSizeBytes, int associativty, int accessCycles) {
+		this.sizeBytes = sizeBytes;
+		this.lineSizeBytes = lineSizeBytes;
+		this.associativty = associativty;
+		this.accessCycles = accessCycles;
+	}
+
 	public int getSizeBytes() {
 		return sizeBytes;
 	}

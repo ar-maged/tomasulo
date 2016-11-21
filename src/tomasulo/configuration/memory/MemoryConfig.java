@@ -28,6 +28,10 @@ public class MemoryConfig {
 		this.cachesConfig = cachesConfig;
 	}
 
+	public void addCacheConfig(CacheConfig cacheConfig) {
+		this.cachesConfig.add(cacheConfig);
+	}
+
 	public MainMemoryConfig getMainMemoryConfig() {
 		return mainMemoryConfig;
 	}

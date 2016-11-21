@@ -8,6 +8,10 @@ public class ReorderBuffer {
 	private int head;
 	private int tail;
 
+	public ReorderBuffer() {
+
+	}
+
 	public ReorderBuffer(int n) { // n is user defined
 		entries = new ROBEntry[n];
 		head = tail = 0;

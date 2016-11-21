@@ -6,7 +6,7 @@ public class MainMemoryConfig {
 	private int accessCycles;
 
 	public MainMemoryConfig() {
-		capacityBytes = 65536;
+		capacityBytes = 64 * 1024;
 	}
 
 	public MainMemoryConfig(int accessCycles) {
