@@ -1,8 +1,10 @@
 package tomasulo.memory;
 
 public class Block {
+
 	private String[] data;
 	private boolean dirtyBit = false;
+
 	public Block(int blockSizeInBytes) {
 		this.data = new String[blockSizeInBytes / 4];
 	}
@@ -10,7 +12,7 @@ public class Block {
 	public void addData(String instruction, int offset) {
 		this.data[offset] = instruction;
 	}
-	
+
 	public boolean isFull() {
 		for (int i = 0; i < this.data.length; i++) {
 			if (this.data[i] == null)
@@ -39,5 +41,5 @@ public class Block {
 	public void setDirtyBit(boolean dirtyBit) {
 		this.dirtyBit = dirtyBit;
 	}
-	
+
 }

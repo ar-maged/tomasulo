@@ -12,34 +12,24 @@ public class Assembler {
 	private ArrayList<Instruction> decodedInstructions;
 	private ArrayList decodedCacheInfo;
 	private int ROBentries;
-	
-	
-	
-	
 
-	public Assembler() // constructor
-	{
-
+	public Assembler() { // constructor
 		decodedInstructions = new ArrayList<Instruction>();
 		decodedCacheInfo = new ArrayList();
 
-		
 		Scanner sc = new Scanner(System.in);
-		
-		
-		
-		
-		
-		//CACHE 1
+
+		// CACHE 1
 		System.out.println("Please enter cache geometry");
 		cacheInfo = sc.nextLine();
 		ArrayList cache1arr = new ArrayList();
 		cache1arr = parseCacheInfo(cacheInfo);
+
 		if (cache1arr != null) {
 			decodedCacheInfo.add(cache1arr);
 		}
 
-		//CACHE 2
+		// CACHE 2
 		System.out.print("Do you want another level of cache?");
 		String newcache = sc.nextLine();
 
@@ -50,18 +40,17 @@ public class Assembler {
 			cache2Info = sc.nextLine();
 			ArrayList cache2arr = new ArrayList();
 			cache2arr = parseCacheInfo(cache2Info);
+
 			if (cache2arr != null)
 				decodedCacheInfo.add(cache2arr);
-
 		}
-		
-		
-		//ROB ENTRIES
+
+		// ROB ENTRIES
 		System.out.println("Please enter number of ROB entries");
 		String ROBentries_ = sc.nextLine();
 		ROBentries = Integer.parseInt(ROBentries_);
-		
-		//INSTRUCTIONS
+
+		// INSTRUCTIONS
 		System.out.println("Enter the instructions"); // one instruction format
 														// should be ex: ADD
 														// r1,r2,r3
@@ -69,16 +58,15 @@ public class Assembler {
 		// several instructions should be ex: add r1,r2,r3 , sub r4,r5,6
 
 		String[] instructionsSeperate = instructions.split(" , ");
-
 		numOfInstructions = instructionsSeperate.length;
 
 		Instruction ins = new Instruction();
+
 		for (int i = 0; i < instructionsSeperate.length; i++) {
 			ins = parseInstruction(instructionsSeperate[i]);
-			if (ins != null) {
-				decodedInstructions.add(ins);
-			}
 
+			if (ins != null)
+				decodedInstructions.add(ins);
 		}
 
 		for (int i = 0; i < decodedInstructions.size(); i++) {
@@ -88,9 +76,6 @@ public class Assembler {
 					+ decodedInstructions.get(i).source2 + " "
 					+ decodedInstructions.get(i).immediate);
 		}
-		
-		
-
 	}
 
 	public static int getNumOfInstructions() {
@@ -205,7 +190,6 @@ public class Assembler {
 
 			}
 			return instruction;
-
 		} else {
 			if (instruction.getName().equals(InstructionName.BEQ)
 					|| instruction.getName().equals(InstructionName.LW)
@@ -215,9 +199,7 @@ public class Assembler {
 							.println("invalid instruction, insufficiant registers ");
 					return null;
 				} else {
-					switch (instruction.getName())
-
-					{
+					switch (instruction.getName()) {
 					case LW:
 						instruction.destination = Integer.parseInt((regs[0]
 								.substring(1, 2)));
@@ -303,10 +285,6 @@ public class Assembler {
 
 	public int getROBentries() {
 		return ROBentries;
-	}
-	public static void main(String[] args) { // for testing
-		Assembler a = new Assembler();
-
 	}
 
 }
