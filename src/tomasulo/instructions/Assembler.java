@@ -23,6 +23,7 @@ public class Assembler {
 		Instruction instruction = new Instruction();
 		String[] splitStringInstruction = stringInstruction.split(" ");
 
+		splitStringInstruction[0] = splitStringInstruction[0].trim();
 		switch (splitStringInstruction[0]) {
 		case "ADD":
 			instruction.setName(InstructionName.ADD);
@@ -62,6 +63,10 @@ public class Assembler {
 		}
 
 		String[] operands = splitStringInstruction[1].split(",");
+		
+		for(int i = 0; i<operands.length; i++)
+			operands[i]  = operands[i].trim();
+		
 
 		if (instruction.getName().equals(InstructionName.ADD)
 				|| instruction.getName().equals(InstructionName.ADDI)
