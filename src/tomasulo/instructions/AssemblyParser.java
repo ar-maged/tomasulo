@@ -1,4 +1,4 @@
-package tomasulo.main;
+package tomasulo.instructions;
 
 import java.util.ArrayList;
 import java.util.Scanner;

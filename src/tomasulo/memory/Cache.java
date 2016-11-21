@@ -1,4 +1,4 @@
-package memory;
+package tomasulo.memory;
 
 public class Cache {
 	private WritingPolicy writingPolicy;

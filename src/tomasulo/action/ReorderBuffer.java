@@ -1,4 +1,6 @@
-package tomasulo.main;
+package tomasulo.action;
+
+import tomasulo.instructions.InstructionName;
 
 public class ReorderBuffer {
 

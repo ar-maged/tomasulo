@@ -1,4 +1,4 @@
-package memory;
+package tomasulo.memory;
 
 public class Block {
 	private String[] data;

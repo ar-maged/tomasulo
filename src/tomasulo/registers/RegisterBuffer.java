@@ -1,4 +1,4 @@
-package tomasulo.main;
+package tomasulo.registers;
 
 public class RegisterBuffer {
 

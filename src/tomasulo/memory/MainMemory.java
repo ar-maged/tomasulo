@@ -1,4 +1,4 @@
-package memory;
+package tomasulo.memory;
 
 import java.util.Arrays;
 import java.util.Collections;
