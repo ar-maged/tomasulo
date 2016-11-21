@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public class FileReader {
 
-	public String readFile(String path) throws IOException {
+	public String[] readFile(String path) throws IOException {
 
 		BufferedReader br = new BufferedReader(new java.io.FileReader(path));
 		StringBuilder sb = new StringBuilder();
@@ -24,7 +24,7 @@ public class FileReader {
 			br.close();
 		}
 
-		return sb.toString();
+		return sb.toString().split("\n");
 
 	}
 
