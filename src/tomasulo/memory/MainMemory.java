@@ -1,9 +1,10 @@
 package tomasulo.memory;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Stack;
+
+import tomasulo.instructions.Instruction;
 
 public class MainMemory {
 
@@ -20,16 +21,15 @@ public class MainMemory {
 		}
 	}
 
-	private Stack<String> convertInstructionsArrayToStack(String[] instructionsArray) {
-		List<String> instructionsList = Arrays.asList(instructionsArray);
-		Stack<String> instructionsStack = new Stack<>();
-		Collections.reverse(instructionsList);
-		instructionsStack.addAll(instructionsList);
+	private Stack<Instruction> convertInstructionsArrayToStack(ArrayList<Instruction> instructionsArray) {
+		Stack<Instruction> instructionsStack = new Stack<>();
+		Collections.reverse(instructionsArray);
+		instructionsStack.addAll(instructionsArray);
 		return instructionsStack;
 	}
 
-	public void readProgram(String[] instructions, int startAddressInBytes) {
-		Stack<String> instructionsStack = this.convertInstructionsArrayToStack(instructions);
+	public void readProgram(ArrayList<Instruction> instructions, int startAddressInBytes) {
+		Stack<Instruction> instructionsStack = this.convertInstructionsArrayToStack(instructions);
 		while (!instructionsStack.isEmpty()) {
 			// Loop over number of instructions per block
 			for (int i = 0; i < this.blockSizeInBytes / 2; i++) {
@@ -37,23 +37,12 @@ public class MainMemory {
 					this.blocks[startAddressInBytes / this.blockSizeInBytes].addData(instructionsStack.pop(), i);
 				}
 			}
-
 			startAddressInBytes += this.blockSizeInBytes;
 		}
 	}
 
 	public Block readBlock(int addressInBytes) {
 		return this.blocks[addressInBytes / blockSizeInBytes];
-	}
-
-	public static void main(String[] args) {
-		MainMemory memory = new MainMemory(16);
-		String[] instructions = { "ADD R2, R4, R5", "SUB R9, R8, R7", "MUL R2, R4, R4", "DIV R0, R1, R5", "ADDI R2, R2, 45" };
-
-		memory.readProgram(instructions, 0);
-		for (int i = 0; i < instructions.length; i++) {
-			System.out.println(memory.readBlock(i * memory.blockSizeInBytes));
-		}
 	}
 
 }

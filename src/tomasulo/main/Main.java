@@ -11,6 +11,7 @@ import tomasulo.configuration.memory.WritingPolicy;
 import tomasulo.instructions.Assembler;
 import tomasulo.instructions.Instruction;
 import tomasulo.instructions.InstructionBuffer;
+import tomasulo.memory.MainMemory;
 import tomasulo.registers.RegisterFile;
 import tomasulo.registers.RegisterStatus;
 import tomasulo.util.filesystem.FileReader;
@@ -45,6 +46,8 @@ public class Main {
 		config.getFunctionalUnitsConfig().setLoadUnitConfig(new FunctionalUnitConfig(2, 15));
 		config.getFunctionalUnitsConfig().setStoreUnitConfig(new FunctionalUnitConfig(2, 15));
 
+		int blockSizeInBytes = 16;
+
 		/////////////// INIT ///////////////
 		FileReader fileReader = new FileReader();
 		Assembler assembler = new Assembler();
@@ -52,14 +55,19 @@ public class Main {
 		ReorderBuffer reorderBuffer = new ReorderBuffer();
 		RegisterFile registerFile = new RegisterFile();
 		RegisterStatus registerStatus = new RegisterStatus();
-		// TODO: Memory memory = new Memory();
+		MainMemory memory = new MainMemory(blockSizeInBytes);
 		// TODO: FunctionalUnits functionalUnits = new FunctionalUnits();
-		// TODO: ReservationStations reservationStations = new ReservationStations();
+		// TODO: ReservationStations reservationStations = new
+		// ReservationStations();
 
 		/////////////// PRE-EXECUTION ///////////////
 		String[] stringInstructions = fileReader.readFile("assembly/arithmetic-1.asm");
 		ArrayList<Instruction> instructions = assembler.parseInstructions(stringInstructions);
-		// TODO: memory.loadProgram(instructions);
+		memory.readProgram(instructions, 0);
+
+		// for (int i = 0; i < instructions.size(); i++) {
+		// System.out.println(memory.readBlock(i * blockSizeInBytes));
+		// }
 
 		/////////////// EXECUTION ///////////////
 		// TODO: Tomasulo's algorithm

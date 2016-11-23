@@ -60,4 +60,10 @@ public class Instruction {
 		this.immediate = immediate;
 	}
 
+	@Override
+	public String toString() {
+		return "Instruction {name=" + name + ", sourceRegister1=" + sourceRegister1 + ", sourceRegister2=" + sourceRegister2 + ", destinationRegister=" + destinationRegister
+				+ ", immediate=" + immediate + "}";
+	}
+
 }
