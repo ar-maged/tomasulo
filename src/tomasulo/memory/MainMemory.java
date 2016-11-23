@@ -31,7 +31,8 @@ public class MainMemory {
 	public void readProgram(String[] instructions, int startAddressInBytes) {
 		Stack<String> instructionsStack = this.convertInstructionsArrayToStack(instructions);
 		while (!instructionsStack.isEmpty()) {
-			for (int i = 0; i < this.blockSizeInBytes / 4; i++) {
+			// Loop over number of instructions per block
+			for (int i = 0; i < this.blockSizeInBytes / 2; i++) {
 				if (!instructionsStack.isEmpty()) {
 					this.blocks[startAddressInBytes / this.blockSizeInBytes].addData(instructionsStack.pop(), i);
 				}
@@ -42,7 +43,7 @@ public class MainMemory {
 	}
 
 	public Block readBlock(int addressInBytes) {
-		return this.blocks[addressInBytes / 4];
+		return this.blocks[addressInBytes / blockSizeInBytes];
 	}
 
 	public static void main(String[] args) {
@@ -51,7 +52,7 @@ public class MainMemory {
 
 		memory.readProgram(instructions, 0);
 		for (int i = 0; i < instructions.length; i++) {
-			System.out.println(memory.readBlock(i * 4));
+			System.out.println(memory.readBlock(i * memory.blockSizeInBytes));
 		}
 	}
 

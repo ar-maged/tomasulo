@@ -6,7 +6,8 @@ public class Block {
 	private boolean dirtyBit = false;
 
 	public Block(int blockSizeInBytes) {
-		this.data = new String[blockSizeInBytes / 4];
+		// Number of instructions per block
+		this.data = new String[blockSizeInBytes / 2];
 	}
 
 	public void addData(String instruction, int offset) {
