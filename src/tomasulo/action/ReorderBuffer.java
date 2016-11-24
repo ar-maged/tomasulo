@@ -19,8 +19,6 @@ public class ReorderBuffer {
 
 	public boolean commit() {
 		if (entries[head].isReady()) {
-			// TODO sendToDataBus(entries[head].getRegister(),
-			// entries[head].getValue());
 			incrementHead();
 			return true;
 		}
