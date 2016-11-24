@@ -54,6 +54,7 @@ public class ReservationStations {
 		int Vk; // valueOfRegA of store and valueOfRegC of Arithmetic
 		FunctionalUnit Qj;
 		FunctionalUnit Qk;
+		int destinationROBIndex;
 		int addressOrImmediateValue; // offset then address in load and store,
 										// immediate value in Arithmetic
 
@@ -124,6 +125,14 @@ public class ReservationStations {
 
 		public void setAddressOrImmediateValue(int addressOrImmediateValue) {
 			this.addressOrImmediateValue = addressOrImmediateValue;
+		}
+
+		public int getDestinationROBIndex() {
+			return destinationROBIndex;
+		}
+
+		public void setDestinationROBIndex(int destinationROBIndex) {
+			this.destinationROBIndex = destinationROBIndex;
 		}
 
 	}
