@@ -167,8 +167,7 @@ public class Assembler {
 									.parseInt((splitStringInstruction[1]
 											.substring(1, 2))));
 							instruction.setImmediate(Integer
-									.parseInt((splitStringInstruction[2]
-											)));
+									.parseInt((splitStringInstruction[2])));
 							break;
 						default:
 							break;
@@ -189,14 +188,111 @@ public class Assembler {
 			}
 
 		}
+		if(checkIns(instruction)==true){
 		System.out.println(instruction.getName() + " "
 				+ instruction.getDestinationRegister() + " "
 				+ instruction.getSourceRegister1() + " "
 				+ instruction.getSourceRegister2() + " "
 				+ instruction.getImmediate());
 
-		return instruction;
+		return instruction;}
+		else throw new InvalidInstructionException("Instruction data not valid");
 
+	}
+
+	private boolean checkIns(Instruction Instruction)
+
+	{
+		boolean valid = false;
+		switch (Instruction.getName()) {
+		case ADD:
+			if ((checkRegs(Instruction.getDestinationRegister()) == true)
+					&& (checkRegs(Instruction.getSourceRegister1()) == true)
+					&& (checkRegs(Instruction.getSourceRegister2()) == true))
+				valid = true;
+			break;
+		case MUL:if ((checkRegs(Instruction.getDestinationRegister()) == true)
+				&& (checkRegs(Instruction.getSourceRegister1()) == true)
+				&& (checkRegs(Instruction.getSourceRegister2()) == true))
+			valid = true;
+		break;
+		case SUB:if ((checkRegs(Instruction.getDestinationRegister()) == true)
+				&& (checkRegs(Instruction.getSourceRegister1()) == true)
+				&& (checkRegs(Instruction.getSourceRegister2()) == true))
+			valid = true;
+		break;
+		case NAND:if ((checkRegs(Instruction.getDestinationRegister()) == true)
+				&& (checkRegs(Instruction.getSourceRegister1()) == true)
+				&& (checkRegs(Instruction.getSourceRegister2()) == true))
+			valid = true;
+		break;
+		case ADDI:if ((checkRegs(Instruction.getDestinationRegister()) == true)
+				&& (checkRegs(Instruction.getSourceRegister1()) == true)
+				&& (checkImm(Instruction.getImmediate())==true))
+			valid = true;
+		break;
+		case LW:if ((checkRegs(Instruction.getDestinationRegister()) == true)
+				&& (checkRegs(Instruction.getSourceRegister1()) == true)
+				&& (checkImm(Instruction.getImmediate())==true))
+			valid = true;
+		break;
+		case SW:if ((checkRegs(Instruction.getSourceRegister2()) == true)
+				&& (checkRegs(Instruction.getSourceRegister1()) == true)
+				&& (checkImm(Instruction.getImmediate())==true))
+			valid = true;
+		break;
+		case JMP:
+			if ((checkRegs(Instruction.getSourceRegister1()) == true)
+					&& (checkImm(Instruction.getImmediate())==true))
+				valid = true;
+			break;
+		case BEQ:if ((checkRegs(Instruction.getSourceRegister2()) == true)
+				&& (checkRegs(Instruction.getSourceRegister1()) == true)
+				&& (checkImm(Instruction.getImmediate())==true))
+			valid = true;
+		break;
+		case JALR:if ((checkRegs(Instruction.getDestinationRegister()) == true)
+				&& (checkRegs(Instruction.getSourceRegister1()) == true))
+			valid = true;
+		break;
+		case RET: if ((checkRegs(Instruction.getSourceRegister1()) == true))
+			valid = true;
+		break;
+
+		}
+
+		return valid;
+
+	}
+
+	private boolean checkRegs(Integer regNum) {
+		switch (regNum) {
+		case 0:
+			return true;
+		case 1:
+			return true;
+		case 2:
+			return true;
+		case 3:
+			return true;
+		case 4:
+			return true;
+		case 5:
+			return true;
+		case 6:
+			return true;
+		case 7:
+			return true;
+		default:
+			throw new InvalidInstructionException(
+					"Register number not defined: only from 0 to 7");
+		}
+	}
+	private boolean checkImm(Integer immediate)
+	{
+		if(immediate>=-64 && immediate <=63)
+			return true;
+		else throw new InvalidInstructionException("Invalid Instruction, immediate value out of range(must be from -64 till 63)");
 	}
 
 }
