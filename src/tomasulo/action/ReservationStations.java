@@ -7,6 +7,9 @@ public class ReservationStations {
 
 	private ReservationStation[] entries;
 
+	// gotta have access to all modules made in main Reorder buffer, register
+	// status, register file, Instruction buffer and FUs
+
 	public ReservationStations(FunctionalUnits functionalUnits,
 			FunctionalUnitsConfig config) {
 		int size = config.getAdditionUnitConfig().getUnitsCount()
@@ -45,13 +48,17 @@ public class ReservationStations {
 				functionalUnits.getLoadStoreFU());
 	}
 
+	// TODO Stall
+	// TODO Execute
+	// TODO WriteBack
+
 	public class ReservationStation {
 
 		FunctionalUnit functionalUnit;
 		boolean busy;
 		InstructionName operation;
-		int Vj; // valueOfRegB
-		int Vk; // valueOfRegA of store and valueOfRegC of Arithmetic
+		int Vj; // valueOfRegB (SourceReg 1)
+		int Vk; // valueOfRegA of store & valueOfRegC of Arithmetic(SourceReg2)
 		FunctionalUnit Qj;
 		FunctionalUnit Qk;
 		int destinationROBIndex;
