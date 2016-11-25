@@ -7,11 +7,11 @@ import tomasulo.instructions.InstructionName;
 
 public class MultiplicationFunctionalUnit extends FunctionalUnit {
 
-    private int numberOfcycles;
+    private int executionCycles;
     private int result;
 
     public MultiplicationFunctionalUnit(FunctionalUnitConfig multiplicationFunctionalUnitConfig) {
-        this.numberOfcycles = multiplicationFunctionalUnitConfig.getExecutionCycles();
+        this.executionCycles = multiplicationFunctionalUnitConfig.getExecutionCycles();
     }
 
     public void execute(Instruction instruction) {
@@ -24,8 +24,8 @@ public class MultiplicationFunctionalUnit extends FunctionalUnit {
         return result;
     }
 
-    public int getNumberOfcycles() {
-        return numberOfcycles;
+    public int getExecutionCycles() {
+        return executionCycles;
     }
 
 }

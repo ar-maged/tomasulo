@@ -6,11 +6,11 @@ import tomasulo.instructions.InstructionName;
 
 public class BranchJumpUnit extends FunctionalUnit {
 
-    private int numberOfcycles;
+    private int executionCycles;
     private int result;
 
     public BranchJumpUnit(FunctionalUnitConfig branchFunctionalUnitConfig) {
-        this.numberOfcycles = branchFunctionalUnitConfig.getExecutionCycles();
+        this.executionCycles = branchFunctionalUnitConfig.getExecutionCycles();
     }
 
     public void execute(Instruction instruction) {
@@ -33,7 +33,7 @@ public class BranchJumpUnit extends FunctionalUnit {
         return result;
     }
 
-    public int getNumberOfcycles() {
-        return numberOfcycles;
+    public int getExecutionCycles() {
+        return executionCycles;
     }
 }

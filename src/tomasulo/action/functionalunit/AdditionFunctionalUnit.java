@@ -6,11 +6,11 @@ import tomasulo.instructions.InstructionName;
 
 public class AdditionFunctionalUnit extends FunctionalUnit {
 
-    private int numberOfcycles;
+    private int executionCycles;
     private int result;
 
     public AdditionFunctionalUnit(FunctionalUnitConfig additionFunctionalUnitConfig) {
-        this.numberOfcycles = additionFunctionalUnitConfig.getExecutionCycles();
+        this.executionCycles = additionFunctionalUnitConfig.getExecutionCycles();
     }
 
     public void execute(Instruction instruction) {
@@ -27,7 +27,7 @@ public class AdditionFunctionalUnit extends FunctionalUnit {
         return result;
     }
 
-    public int getNumberOfcycles() {
-        return numberOfcycles;
+    public int getExecutionCycles() {
+        return executionCycles;
     }
 }

@@ -6,11 +6,11 @@ import tomasulo.instructions.InstructionName;
 
 public class SubtractionFunctionalUnit extends FunctionalUnit {
 
-    private int numberOfcycles;
+    private int executionCycles;
     private int result;
 
     public SubtractionFunctionalUnit(FunctionalUnitConfig subtractionFunctionalUnitConfig) {
-        this.numberOfcycles = subtractionFunctionalUnitConfig.getExecutionCycles();
+        this.executionCycles = subtractionFunctionalUnitConfig.getExecutionCycles();
     }
 
     public void execute(Instruction instruction) {
@@ -23,8 +23,8 @@ public class SubtractionFunctionalUnit extends FunctionalUnit {
         return result;
     }
 
-    public int getNumberOfcycles() {
-        return numberOfcycles;
+    public int getExecutionCycles() {
+        return executionCycles;
     }
 
 }

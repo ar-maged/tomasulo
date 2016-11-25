@@ -6,11 +6,11 @@ import tomasulo.instructions.InstructionName;
 
 public class NandFunctionalUnit extends FunctionalUnit {
 
-    private int numberOfcycles;
+    private int executionCycles;
     private int result;
 
     public NandFunctionalUnit(FunctionalUnitConfig nandFunctionalUnitConfig) {
-        this.numberOfcycles = nandFunctionalUnitConfig.getExecutionCycles();
+        this.executionCycles = nandFunctionalUnitConfig.getExecutionCycles();
     }
 
     public void execute(Instruction instruction) {
@@ -23,8 +23,8 @@ public class NandFunctionalUnit extends FunctionalUnit {
         return result;
     }
 
-    public int getNumberOfcycles() {
-        return numberOfcycles;
+    public int getExecutionCycles() {
+        return executionCycles;
     }
 
 }

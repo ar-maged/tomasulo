@@ -7,11 +7,11 @@ import tomasulo.instructions.InstructionName;
 
 public class LoadStoreUnit extends FunctionalUnit {
 
-    private int numberOfcycles;
+    private int executionCycles;
     private int result;
 
     public LoadStoreUnit(FunctionalUnitConfig loadFunctionalUnitConfig) {
-        this.numberOfcycles = loadFunctionalUnitConfig.getExecutionCycles();
+        this.executionCycles = loadFunctionalUnitConfig.getExecutionCycles();
     }
 
     public void execute(Instruction instruction) {
@@ -24,8 +24,8 @@ public class LoadStoreUnit extends FunctionalUnit {
         return result;
     }
 
-    public int getNumberOfcycles() {
-        return numberOfcycles;
+    public int getExecutionCycles() {
+        return executionCycles;
     }
 
 }
