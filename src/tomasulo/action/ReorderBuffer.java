@@ -18,13 +18,7 @@ public class ReorderBuffer {
 	}
 
 	public boolean commit() {
-		if (entries[head].isReady()) {
-			// TODO sendToDataBus(entries[head].getRegister(),
-			// entries[head].getValue());
-			incrementHead();
-			return true;
-		}
-		return false;
+		return entries[head].isReady();
 	}
 
 	public boolean addInstruction(InstructionName instruction, int reg) {
@@ -65,6 +59,10 @@ public class ReorderBuffer {
 
 	public int getRegisterValue(int address) {
 		return entries[address].getValue();
+	}
+
+	public int getRegisterIndex(int address) {
+		return entries[address].getRegister();
 	}
 
 	public void setEntries(ROBEntry[] entries) {
