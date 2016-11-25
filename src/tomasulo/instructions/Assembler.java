@@ -9,8 +9,8 @@ public class Assembler {
     public ArrayList<Instruction> parseInstructions(String[] stringInstructions) {
         ArrayList<Instruction> parsedInstructions = new ArrayList<Instruction>();
 
-        for (int i = 0; i < stringInstructions.length; i++) {
-            parsedInstructions.add(parseInstruction(stringInstructions[i]));
+        for (String stringInstruction : stringInstructions) {
+            parsedInstructions.add(parseInstruction(stringInstruction));
         }
 
         return parsedInstructions;
@@ -184,7 +184,7 @@ public class Assembler {
 
         }
 
-        if (checkIns(instruction) == true) {
+        if (checkIns(instruction)) {
             System.out.println(instruction.getName() + " "
                     + instruction.getDestinationRegister() + " "
                     + instruction.getSourceRegister1() + " "
@@ -199,65 +199,65 @@ public class Assembler {
 
         switch (Instruction.getName()) {
             case ADD:
-                if ((checkRegs(Instruction.getDestinationRegister()) == true)
-                        && (checkRegs(Instruction.getSourceRegister1()) == true)
-                        && (checkRegs(Instruction.getSourceRegister2()) == true))
+                if ((checkRegs(Instruction.getDestinationRegister()))
+                        && (checkRegs(Instruction.getSourceRegister1()))
+                        && (checkRegs(Instruction.getSourceRegister2())))
                     valid = true;
                 break;
             case MUL:
-                if ((checkRegs(Instruction.getDestinationRegister()) == true)
-                        && (checkRegs(Instruction.getSourceRegister1()) == true)
-                        && (checkRegs(Instruction.getSourceRegister2()) == true))
+                if ((checkRegs(Instruction.getDestinationRegister()))
+                        && (checkRegs(Instruction.getSourceRegister1()))
+                        && (checkRegs(Instruction.getSourceRegister2())))
                     valid = true;
                 break;
             case SUB:
-                if ((checkRegs(Instruction.getDestinationRegister()) == true)
-                        && (checkRegs(Instruction.getSourceRegister1()) == true)
-                        && (checkRegs(Instruction.getSourceRegister2()) == true))
+                if ((checkRegs(Instruction.getDestinationRegister()))
+                        && (checkRegs(Instruction.getSourceRegister1()))
+                        && (checkRegs(Instruction.getSourceRegister2())))
                     valid = true;
                 break;
             case NAND:
-                if ((checkRegs(Instruction.getDestinationRegister()) == true)
-                        && (checkRegs(Instruction.getSourceRegister1()) == true)
-                        && (checkRegs(Instruction.getSourceRegister2()) == true))
+                if ((checkRegs(Instruction.getDestinationRegister()))
+                        && (checkRegs(Instruction.getSourceRegister1()))
+                        && (checkRegs(Instruction.getSourceRegister2())))
                     valid = true;
                 break;
             case ADDI:
-                if ((checkRegs(Instruction.getDestinationRegister()) == true)
-                        && (checkRegs(Instruction.getSourceRegister1()) == true)
-                        && (checkImm(Instruction.getImmediate()) == true))
+                if ((checkRegs(Instruction.getDestinationRegister()))
+                        && (checkRegs(Instruction.getSourceRegister1()))
+                        && (checkImm(Instruction.getImmediate())))
                     valid = true;
                 break;
             case LW:
-                if ((checkRegs(Instruction.getDestinationRegister()) == true)
-                        && (checkRegs(Instruction.getSourceRegister1()) == true)
-                        && (checkImm(Instruction.getImmediate()) == true))
+                if ((checkRegs(Instruction.getDestinationRegister()))
+                        && (checkRegs(Instruction.getSourceRegister1()))
+                        && (checkImm(Instruction.getImmediate())))
                     valid = true;
                 break;
             case SW:
-                if ((checkRegs(Instruction.getSourceRegister2()) == true)
-                        && (checkRegs(Instruction.getSourceRegister1()) == true)
-                        && (checkImm(Instruction.getImmediate()) == true))
+                if ((checkRegs(Instruction.getSourceRegister2()))
+                        && (checkRegs(Instruction.getSourceRegister1()))
+                        && (checkImm(Instruction.getImmediate())))
                     valid = true;
                 break;
             case JMP:
-                if ((checkRegs(Instruction.getSourceRegister1()) == true)
-                        && (checkImm(Instruction.getImmediate()) == true))
+                if ((checkRegs(Instruction.getSourceRegister1()))
+                        && (checkImm(Instruction.getImmediate())))
                     valid = true;
                 break;
             case BEQ:
-                if ((checkRegs(Instruction.getSourceRegister2()) == true)
-                        && (checkRegs(Instruction.getSourceRegister1()) == true)
-                        && (checkImm(Instruction.getImmediate()) == true))
+                if ((checkRegs(Instruction.getSourceRegister2()))
+                        && (checkRegs(Instruction.getSourceRegister1()))
+                        && (checkImm(Instruction.getImmediate())))
                     valid = true;
                 break;
             case JALR:
-                if ((checkRegs(Instruction.getDestinationRegister()) == true)
-                        && (checkRegs(Instruction.getSourceRegister1()) == true))
+                if ((checkRegs(Instruction.getDestinationRegister()))
+                        && (checkRegs(Instruction.getSourceRegister1())))
                     valid = true;
                 break;
             case RET:
-                if ((checkRegs(Instruction.getSourceRegister1()) == true))
+                if ((checkRegs(Instruction.getSourceRegister1())))
                     valid = true;
                 break;
         }
