@@ -8,11 +8,11 @@ import tomasulo.configuration.memory.WritingPolicy;
 import tomasulo.instructions.Assembler;
 import tomasulo.instructions.Instruction;
 import tomasulo.instructions.InstructionBuffer;
-import tomasulo.memory.MainMemory;
 import tomasulo.memory.Memory;
 import tomasulo.registers.RegisterFile;
 import tomasulo.registers.RegisterStatus;
 import tomasulo.util.filesystem.FileReader;
+import tomasulo.util.logging.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,6 +58,7 @@ public class Main {
         Memory memory = new Memory(config.getMemoryConfig());
         // TODO: FunctionalUnits functionalUnits = new FunctionalUnits();
         // TODO: ReservationStations reservationStations = new ReservationStations();
+        Logger l = new Logger();
 
         /////////////// PRE-EXECUTION ///////////////
         String[] stringInstructions = fileReader.readFile("assembly/arithmetic-1.asm");
@@ -70,6 +71,9 @@ public class Main {
 
         /////////////// EXECUTION ///////////////
         // TODO: Tomasulo's algorithm
+
+        /////////////// PERFORMANCE METRICS ///////////////
+        l.printMetrics();
 
     }
 
