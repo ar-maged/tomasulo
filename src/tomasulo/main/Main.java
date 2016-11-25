@@ -51,7 +51,7 @@ public class Main {
         /////////////// INIT ///////////////
         FileReader fileReader = new FileReader();
         Assembler assembler = new Assembler();
-        InstructionBuffer instructionBuffer = new InstructionBuffer();
+        InstructionBuffer instructionBuffer = new InstructionBuffer(config.getInstructionBufferSize());
         ReorderBuffer reorderBuffer = new ReorderBuffer();
         RegisterFile registerFile = new RegisterFile();
         RegisterStatus registerStatus = new RegisterStatus();
