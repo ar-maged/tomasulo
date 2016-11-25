@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class MemoryConfig {
 
+    private int blockSizeBytes;
     private ArrayList<CacheConfig> cachesConfig;
     private MainMemoryConfig mainMemoryConfig;
     private WritingPolicy hitWritingPolicy;
@@ -14,8 +15,9 @@ public class MemoryConfig {
         mainMemoryConfig = new MainMemoryConfig();
     }
 
-    public MemoryConfig(WritingPolicy hitWritingPolicy, WritingPolicy missWritingPolcity) {
+    public MemoryConfig(int blockSizeBytes, WritingPolicy hitWritingPolicy, WritingPolicy missWritingPolcity) {
         this();
+        this.blockSizeBytes = blockSizeBytes;
         this.hitWritingPolicy = hitWritingPolicy;
         this.missWritingPolicy = missWritingPolcity;
     }
@@ -55,5 +57,9 @@ public class MemoryConfig {
     public void setMissWritingPolicy(WritingPolicy missWritingPolicy) {
         this.missWritingPolicy = missWritingPolicy;
     }
+
+    public int getBlockSizeBytes() { return blockSizeBytes; }
+
+    public void setBlockSizeBytes(int blockSizeBytes) { this.blockSizeBytes = blockSizeBytes; }
 
 }

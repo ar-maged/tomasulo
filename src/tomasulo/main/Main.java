@@ -9,6 +9,7 @@ import tomasulo.instructions.Assembler;
 import tomasulo.instructions.Instruction;
 import tomasulo.instructions.InstructionBuffer;
 import tomasulo.memory.MainMemory;
+import tomasulo.memory.Memory;
 import tomasulo.registers.RegisterFile;
 import tomasulo.registers.RegisterStatus;
 import tomasulo.util.filesystem.FileReader;
@@ -30,6 +31,7 @@ public class Main {
         config.setReorderBufferSize(10);
 
         // Memory configurations
+        config.getMemoryConfig().setBlockSizeBytes(16);
         config.getMemoryConfig().setHitWritingPolicy(WritingPolicy.ALLOCATE);
         config.getMemoryConfig().setMissWritingPolicy(WritingPolicy.AROUND);
 
@@ -46,8 +48,6 @@ public class Main {
         config.getFunctionalUnitsConfig().setLoadUnitConfig(new FunctionalUnitConfig(2, 15));
         config.getFunctionalUnitsConfig().setStoreUnitConfig(new FunctionalUnitConfig(2, 15));
 
-        int blockSizeInBytes = 16;
-
         /////////////// INIT ///////////////
         FileReader fileReader = new FileReader();
         Assembler assembler = new Assembler();
@@ -55,7 +55,7 @@ public class Main {
         ReorderBuffer reorderBuffer = new ReorderBuffer();
         RegisterFile registerFile = new RegisterFile();
         RegisterStatus registerStatus = new RegisterStatus();
-        MainMemory memory = new MainMemory(blockSizeInBytes);
+        Memory memory = new Memory(config.getMemoryConfig());
         // TODO: FunctionalUnits functionalUnits = new FunctionalUnits();
         // TODO: ReservationStations reservationStations = new ReservationStations();
 

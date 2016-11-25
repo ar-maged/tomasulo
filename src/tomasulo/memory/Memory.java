@@ -1,5 +1,6 @@
 package tomasulo.memory;
 
+import tomasulo.configuration.memory.MemoryConfig;
 import tomasulo.instructions.Instruction;
 
 import java.util.ArrayList;
@@ -10,10 +11,10 @@ public class Memory {
     private Cache[] caches;
     private int blockSizeWords;
 
-    public Memory(int blockSizeBytes, int cacheLevels) {
-        mainMemory = new MainMemory(blockSizeBytes / 2);
-        caches = new Cache[cacheLevels];
-        this.blockSizeWords = blockSizeBytes;
+    public Memory(MemoryConfig memoryConfig) {
+        this.mainMemory = new MainMemory(memoryConfig.getBlockSizeBytes() / 2);
+        this.caches = new Cache[memoryConfig.getCachesConfig().size()];
+        this.blockSizeWords = memoryConfig.getBlockSizeBytes();
     }
 
     public Block readBlock(int byteAddress) {
