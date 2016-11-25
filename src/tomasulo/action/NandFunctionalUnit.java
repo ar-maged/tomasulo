@@ -13,18 +13,8 @@ public class NandFunctionalUnit {
 	public void execute(Instruction instruction) {
      if (instruction.getName().equals(InstructionName.NAND)) { 
 			
-	  if((instruction.getSourceRegister1().equals(1)) && (instruction.getSourceRegister2().equals(1)))
-		{
-				
-			this.result=0;
-		}
-			
-	  else 
-	    {
-		   this.result=1;
-	    }
-			
-		}
+    	 this.result = ~(instruction.getSourceRegister1() & instruction.getSourceRegister2());
+     }
 		
 	}
 	public int getResult() {

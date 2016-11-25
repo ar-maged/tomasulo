@@ -10,7 +10,8 @@ public class FunctionalUnits {
 	SubtractFunctionalUnit subtractionFUs[]; 
 	MultiplyFunctionalUnit multiplicationFUs[];
 	NandFunctionalUnit nandFUs[]; 
-	LoadStoreUnit loadStoreFU;
+	LoadStoreUnit loadStoreFU; 
+	BranchJumpUnit branchJumpFU;
 	
 	   
 	public FunctionalUnits(FunctionalUnitsConfig FUconfig)
@@ -26,7 +27,8 @@ public class FunctionalUnits {
 		initializeNandFUs(FUconfig.getNandUnitConfig().getExecutionCycles(), 
 				   FUconfig.getNandUnitConfig().getUnitsCount()); 
 		
-		loadStoreFU = new LoadStoreUnit(FUconfig.getLoadUnitConfig().getExecutionCycles());
+		loadStoreFU = new LoadStoreUnit(FUconfig.getLoadUnitConfig().getExecutionCycles()); 
+		branchJumpFU = new BranchJumpUnit(FUconfig.getBranchUnitConfig().getExecutionCycles());
 	} 
 	 
 	public void initializeAdditionFUs (int executionCycles, int numberOfUnits)
