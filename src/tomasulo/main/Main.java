@@ -11,6 +11,7 @@ import tomasulo.configuration.memory.WritingPolicy;
 import tomasulo.instructions.Assembler;
 import tomasulo.instructions.Instruction;
 import tomasulo.instructions.InstructionBuffer;
+import tomasulo.memory.MainMemory;
 import tomasulo.registers.RegisterFile;
 import tomasulo.registers.RegisterStatus;
 import tomasulo.util.filesystem.FileReader;
@@ -20,7 +21,7 @@ public class Main {
 	@SuppressWarnings("unused")
 	public static void main(String[] args) throws IOException {
 
-		// ///////////// CONFIGURATIONS ///////////////
+		/////////////// CONFIGURATIONS ///////////////
 		Config config = new Config();
 
 		// General configurations
@@ -36,50 +37,40 @@ public class Main {
 		config.getMemoryConfig().getMainMemoryConfig().setAccessCycles(100);
 
 		// Cache(s) configurations
-		config.getMemoryConfig().addCacheConfig(
-				new CacheConfig(16 * 1024, 16, 1, 5));
-		config.getMemoryConfig().addCacheConfig(
-				new CacheConfig(32 * 1024, 16, 2, 10));
+		config.getMemoryConfig().addCacheConfig(new CacheConfig(16 * 1024, 16, 1, 5));
+		config.getMemoryConfig().addCacheConfig(new CacheConfig(32 * 1024, 16, 2, 10));
 
 		// Functional units configurations
-		config.getFunctionalUnitsConfig().setAdditionUnitConfig(
-				new FunctionalUnitConfig(2, 1));
-		config.getFunctionalUnitsConfig().setMultiplicationUnitConfig(
-				new FunctionalUnitConfig(2, 10));
-		config.getFunctionalUnitsConfig().setLoadUnitConfig(
-				new FunctionalUnitConfig(2, 15));
-		config.getFunctionalUnitsConfig().setStoreUnitConfig(
-				new FunctionalUnitConfig(2, 15));
+		config.getFunctionalUnitsConfig().setAdditionUnitConfig(new FunctionalUnitConfig(2, 1));
+		config.getFunctionalUnitsConfig().setMultiplicationUnitConfig(new FunctionalUnitConfig(2, 10));
+		config.getFunctionalUnitsConfig().setLoadUnitConfig(new FunctionalUnitConfig(2, 15));
+		config.getFunctionalUnitsConfig().setStoreUnitConfig(new FunctionalUnitConfig(2, 15));
 
-		// ///////////// INIT ///////////////
+		int blockSizeInBytes = 16;
+
+		/////////////// INIT ///////////////
 		FileReader fileReader = new FileReader();
 		Assembler assembler = new Assembler();
 		InstructionBuffer instructionBuffer = new InstructionBuffer();
 		ReorderBuffer reorderBuffer = new ReorderBuffer();
 		RegisterFile registerFile = new RegisterFile();
 		RegisterStatus registerStatus = new RegisterStatus();
-		// TODO: Memory memory = new Memory();
+		MainMemory memory = new MainMemory(blockSizeInBytes);
 		// TODO: FunctionalUnits functionalUnits = new FunctionalUnits();
 		// TODO: ReservationStations reservationStations = new
 		// ReservationStations();
 
-		// ///////////// PRE-EXECUTION ///////////////
-		String[] stringInstructions = fileReader
-				.readFile("assembly/arithmetic-1.asm");
-		ArrayList<Instruction> instructions = assembler
-				.parseInstructions(stringInstructions);
-		// TODO: memory.loadProgram(instructions);
+		/////////////// PRE-EXECUTION ///////////////
+		String[] stringInstructions = fileReader.readFile("assembly/arithmetic-1.asm");
+		ArrayList<Instruction> instructions = assembler.parseInstructions(stringInstructions);
+		memory.readProgram(instructions, 0);
 
-		// ///////////// EXECUTION ///////////////
-		// TODO: Tomasulo's algorithm
-		// if (reorderBuffer.commit()) {
-		// registerFile.writeRegister(
-		// reorderBuffer.getRegisterIndex(reorderBuffer.getHead()),
-		// reorderBuffer.getRegisterValue(reorderBuffer.getHead()));
-		// registerStatus.clearROBEntryIndex(reorderBuffer
-		// .getRegisterIndex(reorderBuffer.getHead()));
-		// reorderBuffer.incrementHead();
+		// for (int i = 0; i < instructions.size(); i++) {
+		// System.out.println(memory.readBlock(i * blockSizeInBytes));
 		// }
+
+		/////////////// EXECUTION ///////////////
+		// TODO: Tomasulo's algorithm
 
 	}
 
