@@ -63,7 +63,7 @@ public class Main {
 		/////////////// PRE-EXECUTION ///////////////
 		String[] stringInstructions = fileReader.readFile("assembly/arithmetic-1.asm");
 		ArrayList<Instruction> instructions = assembler.parseInstructions(stringInstructions);
-		memory.readProgram(instructions, 0);
+		memory.loadProgram(instructions, 0);
 
 		// for (int i = 0; i < instructions.size(); i++) {
 		// System.out.println(memory.readBlock(i * blockSizeInBytes));

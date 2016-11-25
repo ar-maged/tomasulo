@@ -11,6 +11,10 @@ public class InstructionBuffer {
 
 	 private ArrayList<Instruction>instBuffer;
 	int size;
+
+	public  InstructionBuffer(){
+
+	}
 	
 	public  InstructionBuffer(int size){
 	 instBuffer=new ArrayList <Instruction>();
