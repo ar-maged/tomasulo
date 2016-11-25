@@ -21,7 +21,7 @@ public class Memory {
     }
 
     public void writeBlock(int byteAddress, Block block) {
-        this.mainMemory.writeBlock(byteAddress/2, block);
+        this.mainMemory.writeBlock(byteAddress / 2, block);
     }
 
     public void loadProgram(ArrayList<Instruction> instructions, int startAddressBytes) {

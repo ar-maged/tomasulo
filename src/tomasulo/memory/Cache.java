@@ -22,12 +22,10 @@ public class Cache {
     public Cache(CacheConfig config) {
 
         int cacheLines = config.getSizeBytes() / config.getLineSizeBytes();
-
         this.offsetBits = log2(config.getLineSizeBytes() / 2);
         this.indexBits = log2(cacheLines);
         this.tagBits = (config.getLineSizeBytes() * 8) - (this.offsetBits + this.indexBits);
         this.associativity = config.getAssociativity();
-
         entries = new CacheEntry[cacheLines];
 
         for (int i = 0; i < entries.length; i++) {
@@ -41,22 +39,19 @@ public class Cache {
     }
 
     public static void main(String[] batekha) {
-
         CacheConfig config = new CacheConfig(32 * 1024, 4, 1, 10);
         Cache cache = new Cache(config);
-
         Block block = new Block(2);
         block.addData(5, 0);
         block.addData(8, 1);
-
         cache.write(2, block);
         System.out.println(cache.read(0).toString());
-
     }
 
     public HashMap<Integer, Integer> convertAddress(int addressWords) {
         HashMap<Integer, Integer> map = new HashMap<>();
         String binaryAddress = String.format("%16s", Integer.toBinaryString(addressWords)).replace(' ', '0');
+
         String offsetBinary, indexBinary, tagBinary;
         int offsetDecimal, indexDecimal, tagDecimal;
 
@@ -79,12 +74,12 @@ public class Cache {
         if (associativity == 1) {
             HashMap<Integer, Integer> map = convertAddress(addressWords);
             int offsetDecimal, indexDecimal, tagDecimal;
+
             offsetDecimal = map.get(OFFSET);
             indexDecimal = map.get(INDEX);
             tagDecimal = map.get(TAG);
 
             CacheEntry entry = this.entries[indexDecimal];
-
             entry.setValid(true);
             entry.setTag(tagDecimal);
             entry.setBlock(block);
@@ -92,17 +87,16 @@ public class Cache {
     }
 
     public Block read(int addressWords) {
-
         if (associativity == 1) {
             HashMap<Integer, Integer> map = convertAddress(addressWords);
             int offsetDecimal, indexDecimal, tagDecimal;
+
             offsetDecimal = map.get(OFFSET);
             indexDecimal = map.get(INDEX);
             tagDecimal = map.get(TAG);
 
             CacheEntry entry = this.entries[indexDecimal];
 
-            System.out.println("Index decimal " + indexDecimal);
             if (entry.isValid()) {
                 if (entry.getTag() == tagDecimal) {
                     return entry.getBlock();

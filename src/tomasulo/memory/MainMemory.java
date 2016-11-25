@@ -4,7 +4,6 @@ import tomasulo.instructions.Instruction;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Stack;
 
 public class MainMemory {
@@ -36,7 +35,7 @@ public class MainMemory {
             // Loop over number of instructions per block
             for (int i = 0; i < this.blockSizeWords; i++) {
                 if (!instructionsStack.isEmpty()) {
-                    this.blocks[startAddressWords / this.blockSizeWords].addInstruction((Instruction)instructionsStack.pop(), i);
+                    this.blocks[startAddressWords / this.blockSizeWords].addInstruction((Instruction) instructionsStack.pop(), i);
                 }
             }
             startAddressWords += this.blockSizeWords;
@@ -60,8 +59,8 @@ public class MainMemory {
         return this.blocks[addressWords / blockSizeWords];
     }
 
-    public void writeBlock(int addressWords, Block block){
-        this.blocks[addressWords/blockSizeWords] = block;
+    public void writeBlock(int addressWords, Block block) {
+        this.blocks[addressWords / blockSizeWords] = block;
     }
 
 }

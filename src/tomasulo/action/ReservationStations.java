@@ -5,143 +5,139 @@ import tomasulo.instructions.InstructionName;
 
 public class ReservationStations {
 
-	private ReservationStation[] entries;
+    private ReservationStation[] entries;
+    // gotta have access to all modules made in main Reorder buffer, register
+    // status, register file, Instruction buffer and FUs
 
-	// gotta have access to all modules made in main Reorder buffer, register
-	// status, register file, Instruction buffer and FUs
+    public ReservationStations(FunctionalUnits functionalUnits, FunctionalUnitsConfig config) {
+        int size = config.getAdditionUnitConfig().getUnitsCount()
+                + config.getMultiplicationUnitConfig().getUnitsCount()
+                + config.getSubtractionUnitConfig().getUnitsCount()
+                + config.getNandUnitConfig().getUnitsCount() + 1;
 
-	public ReservationStations(FunctionalUnits functionalUnits,
-			FunctionalUnitsConfig config) {
-		int size = config.getAdditionUnitConfig().getUnitsCount()
-				+ config.getMultiplicationUnitConfig().getUnitsCount()
-				+ config.getSubtractionUnitConfig().getUnitsCount()
-				+ config.getNandUnitConfig().getUnitsCount() + 1;
-		entries = new ReservationStation[size];
-		initializeEntries(functionalUnits);
+        entries = new ReservationStation[size];
+        initializeEntries(functionalUnits);
+    }
 
-	}
+    public void initializeEntries(FunctionalUnits functionalUnits) {
+        int index = 0;
 
-	public void initializeEntries(FunctionalUnits functionalUnits) {
+        for (int i = 0; i < functionalUnits.getAdditionFUs().length; i++) {
+            entries[index] = new ReservationStation(functionalUnits.getAdditionFUs()[i]);
+            index++;
+        }
 
-		int index = 0;
-		for (int i = 0; i < functionalUnits.getAdditionFUs().length; i++) {
-			entries[index] = new ReservationStation(
-					functionalUnits.getAdditionFUs()[i]);
-			index++;
-		}
-		for (int i = 0; i < functionalUnits.getSubtractionFUs().length; i++) {
-			entries[index] = new ReservationStation(
-					functionalUnits.getSubtractionFUs()[i]);
-			index++;
-		}
-		for (int i = 0; i < functionalUnits.getMultiplicationFUs().length; i++) {
-			entries[index] = new ReservationStation(
-					functionalUnits.getMultiplicationFUs()[i]);
-			index++;
-		}
-		for (int i = 0; i < functionalUnits.getNandFUs().length; i++) {
-			entries[index] = new ReservationStation(
-					functionalUnits.getNandFUs()[i]);
-			index++;
-		}
-		entries[index] = new ReservationStation(
-				functionalUnits.getLoadStoreFU());
-	}
+        for (int i = 0; i < functionalUnits.getSubtractionFUs().length; i++) {
+            entries[index] = new ReservationStation(functionalUnits.getSubtractionFUs()[i]);
+            index++;
+        }
 
-	// TODO Stall
-	// TODO Execute
-	// TODO WriteBack
+        for (int i = 0; i < functionalUnits.getMultiplicationFUs().length; i++) {
+            entries[index] = new ReservationStation(functionalUnits.getMultiplicationFUs()[i]);
+            index++;
+        }
 
-	public class ReservationStation {
+        for (int i = 0; i < functionalUnits.getNandFUs().length; i++) {
+            entries[index] = new ReservationStation(functionalUnits.getNandFUs()[i]);
+            index++;
+        }
 
-		FunctionalUnit functionalUnit;
-		boolean busy;
-		InstructionName operation;
-		int Vj; // valueOfRegB (SourceReg 1)
-		int Vk; // valueOfRegA of store & valueOfRegC of Arithmetic(SourceReg2)
-		FunctionalUnit Qj;
-		FunctionalUnit Qk;
-		int destinationROBIndex;
-		int addressOrImmediateValue; // offset then address in load and store,
-										// immediate value in Arithmetic
+        entries[index] = new ReservationStation(functionalUnits.getLoadStoreFU());
+    }
+    // TODO Stall
+    // TODO Execute
+    // TODO WriteBack
 
-		public ReservationStation(FunctionalUnit functionalUnit) {
-			this.functionalUnit = functionalUnit;
-			busy = false;
-		}
+    public class ReservationStation {
 
-		public FunctionalUnit getFunctionalUnit() {
-			return functionalUnit;
-		}
+        FunctionalUnit functionalUnit;
+        boolean busy;
+        InstructionName operation;
+        int Vj; // valueOfRegB (SourceReg 1)
+        int Vk; // valueOfRegA of store & valueOfRegC of Arithmetic(SourceReg2)
+        FunctionalUnit Qj;
+        FunctionalUnit Qk;
+        int destinationROBIndex;
+        int addressOrImmediateValue; // offset then address in load and store,
+        // immediate value in Arithmetic
 
-		public void setFunctionalUnit(FunctionalUnit functionalUnit) {
-			this.functionalUnit = functionalUnit;
-		}
+        public ReservationStation(FunctionalUnit functionalUnit) {
+            this.functionalUnit = functionalUnit;
+            busy = false;
+        }
 
-		public boolean isBusy() {
-			return busy;
-		}
+        public FunctionalUnit getFunctionalUnit() {
+            return functionalUnit;
+        }
 
-		public void setBusy(boolean busy) {
-			this.busy = busy;
-		}
+        public void setFunctionalUnit(FunctionalUnit functionalUnit) {
+            this.functionalUnit = functionalUnit;
+        }
 
-		public InstructionName getOperation() {
-			return operation;
-		}
+        public boolean isBusy() {
+            return busy;
+        }
 
-		public void setOperation(InstructionName operation) {
-			this.operation = operation;
-		}
+        public void setBusy(boolean busy) {
+            this.busy = busy;
+        }
 
-		public int getVj() {
-			return Vj;
-		}
+        public InstructionName getOperation() {
+            return operation;
+        }
 
-		public void setVj(int vj) {
-			Vj = vj;
-		}
+        public void setOperation(InstructionName operation) {
+            this.operation = operation;
+        }
 
-		public int getVk() {
-			return Vk;
-		}
+        public int getVj() {
+            return Vj;
+        }
 
-		public void setVk(int vk) {
-			Vk = vk;
-		}
+        public void setVj(int vj) {
+            Vj = vj;
+        }
 
-		public FunctionalUnit getQj() {
-			return Qj;
-		}
+        public int getVk() {
+            return Vk;
+        }
 
-		public void setQj(FunctionalUnit qj) {
-			Qj = qj;
-		}
+        public void setVk(int vk) {
+            Vk = vk;
+        }
 
-		public FunctionalUnit getQk() {
-			return Qk;
-		}
+        public FunctionalUnit getQj() {
+            return Qj;
+        }
 
-		public void setQk(FunctionalUnit qk) {
-			Qk = qk;
-		}
+        public void setQj(FunctionalUnit qj) {
+            Qj = qj;
+        }
 
-		public int getAddressOrImmediateValue() {
-			return addressOrImmediateValue;
-		}
+        public FunctionalUnit getQk() {
+            return Qk;
+        }
 
-		public void setAddressOrImmediateValue(int addressOrImmediateValue) {
-			this.addressOrImmediateValue = addressOrImmediateValue;
-		}
+        public void setQk(FunctionalUnit qk) {
+            Qk = qk;
+        }
 
-		public int getDestinationROBIndex() {
-			return destinationROBIndex;
-		}
+        public int getAddressOrImmediateValue() {
+            return addressOrImmediateValue;
+        }
 
-		public void setDestinationROBIndex(int destinationROBIndex) {
-			this.destinationROBIndex = destinationROBIndex;
-		}
+        public void setAddressOrImmediateValue(int addressOrImmediateValue) {
+            this.addressOrImmediateValue = addressOrImmediateValue;
+        }
 
-	}
+        public int getDestinationROBIndex() {
+            return destinationROBIndex;
+        }
+
+        public void setDestinationROBIndex(int destinationROBIndex) {
+            this.destinationROBIndex = destinationROBIndex;
+        }
+
+    }
 
 }
