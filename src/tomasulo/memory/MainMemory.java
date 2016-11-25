@@ -1,58 +1,67 @@
 package tomasulo.memory;
 
-import java.util.Arrays;
+import tomasulo.instructions.Instruction;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
 public class MainMemory {
 
-	public static int memoryCapacity = 64 * 1024;
-	private Block[] blocks;
-	private int blockSizeInBytes;
+    public static int memoryCapacity = 64 * 1024;
+    private Block[] blocks;
+    private int blockSizeWords;
 
-	public MainMemory(int blockSizeInBytes) {
-		this.blockSizeInBytes = blockSizeInBytes;
-		int numberOfRows = memoryCapacity / blockSizeInBytes;
-		this.blocks = new Block[numberOfRows];
-		for (int i = 0; i < numberOfRows; i++) {
-			this.blocks[i] = new Block(blockSizeInBytes);
-		}
-	}
+    public MainMemory(int blockSizeWords) {
+        this.blockSizeWords = blockSizeWords;
+        int numberOfRows = memoryCapacity / (blockSizeWords * 2);
+        this.blocks = new Block[numberOfRows];
+        for (int i = 0; i < numberOfRows; i++) {
+            this.blocks[i] = new Block(blockSizeWords);
+        }
+    }
 
-	private Stack<String> convertInstructionsArrayToStack(String[] instructionsArray) {
-		List<String> instructionsList = Arrays.asList(instructionsArray);
-		Stack<String> instructionsStack = new Stack<>();
-		Collections.reverse(instructionsList);
-		instructionsStack.addAll(instructionsList);
-		return instructionsStack;
-	}
+    private Stack<Object> convertMemoryEntryToStack(ArrayList<?> memoryEntryArray) {
+        Stack<Object> memoryEntryStack = new Stack<>();
+        ArrayList<?> temp = (ArrayList<?>) memoryEntryArray.clone();
+        Collections.reverse(temp);
+        memoryEntryStack.addAll(temp);
+        return memoryEntryStack;
+    }
 
-	public void readProgram(String[] instructions, int startAddressInBytes) {
-		Stack<String> instructionsStack = this.convertInstructionsArrayToStack(instructions);
-		while (!instructionsStack.isEmpty()) {
-			for (int i = 0; i < this.blockSizeInBytes / 4; i++) {
-				if (!instructionsStack.isEmpty()) {
-					this.blocks[startAddressInBytes / this.blockSizeInBytes].addData(instructionsStack.pop(), i);
-				}
-			}
+    public void loadProgram(ArrayList<Instruction> instructions, int startAddressWords) {
+        Stack<Object> instructionsStack = this.convertMemoryEntryToStack(instructions);
+        while (!instructionsStack.isEmpty()) {
+            // Loop over number of instructions per block
+            for (int i = 0; i < this.blockSizeWords; i++) {
+                if (!instructionsStack.isEmpty()) {
+                    this.blocks[startAddressWords / this.blockSizeWords].addInstruction((Instruction)instructionsStack.pop(), i);
+                }
+            }
+            startAddressWords += this.blockSizeWords;
+        }
+    }
 
-			startAddressInBytes += this.blockSizeInBytes;
-		}
-	}
+    public void loadData(ArrayList<Integer> data, int startAddressWords) {
+        Stack<Object> dataStack = this.convertMemoryEntryToStack(data);
+        while (!dataStack.isEmpty()) {
+            // Loop over number of instructions per block
+            for (int i = 0; i < this.blockSizeWords; i++) {
+                if (!dataStack.isEmpty()) {
+                    this.blocks[startAddressWords / this.blockSizeWords].addData((Integer) dataStack.pop(), i);
+                }
+            }
+            startAddressWords += this.blockSizeWords;
+        }
+    }
 
-	public Block readBlock(int addressInBytes) {
-		return this.blocks[addressInBytes / 4];
-	}
+    public Block readBlock(int addressWords) {
+        return this.blocks[addressWords / blockSizeWords];
+    }
 
-	public static void main(String[] args) {
-		MainMemory memory = new MainMemory(16);
-		String[] instructions = { "ADD R2, R4, R5", "SUB R9, R8, R7", "MUL R2, R4, R4", "DIV R0, R1, R5", "ADDI R2, R2, 45" };
-
-		memory.readProgram(instructions, 0);
-		for (int i = 0; i < instructions.length; i++) {
-			System.out.println(memory.readBlock(i * 4));
-		}
-	}
+    public void writeBlock(int addressWords, Block block){
+        this.blocks[addressWords/blockSizeWords] = block;
+    }
 
 }

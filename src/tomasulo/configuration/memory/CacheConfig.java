@@ -4,17 +4,17 @@ public class CacheConfig {
 
 	private int sizeBytes;
 	private int lineSizeBytes;
-	private int associativty;
+	private int associativity;
 	private int accessCycles;
 
 	public CacheConfig() {
 
 	}
 
-	public CacheConfig(int sizeBytes, int lineSizeBytes, int associativty, int accessCycles) {
+	public CacheConfig(int sizeBytes, int lineSizeBytes, int associativity, int accessCycles) {
 		this.sizeBytes = sizeBytes;
 		this.lineSizeBytes = lineSizeBytes;
-		this.associativty = associativty;
+		this.associativity = associativity;
 		this.accessCycles = accessCycles;
 	}
 
@@ -34,12 +34,12 @@ public class CacheConfig {
 		this.lineSizeBytes = lineSizeBytes;
 	}
 
-	public int getAssociativty() {
-		return associativty;
+	public int getAssociativity() {
+		return associativity;
 	}
 
-	public void setAssociativty(int associativty) {
-		this.associativty = associativty;
+	public void setAssociativity(int associativity) {
+		this.associativity = associativity;
 	}
 
 	public int getAccessCycles() {

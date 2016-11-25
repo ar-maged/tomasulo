@@ -1,45 +1,48 @@
 package tomasulo.memory;
 
+import tomasulo.instructions.Instruction;
+
 public class Block {
 
-	private String[] data;
-	private boolean dirtyBit = false;
+    private Object[] data;
+    private boolean dirtyBit = false;
 
-	public Block(int blockSizeInBytes) {
-		this.data = new String[blockSizeInBytes / 4];
-	}
+    public Block(int blockSizeWords) {
+        // Number of instructions per block
+        this.data = new Object[blockSizeWords];
+    }
 
-	public void addData(String instruction, int offset) {
-		this.data[offset] = instruction;
-	}
+    public void addInstruction(Instruction instruction, int offset) {
+        this.data[offset] = instruction;
+    }
 
-	public boolean isFull() {
-		for (int i = 0; i < this.data.length; i++) {
-			if (this.data[i] == null)
-				return false;
-		}
-		return true;
-	}
+    public void addData(Integer data, int offset) {
+        this.data[offset] = data;
+    }
 
-	@Override
-	public String toString() {
-		// TODO Auto-generated method stub
-		String datastringified = "";
-		datastringified += "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n";
-		for (int i = 0; i < this.data.length; i++) {
-			datastringified += i + " --->  (" + this.data[i] + ") | ";
-		}
-		datastringified += "\n------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n";
+    public boolean isFull() {
+        return this.data[this.data.length - 1] != null;
+    }
 
-		return datastringified;
-	}
+    @Override
+    public String toString() {
+        // TODO Auto-generated method stub
+        String dataStringified = "";
+        dataStringified += "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n";
+        for (int i = 0; i < this.data.length; i++) {
+            dataStringified += i + " --->  (" + this.data[i] + ") | ";
+        }
+        dataStringified += "\n------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n";
 
-	public boolean isDirtyBit() {
-		return dirtyBit;
-	}
+        return dataStringified;
+    }
 
-	public void setDirtyBit(boolean dirtyBit) {
-		this.dirtyBit = dirtyBit;
-	}
+    public boolean isDirtyBit() {
+        return dirtyBit;
+    }
+
+    public void setDirtyBit(boolean dirtyBit) {
+        this.dirtyBit = dirtyBit;
+    }
 
 }
