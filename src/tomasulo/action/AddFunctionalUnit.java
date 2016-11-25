@@ -2,7 +2,7 @@ package tomasulo.action;
 
 import tomasulo.instructions.*;
 
-public class AddFunctionalUnit {
+public class AddFunctionalUnit extends FunctionalUnit {
      
   
 	private int numberOfcycles; 

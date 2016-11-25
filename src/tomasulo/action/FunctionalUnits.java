@@ -69,23 +69,23 @@ public class FunctionalUnits {
 		   }
 	}
 
-	public AddFunctionalUnit[] getAdditionFUs() {
+	public FunctionalUnit[] getAdditionFUs() {
 		return additionFUs;
 	}
 
-	public SubtractFunctionalUnit[] getSubtractionFUs() {
+	public FunctionalUnit[] getSubtractionFUs() {
 		return subtractionFUs;
 	}
 
-	public MultiplyFunctionalUnit[] getMultiplicationFUs() {
+	public FunctionalUnit[] getMultiplicationFUs() {
 		return multiplicationFUs;
 	}
 
-	public NandFunctionalUnit[] getNandFUs() {
+	public FunctionalUnit[] getNandFUs() {
 		return nandFUs;
 	}
 
-	public LoadStoreUnit getLoadStoreFU() {
+	public FunctionalUnit getLoadStoreFU() {
 		return loadStoreFU;
 	}
 	

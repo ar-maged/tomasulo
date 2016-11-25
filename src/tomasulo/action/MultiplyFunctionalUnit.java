@@ -3,7 +3,7 @@ package tomasulo.action;
 
 import tomasulo.instructions.*;  
 
-public class MultiplyFunctionalUnit {
+public class MultiplyFunctionalUnit extends FunctionalUnit {
 	private int numberOfcycles; 
 	private int result;
 
@@ -12,7 +12,7 @@ public class MultiplyFunctionalUnit {
 	   this.numberOfcycles = cycles;   	
 	}
 	public void execute(Instruction instruction) {
-		if (instruction.getName().equals(InstructionName.MULT)) {
+		if (instruction.getName().equals(InstructionName.MUL)) {
 			this.result = instruction.getSourceRegister1() * instruction.getSourceRegister2();
 			
 			

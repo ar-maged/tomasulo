@@ -6,6 +6,9 @@ public class FunctionalUnitsConfig {
 	private FunctionalUnitConfig multiplicationUnitConfig;
 	private FunctionalUnitConfig loadUnitConfig;
 	private FunctionalUnitConfig storeUnitConfig;
+	private FunctionalUnitConfig subtractionUnitConfig;
+	private FunctionalUnitConfig nandUnitConfig;
+	private FunctionalUnitConfig branchUnitConfig;
 
 	public FunctionalUnitsConfig() {
 		additionUnitConfig = new FunctionalUnitConfig();
@@ -44,6 +47,30 @@ public class FunctionalUnitsConfig {
 
 	public void setStoreUnitConfig(FunctionalUnitConfig storeUnitConfig) {
 		this.storeUnitConfig = storeUnitConfig;
+	}
+
+	public FunctionalUnitConfig getSubtractionUnitConfig() {
+		return subtractionUnitConfig;
+	}
+
+	public void setSubtractionUnitConfig(FunctionalUnitConfig subtractionUnitConfig) {
+		this.subtractionUnitConfig = subtractionUnitConfig;
+	}
+
+	public FunctionalUnitConfig getNandUnitConfig() {
+		return nandUnitConfig;
+	}
+
+	public void setNandUnitConfig(FunctionalUnitConfig nandUnitConfig) {
+		this.nandUnitConfig = nandUnitConfig;
+	}
+
+	public FunctionalUnitConfig getBranchUnitConfig() {
+		return branchUnitConfig;
+	}
+
+	public void setBranchUnitConfig(FunctionalUnitConfig branchUnitConfig) {
+		this.branchUnitConfig = branchUnitConfig;
 	}
 
 }
