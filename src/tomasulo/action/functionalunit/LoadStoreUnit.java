@@ -1,6 +1,7 @@
 package tomasulo.action.functionalunit;
 
 
+import tomasulo.configuration.action.FunctionalUnitConfig;
 import tomasulo.instructions.Instruction;
 import tomasulo.instructions.InstructionName;
 
@@ -9,8 +10,8 @@ public class LoadStoreUnit extends FunctionalUnit {
     private int numberOfcycles;
     private int result;
 
-    public LoadStoreUnit(int cycles) {
-        this.numberOfcycles = cycles;
+    public LoadStoreUnit(FunctionalUnitConfig loadFunctionalUnitConfig) {
+        this.numberOfcycles = loadFunctionalUnitConfig.getExecutionCycles();
     }
 
     public void execute(Instruction instruction) {

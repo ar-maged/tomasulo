@@ -1,5 +1,6 @@
 package tomasulo.action.functionalunit;
 
+import tomasulo.configuration.action.FunctionalUnitConfig;
 import tomasulo.instructions.Instruction;
 import tomasulo.instructions.InstructionName;
 
@@ -8,8 +9,8 @@ public class BranchJumpUnit extends FunctionalUnit {
     private int numberOfcycles;
     private int result;
 
-    public BranchJumpUnit(int cycles) {
-        this.numberOfcycles = cycles;
+    public BranchJumpUnit(FunctionalUnitConfig branchFunctionalUnitConfig) {
+        this.numberOfcycles = branchFunctionalUnitConfig.getExecutionCycles();
     }
 
     public void execute(Instruction instruction) {

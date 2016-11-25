@@ -1,16 +1,17 @@
 package tomasulo.action.functionalunit;
 
 
+import tomasulo.configuration.action.FunctionalUnitConfig;
 import tomasulo.instructions.Instruction;
 import tomasulo.instructions.InstructionName;
 
-public class MultiplyFunctionalUnit extends FunctionalUnit {
+public class MultiplicationFunctionalUnit extends FunctionalUnit {
 
     private int numberOfcycles;
     private int result;
 
-    public MultiplyFunctionalUnit(int cycles) {
-        this.numberOfcycles = cycles;
+    public MultiplicationFunctionalUnit(FunctionalUnitConfig multiplicationFunctionalUnitConfig) {
+        this.numberOfcycles = multiplicationFunctionalUnitConfig.getExecutionCycles();
     }
 
     public void execute(Instruction instruction) {

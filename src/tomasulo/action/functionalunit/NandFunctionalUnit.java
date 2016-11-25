@@ -1,5 +1,6 @@
 package tomasulo.action.functionalunit;
 
+import tomasulo.configuration.action.FunctionalUnitConfig;
 import tomasulo.instructions.Instruction;
 import tomasulo.instructions.InstructionName;
 
@@ -8,8 +9,8 @@ public class NandFunctionalUnit extends FunctionalUnit {
     private int numberOfcycles;
     private int result;
 
-    public NandFunctionalUnit(int cycles) {
-        this.numberOfcycles = cycles;
+    public NandFunctionalUnit(FunctionalUnitConfig nandFunctionalUnitConfig) {
+        this.numberOfcycles = nandFunctionalUnitConfig.getExecutionCycles();
     }
 
     public void execute(Instruction instruction) {

@@ -2,51 +2,49 @@ package tomasulo.action;
 
 
 import tomasulo.action.functionalunit.*;
+import tomasulo.configuration.action.FunctionalUnitConfig;
 import tomasulo.configuration.action.FunctionalUnitsConfig;
 
 public class FunctionalUnits {
 
-    AddFunctionalUnit additionFUs[];
-    SubtractFunctionalUnit subtractionFUs[];
-    MultiplyFunctionalUnit multiplicationFUs[];
+    AdditionFunctionalUnit additionFUs[];
+    SubtractionFunctionalUnit subtractionFUs[];
+    MultiplicationFunctionalUnit multiplicationFUs[];
     NandFunctionalUnit nandFUs[];
     LoadStoreUnit loadStoreFU;
     BranchJumpUnit branchJumpFU;
 
-    public FunctionalUnits(FunctionalUnitsConfig FUconfig) {
-        initializeAdditionFUs(FUconfig.getAdditionUnitConfig().getExecutionCycles(),
-                FUconfig.getAdditionUnitConfig().getUnitsCount());
-        initializeSubtractionFUs(FUconfig.getSubtractionUnitConfig().getExecutionCycles(),
-                FUconfig.getSubtractionUnitConfig().getUnitsCount());
-        initializeMultiplicationFUs(FUconfig.getMultiplicationUnitConfig().getExecutionCycles(),
-                FUconfig.getMultiplicationUnitConfig().getUnitsCount());
-        initializeNandFUs(FUconfig.getNandUnitConfig().getExecutionCycles(),
-                FUconfig.getNandUnitConfig().getUnitsCount());
-        loadStoreFU = new LoadStoreUnit(FUconfig.getLoadUnitConfig().getExecutionCycles());
-        branchJumpFU = new BranchJumpUnit(FUconfig.getBranchUnitConfig().getExecutionCycles());
+    public FunctionalUnits(FunctionalUnitsConfig functionalUnitsConfig) {
+        initializeAdditionFUs(functionalUnitsConfig.getAdditionUnitConfig());
+        initializeSubtractionFUs(functionalUnitsConfig.getSubtractionUnitConfig());
+        initializeMultiplicationFUs(functionalUnitsConfig.getMultiplicationUnitConfig());
+        initializeNandFUs(functionalUnitsConfig.getNandUnitConfig());
+
+        loadStoreFU = new LoadStoreUnit(functionalUnitsConfig.getLoadUnitConfig());
+        branchJumpFU = new BranchJumpUnit(functionalUnitsConfig.getBranchUnitConfig());
     }
 
-    public void initializeAdditionFUs(int executionCycles, int numberOfUnits) {
-        for (int i = 0; i < numberOfUnits; i++) {
-            additionFUs[i] = new AddFunctionalUnit(executionCycles);
+    public void initializeAdditionFUs(FunctionalUnitConfig additionUnitConfig) {
+        for (int i = 0; i < additionUnitConfig.getUnitsCount(); i++) {
+            additionFUs[i] = new AdditionFunctionalUnit(additionUnitConfig);
         }
     }
 
-    public void initializeSubtractionFUs(int executionCycles, int numberOfUnits) {
-        for (int i = 0; i < numberOfUnits; i++) {
-            subtractionFUs[i] = new SubtractFunctionalUnit(executionCycles);
+    public void initializeSubtractionFUs(FunctionalUnitConfig subtractionUnitConfig) {
+        for (int i = 0; i < subtractionUnitConfig.getUnitsCount(); i++) {
+            subtractionFUs[i] = new SubtractionFunctionalUnit(subtractionUnitConfig);
         }
     }
 
-    public void initializeMultiplicationFUs(int executionCycles, int numberOfUnits) {
-        for (int i = 0; i < numberOfUnits; i++) {
-            multiplicationFUs[i] = new MultiplyFunctionalUnit(executionCycles);
+    public void initializeMultiplicationFUs(FunctionalUnitConfig multiplicationUnitConfig) {
+        for (int i = 0; i < multiplicationUnitConfig.getUnitsCount(); i++) {
+            multiplicationFUs[i] = new MultiplicationFunctionalUnit(multiplicationUnitConfig);
         }
     }
 
-    public void initializeNandFUs(int executionCycles, int numberOfUnits) {
-        for (int i = 0; i < numberOfUnits; i++) {
-            nandFUs[i] = new NandFunctionalUnit(executionCycles);
+    public void initializeNandFUs(FunctionalUnitConfig nandUnitConfig) {
+        for (int i = 0; i < nandUnitConfig.getUnitsCount(); i++) {
+            nandFUs[i] = new NandFunctionalUnit(nandUnitConfig);
         }
     }
 
@@ -68,6 +66,10 @@ public class FunctionalUnits {
 
     public FunctionalUnit getLoadStoreFU() {
         return loadStoreFU;
+    }
+
+    public FunctionalUnit getBranchJumpFU() {
+        return branchJumpFU;
     }
 
 }

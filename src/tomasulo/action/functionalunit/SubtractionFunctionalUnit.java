@@ -1,15 +1,16 @@
 package tomasulo.action.functionalunit;
 
+import tomasulo.configuration.action.FunctionalUnitConfig;
 import tomasulo.instructions.Instruction;
 import tomasulo.instructions.InstructionName;
 
-public class SubtractFunctionalUnit extends FunctionalUnit {
+public class SubtractionFunctionalUnit extends FunctionalUnit {
 
     private int numberOfcycles;
     private int result;
 
-    public SubtractFunctionalUnit(int cycles) {
-        this.numberOfcycles = cycles;
+    public SubtractionFunctionalUnit(FunctionalUnitConfig subtractionFunctionalUnitConfig) {
+        this.numberOfcycles = subtractionFunctionalUnitConfig.getExecutionCycles();
     }
 
     public void execute(Instruction instruction) {
