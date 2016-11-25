@@ -1,21 +1,20 @@
-package tomasulo.action;
-
+package tomasulo.action.functionalunit;
 
 import tomasulo.instructions.Instruction;
 import tomasulo.instructions.InstructionName;
 
-public class MultiplyFunctionalUnit extends FunctionalUnit {
+public class SubtractFunctionalUnit extends FunctionalUnit {
 
     private int numberOfcycles;
     private int result;
 
-    public MultiplyFunctionalUnit(int cycles) {
+    public SubtractFunctionalUnit(int cycles) {
         this.numberOfcycles = cycles;
     }
 
     public void execute(Instruction instruction) {
-        if (instruction.getName().equals(InstructionName.MUL)) {
-            this.result = instruction.getSourceRegister1() * instruction.getSourceRegister2();
+        if (instruction.getName().equals(InstructionName.SUB)) {
+            this.result = instruction.getSourceRegister1() - instruction.getSourceRegister2();
         }
     }
 

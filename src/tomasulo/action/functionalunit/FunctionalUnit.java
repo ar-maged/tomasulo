@@ -1,4 +1,4 @@
-package tomasulo.action;
+package tomasulo.action.functionalunit;
 
 public class FunctionalUnit {
 

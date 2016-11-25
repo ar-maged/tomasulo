@@ -1,6 +1,7 @@
 package tomasulo.action;
 
 
+import tomasulo.action.functionalunit.*;
 import tomasulo.configuration.action.FunctionalUnitsConfig;
 
 public class FunctionalUnits {

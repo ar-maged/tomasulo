@@ -1,4 +1,4 @@
-package tomasulo.action;
+package tomasulo.action.functionalunit;
 
 import tomasulo.instructions.Instruction;
 import tomasulo.instructions.InstructionName;

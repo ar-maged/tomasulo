@@ -1,5 +1,6 @@
 package tomasulo.action;
 
+import tomasulo.action.functionalunit.FunctionalUnit;
 import tomasulo.configuration.action.FunctionalUnitsConfig;
 import tomasulo.instructions.InstructionName;
 
