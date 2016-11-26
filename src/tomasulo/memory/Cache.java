@@ -18,14 +18,15 @@ public class Cache {
     private int offsetBits;
     private int indexBits;
     private int tagBits;
+    private int cacheLines;
 
     public Cache(CacheConfig config) {
 
-        int cacheLines = config.getSizeBytes() / config.getLineSizeBytes();
-        this.offsetBits = log2(config.getLineSizeBytes() / 2);
-        this.indexBits = log2(cacheLines);
-        this.tagBits = (config.getLineSizeBytes() * 8) - (this.offsetBits + this.indexBits);
+        this.cacheLines = config.getSizeBytes() / config.getLineSizeBytes();
         this.associativity = config.getAssociativity();
+        this.offsetBits = log2(config.getLineSizeBytes() / 2);
+        this.indexBits = log2(cacheLines / this.associativity);
+        this.tagBits = (config.getLineSizeBytes() * 8) - (this.offsetBits + this.indexBits);
         entries = new CacheEntry[cacheLines];
 
         for (int i = 0; i < entries.length; i++) {
@@ -39,20 +40,35 @@ public class Cache {
     }
 
     public static void main(String[] batekha) {
-        CacheConfig config = new CacheConfig(32 * 1024, 4, 1, 10);
+        CacheConfig config = new CacheConfig(32 * 1024, 4, 2, 10);
         Cache cache = new Cache(config);
+
         Block block = new Block(2);
         block.addData(5, 0);
         block.addData(8, 1);
-        cache.write(2, block);
-        System.out.println(cache.read(0).toString());
+        cache.write(0, block);
+        Block block2 = new Block(2);
+        block2.addData(100, 0);
+        block2.addData(2, 1);
+        cache.write(4, block2);
+
+        System.out.println(cache);
+    }
+
+    @Override
+    public String toString() {
+        String s = "";
+        //FIXME: Set it to a fixed number for now
+        for (int i = 0; i < 10; i++) {
+            s += entries[i].getBlock() + "\n";
+        }
+        return s;
     }
 
     public HashMap<Integer, Integer> convertAddress(int addressWords) {
         HashMap<Integer, Integer> map = new HashMap<>();
         String binaryAddress = String.format("%16s", Integer.toBinaryString(addressWords)).replace(' ', '0');
-
-        String offsetBinary, indexBinary, tagBinary;
+        String tagBinary, indexBinary, offsetBinary;
         int offsetDecimal, indexDecimal, tagDecimal;
 
         offsetBinary = binaryAddress.substring(binaryAddress.length() - offsetBits);
@@ -71,15 +87,43 @@ public class Cache {
     }
 
     public void write(int addressWords, Block block) {
+        HashMap<Integer, Integer> map = convertAddress(addressWords);
+        int offsetDecimal, indexDecimal, tagDecimal;
+
+        offsetDecimal = map.get(OFFSET);
+        indexDecimal = map.get(INDEX);
+        tagDecimal = map.get(TAG);
         if (associativity == 1) {
-            HashMap<Integer, Integer> map = convertAddress(addressWords);
-            int offsetDecimal, indexDecimal, tagDecimal;
-
-            offsetDecimal = map.get(OFFSET);
-            indexDecimal = map.get(INDEX);
-            tagDecimal = map.get(TAG);
-
             CacheEntry entry = this.entries[indexDecimal];
+            entry.setValid(true);
+            entry.setTag(tagDecimal);
+            entry.setBlock(block);
+        } else if (associativity == this.cacheLines) {
+            CacheEntry entry = null;
+            for (int i = 0; i < entries.length; i++) {
+                entry = entries[i];
+                if (!entry.isValid()) {
+                    entry.setValid(true);
+                    entry.setTag(tagDecimal);
+                    entry.setBlock(block);
+                    return;
+                }
+            }
+            entry.setValid(true);
+            entry.setTag(tagDecimal);
+            entry.setBlock(block);
+        } else {
+            CacheEntry entry = null;
+            for (int i = 0; i < this.associativity; i++) {
+                int numberOfEntriesPerSet = entries.length / this.associativity;
+                entry = this.entries[indexDecimal + (numberOfEntriesPerSet * i)];
+                if (!entry.isValid()) {
+                    entry.setValid(true);
+                    entry.setTag(tagDecimal);
+                    entry.setBlock(block);
+                    return;
+                }
+            }
             entry.setValid(true);
             entry.setTag(tagDecimal);
             entry.setBlock(block);
@@ -87,27 +131,35 @@ public class Cache {
     }
 
     public Block read(int addressWords) {
+        HashMap<Integer, Integer> map = convertAddress(addressWords);
+        int offsetDecimal, indexDecimal, tagDecimal;
+
+        offsetDecimal = map.get(OFFSET);
+        indexDecimal = map.get(INDEX);
+        tagDecimal = map.get(TAG);
         if (associativity == 1) {
-            HashMap<Integer, Integer> map = convertAddress(addressWords);
-            int offsetDecimal, indexDecimal, tagDecimal;
-
-            offsetDecimal = map.get(OFFSET);
-            indexDecimal = map.get(INDEX);
-            tagDecimal = map.get(TAG);
-
             CacheEntry entry = this.entries[indexDecimal];
-
-            if (entry.isValid()) {
+            if (entry.isValid() && entry.getTag() == tagDecimal) {
+                return entry.getBlock();
+            }
+        } else if (associativity == this.cacheLines) {
+            for (int i = 0; i < entries.length; i++) {
+                CacheEntry entry = entries[i];
                 if (entry.getTag() == tagDecimal) {
+                    return entry.getBlock();
+                }
+            }
+        } else {
+            CacheEntry entry;
+            for (int i = 0; i < this.associativity; i++) {
+                int numberOfEntriesPerSet = entries.length / this.associativity;
+                entry = this.entries[indexDecimal + (numberOfEntriesPerSet * i)];
+                if (entry.isValid() && entry.getTag() == tagDecimal) {
                     return entry.getBlock();
                 }
             }
         }
 
-        return null;
-    }
-
-    private Block findBlock(int addressInBytes) {
         return null;
     }
 
