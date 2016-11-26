@@ -3,6 +3,7 @@ package tomasulo.main;
 import tomasulo.action.FunctionalUnits;
 import tomasulo.action.ReorderBuffer;
 import tomasulo.action.ReservationStations;
+import tomasulo.action.functionalunit.FunctionalUnit;
 import tomasulo.configuration.Config;
 import tomasulo.configuration.action.FunctionalUnitConfig;
 import tomasulo.configuration.memory.CacheConfig;
@@ -82,11 +83,32 @@ public class Main {
 			}
         	
         	Instruction instruction = instructionBuffer.readFirstInstruction();
+        	Integer reservationStationIndex = reservationStations.hasAvailableStation(instruction);
+        	Integer source1 =null;
+        	Integer source2 =null;
+        	Integer robEntrySrc1 =null;
+        	Integer robEntrySrc2 =null;
         	
-        	if (reservationStations.hasAvailableStation() && !reorderBuffer.isFull()){
+        	
+        	if ( reservationStationIndex != null && !reorderBuffer.isFull()){
         		int robEntryIndex = reorderBuffer.addInstruction(instruction.getName(), instruction.getDestinationRegister());
         		registerStatus.setROBEntryIndex(instruction.getDestinationRegister(), robEntryIndex);
-        		reservationStations.issue(instruction);
+        		
+        		if (registerStatus.getROBEntryIndex(instruction.getSourceRegister1()) == null){
+            		source1= registerFile.readRegister(instruction.getSourceRegister1());
+        		}
+        		else {
+        			robEntrySrc1 = registerStatus.getROBEntryIndex(instruction.getSourceRegister1());
+        		}
+        		
+        		if (registerStatus.getROBEntryIndex(instruction.getSourceRegister2()) == null){
+            		source2 = registerFile.readRegister(instruction.getSourceRegister2());
+        		}
+        		else {
+        			robEntrySrc2 = registerStatus.getROBEntryIndex(instruction.getSourceRegister2());
+        		}
+        		
+        		reservationStations.issue(instruction, reservationStationIndex, robEntryIndex, source1, source2, robEntrySrc1, robEntrySrc2);
         		instructionBuffer.removeFirstInstruction();
         	}
         	
