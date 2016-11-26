@@ -6,25 +6,14 @@ import tomasulo.instructions.InstructionName;
 
 public class NandFunctionalUnit extends FunctionalUnit {
 
-    private int executionCycles;
-    private int result;
+	public NandFunctionalUnit(FunctionalUnitConfig config) {
+		super(config);
+	}
 
-    public NandFunctionalUnit(FunctionalUnitConfig nandFunctionalUnitConfig) {
-        this.executionCycles = nandFunctionalUnitConfig.getExecutionCycles();
-    }
-
-    public void execute(Instruction instruction) {
-        if (instruction.getName().equals(InstructionName.NAND)) {
-            this.result = ~(instruction.getSourceRegister1() & instruction.getSourceRegister2());
-        }
-    }
-
-    public int getResult() {
-        return result;
-    }
-
-    public int getExecutionCycles() {
-        return executionCycles;
-    }
+	public void execute(Instruction instruction) {
+		if (instruction.getName().equals(InstructionName.NAND)) {
+			this.result = ~(instruction.getSourceRegister1() & instruction.getSourceRegister2());
+		}
+	}
 
 }
