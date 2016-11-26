@@ -11,7 +11,7 @@ public class ReservationStations {
 	public ReservationStations(FunctionalUnits functionalUnits, FunctionalUnitsConfig config) {
 		int size = config.getAdditionUnitConfig().getUnitsCount()
 				+ config.getMultiplicationUnitConfig().getUnitsCount()
-				+ config.getSubtractionUnitConfig().getUnitsCount() + config.getNandUnitConfig().getUnitsCount() + 1;
+				+ config.getSubtractionUnitConfig().getUnitsCount() + config.getNandUnitConfig().getUnitsCount() + 2;
 
 		entries = new ReservationStation[size];
 		initializeEntries(functionalUnits);
