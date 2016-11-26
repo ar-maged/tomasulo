@@ -1,6 +1,8 @@
 package tomasulo.main;
 
+import tomasulo.action.FunctionalUnits;
 import tomasulo.action.ReorderBuffer;
+import tomasulo.action.ReservationStations;
 import tomasulo.configuration.Config;
 import tomasulo.configuration.action.FunctionalUnitConfig;
 import tomasulo.configuration.memory.CacheConfig;
@@ -16,6 +18,7 @@ import tomasulo.util.logging.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Main {
 
@@ -52,12 +55,12 @@ public class Main {
         FileReader fileReader = new FileReader();
         Assembler assembler = new Assembler();
         InstructionBuffer instructionBuffer = new InstructionBuffer(config.getInstructionBufferSize());
-        ReorderBuffer reorderBuffer = new ReorderBuffer();
+        ReorderBuffer reorderBuffer = new ReorderBuffer(config.getReorderBufferSize());
         RegisterFile registerFile = new RegisterFile();
         RegisterStatus registerStatus = new RegisterStatus();
         Memory memory = new Memory(config.getMemoryConfig());
-        // TODO: FunctionalUnits functionalUnits = new FunctionalUnits();
-        // TODO: ReservationStations reservationStations = new ReservationStations();
+        FunctionalUnits functionalUnits = new FunctionalUnits(config.getFunctionalUnitsConfig());
+        ReservationStations reservationStations = new ReservationStations(functionalUnits, config.getFunctionalUnitsConfig());
         Logger l = new Logger();
 
         /////////////// PRE-EXECUTION ///////////////
@@ -71,6 +74,34 @@ public class Main {
 
         /////////////// EXECUTION ///////////////
         // TODO: Tomasulo's algorithm
+        
+        while(true) {
+        	
+        	for (int i = 0; i < config.getPipelineWidth(); i++) {
+        		instructionBuffer.insertInstructions(memory.readInstruction());
+			}
+        	
+        	Instruction instruction = instructionBuffer.readFirstInstruction();
+        	
+        	if (reservationStations.hasAvailableStation() && !reorderBuffer.isFull()){
+        		int robEntryIndex = reorderBuffer.addInstruction(instruction.getName(), instruction.getDestinationRegister());
+        		registerStatus.setROBEntryIndex(instruction.getDestinationRegister(), robEntryIndex);
+        		reservationStations.issue(instruction);
+        		instructionBuffer.removeFirstInstruction();
+        	}
+        	
+        	HashMap<String, Integer> executed = reservationStations.executeExecutables() ;
+        	if(executed != null){
+        		reorderBuffer.setRegisterValue(executed.get("dest"), executed.get("value"));
+        	}
+        	
+        	if (reorderBuffer.commit()){
+        		registerFile.writeRegister(reorderBuffer.getRegisterIndex(reorderBuffer.getHead()), reorderBuffer.getRegisterValue(reorderBuffer.getHead()));
+        		registerStatus.clearROBEntryIndex(reorderBuffer.getRegisterIndex(reorderBuffer.getHead()));
+        		reorderBuffer.incrementHead();
+        	}
+        	
+        }
 
         /////////////// PERFORMANCE METRICS ///////////////
         l.printMetrics();
