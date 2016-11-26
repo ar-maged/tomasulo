@@ -107,7 +107,7 @@ public class ReservationStations {
 		}	
 	}
 	
-	public void issue(Instruction instruction, int reservationStationIndex, int robEntryIndex, Integer source1, Integer source2, FunctionalUnit unit1, FunctionalUnit unit2 ){
+	public void issue(Instruction instruction, int reservationStationIndex, int robEntryIndex, Integer source1, Integer source2, Integer robEntrySource1, Integer robEntrySource2 ){
 		
 		ReservationStation reservationStation = entries[reservationStationIndex]; 
 		   
@@ -128,14 +128,14 @@ public class ReservationStations {
 				reservationStation.setVk(source1);
 			}
 			else{
-				reservationStation.setQk(unit1);
+				reservationStation.setQk(robEntrySource1);
 			}
 			
 			if (source2 != null){
 				reservationStation.setVj(source2);
 			}
 			else{
-				reservationStation.setQj(unit2);
+				reservationStation.setQj(robEntrySource2);
 			}
 		}
 		else{
@@ -146,7 +146,7 @@ public class ReservationStations {
 					reservationStation.setVj(source1);
 				}
 				else{
-					reservationStation.setQj(unit1);
+					reservationStation.setQj(robEntrySource1);
 				}
 			}
 			else{
@@ -155,13 +155,13 @@ public class ReservationStations {
 					reservationStation.setVj(source1);
 				}
 				else{
-					reservationStation.setQj(unit1);
+					reservationStation.setQj(robEntrySource1);
 				}
 				if (source2 != null){
 					reservationStation.setVk(source2);
 				}
 				else{
-					reservationStation.setQk(unit2);
+					reservationStation.setQk(robEntrySource2);
 				}
 			}
 			
@@ -176,8 +176,8 @@ public class ReservationStations {
 		private InstructionName operation;
 		private int Vj;
 		private int Vk;
-		private FunctionalUnit Qj;
-		private FunctionalUnit Qk;
+		private Integer Qj;
+		private Integer Qk;
 		private int destinationROBIndex;
 		private int addressOrImmediateValue;
 
@@ -226,19 +226,19 @@ public class ReservationStations {
 			Vk = vk;
 		}
 
-		public FunctionalUnit getQj() {
+		public Integer getQj() {
 			return Qj;
 		}
 
-		public void setQj(FunctionalUnit qj) {
+		public void setQj(Integer qj) {
 			Qj = qj;
 		}
 
-		public FunctionalUnit getQk() {
+		public Integer getQk() {
 			return Qk;
 		}
 
-		public void setQk(FunctionalUnit qk) {
+		public void setQk(Integer qk) {
 			Qk = qk;
 		}
 
