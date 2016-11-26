@@ -1,8 +1,8 @@
 package tomasulo.action;
 
-import tomasulo.action.functionalunit.FunctionalUnit;
+import tomasulo.action.functionalunit.*;
 import tomasulo.configuration.action.FunctionalUnitsConfig;
-import tomasulo.instructions.InstructionName;
+import tomasulo.instructions.*;
 
 public class ReservationStations {
 
@@ -39,8 +39,75 @@ public class ReservationStations {
 		entries[index++] = new ReservationStation(functionalUnits.getLoadStoreFU());
 		entries[index++] = new ReservationStation(functionalUnits.getBranchJumpFU());
 	}
+	
+	public boolean hasAvailableStation(Instruction instruction){
+		
+		InstructionName instructionName = instruction.getName();
+		
+		switch(instructionName){
+			case ADDI:
+			case ADD:
+				for (int i = 0; i < entries.length; i++) {
+					if(entries[i].getFunctionalUnit() instanceof AdditionFunctionalUnit){
+						if (!entries[i].isBusy()) 
+							return true;
+					}
+				}
+				return false;
+				
+			case SUB:
+				for (int i = 0; i < entries.length; i++) {
+					if(entries[i].getFunctionalUnit() instanceof SubtractionFunctionalUnit){
+						if (!entries[i].isBusy()) 
+							return true;
+					}
+				}
+				return false;
+				
+			case MUL:
+				for (int i = 0; i < entries.length; i++) {
+					if(entries[i].getFunctionalUnit() instanceof MultiplicationFunctionalUnit){
+						if (!entries[i].isBusy()) 
+							return true;
+					}
+				}
+				return false;
+				
+			case NAND:
+				for (int i = 0; i < entries.length; i++) {
+					if(entries[i].getFunctionalUnit() instanceof NandFunctionalUnit){
+						if (!entries[i].isBusy()) 
+							return true;
+					}
+				}
+				return false;
+				
+			case LW:
+			case SW:
+				for (int i = 0; i < entries.length; i++) {
+					if(entries[i].getFunctionalUnit() instanceof LoadStoreUnit){
+						if (!entries[i].isBusy()) 
+							return true;
+					}
+				}
+				return false;
+				
+			case JMP:
+			case BEQ:
+			case JALR:
+				for (int i = 0; i < entries.length; i++) {
+					if(entries[i].getFunctionalUnit() instanceof BranchJumpUnit){
+						if (!entries[i].isBusy()) 
+							return true;
+					}
+				}
+				return false;
+				
+			default: return false;	
+		}	
+	}
 
-	public class ReservationStation {
+	class ReservationStation {
 
 		private FunctionalUnit functionalUnit;
 		private boolean busy;
