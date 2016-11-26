@@ -40,7 +40,7 @@ public class ReservationStations {
 		entries[index++] = new ReservationStation(functionalUnits.getBranchJumpFU());
 	}
 	
-	public boolean hasAvailableStation(Instruction instruction){
+	public Integer hasAvailableStation(Instruction instruction){
 		
 		InstructionName instructionName = instruction.getName();
 		
@@ -50,47 +50,47 @@ public class ReservationStations {
 				for (int i = 0; i < entries.length; i++) {
 					if(entries[i].getFunctionalUnit() instanceof AdditionFunctionalUnit){
 						if (!entries[i].isBusy()) 
-							return true;
+							return i;
 					}
 				}
-				return false;
+				return null;
 				
 			case SUB:
 				for (int i = 0; i < entries.length; i++) {
 					if(entries[i].getFunctionalUnit() instanceof SubtractionFunctionalUnit){
 						if (!entries[i].isBusy()) 
-							return true;
+							return i;
 					}
 				}
-				return false;
+				return null;
 				
 			case MUL:
 				for (int i = 0; i < entries.length; i++) {
 					if(entries[i].getFunctionalUnit() instanceof MultiplicationFunctionalUnit){
 						if (!entries[i].isBusy()) 
-							return true;
+							return i;
 					}
 				}
-				return false;
+				return null;
 				
 			case NAND:
 				for (int i = 0; i < entries.length; i++) {
 					if(entries[i].getFunctionalUnit() instanceof NandFunctionalUnit){
 						if (!entries[i].isBusy()) 
-							return true;
+							return i;
 					}
 				}
-				return false;
+				return null;
 				
 			case LW:
 			case SW:
 				for (int i = 0; i < entries.length; i++) {
 					if(entries[i].getFunctionalUnit() instanceof LoadStoreUnit){
 						if (!entries[i].isBusy()) 
-							return true;
+							return i;
 					}
 				}
-				return false;
+				return null;
 				
 			case JMP:
 			case BEQ:
@@ -98,13 +98,75 @@ public class ReservationStations {
 				for (int i = 0; i < entries.length; i++) {
 					if(entries[i].getFunctionalUnit() instanceof BranchJumpUnit){
 						if (!entries[i].isBusy()) 
-							return true;
+							return i;
 					}
 				}
-				return false;
+				return null;
 				
-			default: return false;	
+			default: return null;	
 		}	
+	}
+	
+	public void issue(Instruction instruction, int reservationStationIndex, int robEntryIndex, Integer source1, Integer source2, FunctionalUnit unit1, FunctionalUnit unit2 ){
+		
+		ReservationStation reservationStation = entries[reservationStationIndex]; 
+		   
+		
+		reservationStation.setBusy(true); 
+		reservationStation.setOperation(instruction.getName()); 
+		reservationStation.setDestinationROBIndex(robEntryIndex);
+		
+		if(instruction.getName().equals(InstructionName.LW) || instruction.getName().equals(InstructionName.SW) || 
+			instruction.getName().equals(InstructionName.BEQ) || instruction.getName().equals(InstructionName.JMP) || 
+			instruction.getName().equals(InstructionName.ADDI)){
+			reservationStation.setAddressOrImmediateValue(instruction.getImmediate());
+		} 
+		
+		if(instruction.getName().equals(InstructionName.SW)){
+			
+			if (source1 != null){
+				reservationStation.setVk(source1);
+			}
+			else{
+				reservationStation.setQk(unit1);
+			}
+			
+			if (source2 != null){
+				reservationStation.setVj(source2);
+			}
+			else{
+				reservationStation.setQj(unit2);
+			}
+		}
+		else{
+			
+			if (instruction.getName().equals(InstructionName.LW)){
+				
+				if (source1 != null){
+					reservationStation.setVj(source1);
+				}
+				else{
+					reservationStation.setQj(unit1);
+				}
+			}
+			else{
+				
+				if (source1 != null){
+					reservationStation.setVj(source1);
+				}
+				else{
+					reservationStation.setQj(unit1);
+				}
+				if (source2 != null){
+					reservationStation.setVk(source2);
+				}
+				else{
+					reservationStation.setQk(unit2);
+				}
+			}
+			
+		}
+		
 	}
 
 	class ReservationStation {
