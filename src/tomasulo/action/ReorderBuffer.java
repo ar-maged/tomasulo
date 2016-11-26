@@ -20,14 +20,15 @@ public class ReorderBuffer {
         return entries[head].isReady();
     }
 
-    public boolean addInstruction(InstructionName instruction, int reg) {
+    public Integer addInstruction(InstructionName instruction, int reg) {
         if (isFull())
-            return false;
+            return null;
 
+        Integer index = tail;
         entries[tail++] = new ROBEntry(instruction, reg);
         tail %= entries.length;
 
-        return true;
+        return index;
     }
 
     public void flush() {
