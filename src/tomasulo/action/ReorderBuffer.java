@@ -56,6 +56,10 @@ public class ReorderBuffer {
     public ROBEntry getEntry(int address) {
         return entries[address];
     }
+    
+    public boolean isReadyEntry(int address) {
+        return entries[address].isReady();
+    }
 
     public int getRegisterValue(int address) {
         return entries[address].getValue();

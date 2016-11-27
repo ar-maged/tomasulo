@@ -2,6 +2,7 @@ package tomasulo.main;
 
 import tomasulo.action.FunctionalUnits;
 import tomasulo.action.ReorderBuffer;
+import tomasulo.action.ReservationStationState;
 import tomasulo.action.ReservationStations;
 import tomasulo.action.functionalunit.FunctionalUnit;
 import tomasulo.configuration.Config;
@@ -20,6 +21,7 @@ import tomasulo.util.logging.Logger;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 public class Main {
 
@@ -111,6 +113,29 @@ public class Main {
         		instructionBuffer.removeFirstInstruction();
         	}
         	
+        	/////////////////////
+        	
+        	for (Integer i = 0; i < reservationStations.getEntries().length; i++) {
+        		
+        		HashMap<String, Integer>  missed = reservationStations.missingOperand(reservationStations.getEntries()[i]);
+        		HashMap<String, Integer> robResult = new HashMap<String, Integer>();
+        		
+        		if (missed != null && reservationStations.getEntries()[i].getState().equals(ReservationStationState.ISSUED)){
+        			Integer Qj = missed.get("Qj");
+        			if (Qj != null && reorderBuffer.isReadyEntry(Qj)){
+        				robResult.put("Vj", reorderBuffer.getRegisterValue(Qj));
+        			}
+        			
+        			Integer Qk = missed.get("Qk");
+        			if (Qk != null && reorderBuffer.isReadyEntry(Qk)){
+        				robResult.put("Vk", reorderBuffer.getRegisterValue(Qk));
+        			}
+    				reservationStations.getNotReadyOperands(robResult, i);
+        		}
+        		reservationStations.getNotReadyOperands(null, null);
+			}
+        	
+        	////////////////////
         	HashMap<String, Integer> executed = reservationStations.executeExecutables() ;
         	if(executed != null){
         		reorderBuffer.setRegisterValue(executed.get("dest"), executed.get("value"));

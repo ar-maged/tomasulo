@@ -42,6 +42,11 @@ public class ReservationStations {
 		entries[index++] = new ReservationStation(functionalUnits.getBranchJumpFU());
 	}
 	
+	
+	public ReservationStation[] getEntries() {
+		return entries;
+	}
+
 	public Integer hasAvailableStation(Instruction instruction){
 		
 		InstructionName instructionName = instruction.getName();
@@ -183,6 +188,48 @@ public class ReservationStations {
 		}
 		
 	}
+	public void getNotReadyOperands(HashMap <String, Integer> robResult, Integer reservationStationIndex){
+		
+		if (robResult != null){
+			
+			if(robResult.get("Vj") != null){
+				entries[reservationStationIndex].setVj(robResult.get("Vj"));
+				entries[reservationStationIndex].setQj(null);
+			}
+			if(robResult.get("Vk") != null){
+				entries[reservationStationIndex].setVk(robResult.get("Vk"));
+				entries[reservationStationIndex].setQk(null);
+			}
+			
+			if (entries[reservationStationIndex].getQj() == null && entries[reservationStationIndex].getQk() == null){
+				entries[reservationStationIndex].setState(ReservationStationState.READYTOEXECUTE);
+			}	
+			
+		}
+		
+	}
+	
+	public HashMap<String, Integer> missingOperand(ReservationStation reservationStation) {
+		
+		boolean thereIsMissing = false;
+		HashMap<String, Integer> robEntryIndex = new HashMap<String, Integer>();
+		
+		if(reservationStation.getQj()!=null){ 		
+			robEntryIndex.put("Qj", reservationStation.getQj());
+			thereIsMissing = true;
+		}
+		
+		if(reservationStation.getQk()!=null){ 		
+			robEntryIndex.put("Qk", reservationStation.getQk());
+			thereIsMissing = true;
+		}
+		
+		if (thereIsMissing) 
+			return robEntryIndex;
+		else 
+			return null;
+		
+	}
 	
 	public HashMap<String, Integer> executeExecutables(){ 
 		
@@ -222,7 +269,7 @@ public class ReservationStations {
 			return null;
 	}
 
-	class ReservationStation {
+	public class ReservationStation {
 
 		private FunctionalUnit functionalUnit;
 		private boolean busy;
@@ -239,6 +286,7 @@ public class ReservationStations {
 			this.functionalUnit = functionalUnit;
 			busy = false;
 			state = ReservationStationState.EMPTY;
+			Vj = Vk = Qj = Qk = destinationROBIndex = addressOrImmediateValue =  null;
 		}
 
 		public void clearReservationStation(){
