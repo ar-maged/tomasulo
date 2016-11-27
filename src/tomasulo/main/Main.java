@@ -83,6 +83,9 @@ public class Main {
         /////////////// EXECUTION ///////////////
         // TODO: Tomasulo's algorithm
         
+        registerFile.writeRegister(1, 2);
+        registerFile.writeRegister(2, 3);
+        
      	int size = Math.min(config.getPipelineWidth(),instructions.size()) ;
     	Instruction[] instructionArray = new Instruction[size]; //testing
 
@@ -95,8 +98,8 @@ public class Main {
     	
     	instructionBuffer.insertInstructions(instructionArray);
         
-        while(instructionBuffer.getInstructionBuffer().size() != 0) {
-        	
+        while(true) {
+        	// TODO: Handle null
         	Instruction instruction = instructionBuffer.readFirstInstruction();
         	Integer reservationStationIndex = reservationStations.hasAvailableStation(instruction);
         	Integer source1 = null;
@@ -125,28 +128,35 @@ public class Main {
         		reservationStations.issue(instruction, reservationStationIndex, robEntryIndex, source1, source2, robEntrySrc1, robEntrySrc2);
         		instructionBuffer.removeFirstInstruction();
         	}
+        	
+        	ArrayList<Integer> immutableReservationStations = new ArrayList<Integer>();
+        	immutableReservationStations.add(reservationStationIndex);
         	        	
         	for (Integer i = 0; i < reservationStations.getEntries().length; i++) {
         		
-        		HashMap<String, Integer>  missed = reservationStations.missingOperand(reservationStations.getEntries()[i]);
-        		HashMap<String, Integer> robResult = new HashMap<String, Integer>();
-        		
-        		if (missed != null && reservationStations.getEntries()[i].getState().equals(ReservationStationState.ISSUED)){
-        			Integer Qj = missed.get("Qj");
-        			if (Qj != null && reorderBuffer.isReadyEntry(Qj)){
-        				robResult.put("Vj", reorderBuffer.getRegisterValue(Qj));
-        			}
+        		if (reservationStations.getEntries()[i].getState().equals(ReservationStationState.ISSUED) && i != reservationStationIndex){
         			
-        			Integer Qk = missed.get("Qk");
-        			if (Qk != null && reorderBuffer.isReadyEntry(Qk)){
-        				robResult.put("Vk", reorderBuffer.getRegisterValue(Qk));
-        			}
-    				reservationStations.setNotReadyOperands(robResult, i);
+        			HashMap<String, Integer>  missed = reservationStations.missingOperand(reservationStations.getEntries()[i]);
+            		HashMap<String, Integer> robResult = new HashMap<String, Integer>();
+            		
+            		if (missed != null ){
+            			Integer Qj = missed.get("Qj");
+            			if (Qj != null && reorderBuffer.isReadyEntry(Qj)){
+            				robResult.put("Vj", reorderBuffer.getRegisterValue(Qj));
+            			}
+            			
+            			Integer Qk = missed.get("Qk");
+            			if (Qk != null && reorderBuffer.isReadyEntry(Qk)){
+            				robResult.put("Vk", reorderBuffer.getRegisterValue(Qk));
+            			}
+        				reservationStations.setNotReadyOperands(robResult, i);
+        				immutableReservationStations.add(i);
+            		}
         		}
-        		reservationStations.setNotReadyOperands(null, null);
+        		
 			}
         	
-        	HashMap<String, Integer> executed = reservationStations.executeExecutables() ;
+        	HashMap<String, Integer> executed = reservationStations.executeExecutables(immutableReservationStations);
         	if(executed != null){
         		reorderBuffer.setRegisterValue(executed.get("dest"), executed.get("value"));
         	}

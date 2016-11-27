@@ -1,5 +1,6 @@
 package tomasulo.action;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import tomasulo.action.functionalunit.*;
@@ -126,7 +127,7 @@ public class ReservationStations {
 			instruction.getName().equals(InstructionName.BEQ) || instruction.getName().equals(InstructionName.JMP) || 
 			instruction.getName().equals(InstructionName.ADDI)){
 			reservationStation.setAddressOrImmediateValue(instruction.getImmediate());
-		} 
+		}
 		
 		if(instruction.getName().equals(InstructionName.SW)){
 			
@@ -230,35 +231,39 @@ public class ReservationStations {
 		
 	}
 	
-	public HashMap<String, Integer> executeExecutables(){ 
+	public HashMap<String, Integer> executeExecutables(ArrayList<Integer> immutables){ 
 		
 		HashMap<String, Integer> result = new HashMap<String, Integer>();
 		boolean resultCaptured = false;
 		
 		for (int i = 0; i < entries.length; i++){
 			
-			if(entries[i].getState().equals(ReservationStationState.READYTOEXECUTE)) {
-				entries[i].getFunctionalUnit().execute(entries[i].getOperation(), entries[i].getVj(), entries[i].getVk(), entries[i].getAddressOrImmediateValue()); 
-				entries[i].getFunctionalUnit().incrementCyclesSpanned();
-				entries[i].setState(ReservationStationState.EXECUTING); 
+			if(!immutables.contains(i)){
 				
-			} 
-			else{
-				if(entries[i].getState().equals(ReservationStationState.EXECUTING)){
-					 if(entries[i].getFunctionalUnit().isDone()){
-						 entries[i].setState(ReservationStationState.WANTTOWRITE);   	
-					 }
-					 else{
-						 entries[i].getFunctionalUnit().incrementCyclesSpanned();   	
-					 }
-				}
+				if(entries[i].getState().equals(ReservationStationState.READYTOEXECUTE)) {
+					entries[i].getFunctionalUnit().execute(entries[i].getOperation(), entries[i].getVj(), entries[i].getVk(), entries[i].getAddressOrImmediateValue()); 
+					entries[i].getFunctionalUnit().incrementCyclesSpanned();
+					entries[i].setState(ReservationStationState.EXECUTING); 
+					
+				} 
 				else{
-					if(entries[i].getState().equals(ReservationStationState.WANTTOWRITE) && !resultCaptured){ 
-						result.put("dest", entries[i].getDestinationROBIndex());
-						result.put("value", entries[i].getFunctionalUnit().getResult()); 
-						entries[i].clearReservationStation(); 
-						resultCaptured = true;
+					if(entries[i].getState().equals(ReservationStationState.EXECUTING)){
+						 if(entries[i].getFunctionalUnit().isDone()){
+							 entries[i].setState(ReservationStationState.WANTTOWRITE);   	
+						 }
+						 else{
+							 entries[i].getFunctionalUnit().incrementCyclesSpanned();   	
+						 }
 					}
+					else{
+						if(entries[i].getState().equals(ReservationStationState.WANTTOWRITE) && !resultCaptured){ 
+							result.put("dest", entries[i].getDestinationROBIndex());
+							result.put("value", entries[i].getFunctionalUnit().getResult()); 
+							entries[i].clearReservationStation(); 
+							resultCaptured = true;
+						}
+					}
+					
 				}
 				
 			}
