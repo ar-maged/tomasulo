@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Main {
+    /*
+    * ASSUMPTION: Cache block count should always be a power of 2
+    */
 
     @SuppressWarnings("unused")
     public static void main(String[] args) throws IOException {
@@ -39,8 +42,8 @@ public class Main {
         config.getMemoryConfig().getMainMemoryConfig().setAccessCycles(100);
 
         // Cache(s) configurations
-        config.getMemoryConfig().addCacheConfig(new CacheConfig(16 * 1024, 16, 1, 5));
-        config.getMemoryConfig().addCacheConfig(new CacheConfig(32 * 1024, 16, 2, 10));
+        config.getMemoryConfig().addCacheConfig(new CacheConfig(16 * 1024, 16, 1, 5, WritingPolicy.THROUGH));
+        config.getMemoryConfig().addCacheConfig(new CacheConfig(32 * 1024, 16, 2, 10, WritingPolicy.THROUGH));
 
         // Functional units configurations
         config.getFunctionalUnitsConfig().setAdditionUnitConfig(new FunctionalUnitConfig(2, 1));

@@ -6,15 +6,34 @@ public class CacheConfig {
     private int lineSizeBytes;
     private int associativity;
     private int accessCycles;
+    private WritingPolicy writeMissPolicy;
+    private WritingPolicy writeHitPolicy;
 
     public CacheConfig() {
     }
 
-    public CacheConfig(int sizeBytes, int lineSizeBytes, int associativity, int accessCycles) {
+    public CacheConfig(int sizeBytes, int lineSizeBytes, int associativity, int accessCycles, WritingPolicy writeMissPolicy) {
         this.sizeBytes = sizeBytes;
         this.lineSizeBytes = lineSizeBytes;
         this.associativity = associativity;
         this.accessCycles = accessCycles;
+        this.writeMissPolicy = writeMissPolicy;
+    }
+
+    public WritingPolicy getWriteMissPolicy() { // :''''''((
+        return writeMissPolicy;
+    }
+
+    public void setWriteMissPolicy(WritingPolicy writeMissPolicy) {
+        this.writeMissPolicy = writeMissPolicy;
+    }
+
+    public WritingPolicy getWriteHitPolicy() {
+        return writeHitPolicy;
+    }
+
+    public void setWriteHitPolicy(WritingPolicy writeHitPolicy) {
+        this.writeHitPolicy = writeHitPolicy;
     }
 
     public int getSizeBytes() {
