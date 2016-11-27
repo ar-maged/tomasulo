@@ -89,7 +89,6 @@ public class Main {
         	Integer robEntrySrc1 =null;
         	Integer robEntrySrc2 =null;
         	
-        	
         	if ( reservationStationIndex != null && !reorderBuffer.isFull()){
         		int robEntryIndex = reorderBuffer.addInstruction(instruction.getName(), instruction.getDestinationRegister());
         		registerStatus.setROBEntryIndex(instruction.getDestinationRegister(), robEntryIndex);
@@ -122,7 +121,6 @@ public class Main {
         		registerStatus.clearROBEntryIndex(reorderBuffer.getRegisterIndex(reorderBuffer.getHead()));
         		reorderBuffer.incrementHead();
         	}
-        	
         }
 
         /////////////// PERFORMANCE METRICS ///////////////

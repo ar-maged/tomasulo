@@ -188,15 +188,14 @@ public class ReservationStations {
 		
 		HashMap<String, Integer> result = new HashMap<String, Integer>(); 
 		
-		for (int i = 0; i < entries.length; i++) {
+		for (int i = 0; i < entries.length; i++){
+			
 			if(entries[i].getState().equals(ReservationStationState.READYTOEXECUTE)) {
 				entries[i].getFunctionalUnit().execute(entries[i].getOperation(), entries[i].getVj(), entries[i].getVk(), entries[i].getAddressOrImmediateValue()); 
 				entries[i].getFunctionalUnit().setState(FunctionalUnitState.EXECUTING);
 				entries[i].setState(ReservationStationState.EXECUTING);
 			}
-			
 		}
-		
 		return result;
 	}
 
