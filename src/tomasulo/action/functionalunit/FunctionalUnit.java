@@ -6,10 +6,12 @@ public class FunctionalUnit {
 
 	int executionCycles;
 	int cyclesSpanned;
-	int result;
+	int result; 
+	FunctionalUnitState state;
 
 	public FunctionalUnit(FunctionalUnitConfig config) {
 		this.executionCycles = config.getExecutionCycles();
+		state = FunctionalUnitState.EXECUTING;
 	}
 
 	public int getExecutionCycles() {
@@ -26,6 +28,15 @@ public class FunctionalUnit {
 
 	public int getCyclesSpanned() {
 		return cyclesSpanned;
+	}
+
+	public FunctionalUnitState getState() {
+		return state;
+	}
+
+	public void setState(FunctionalUnitState state) {
+		if (executionCycles == cyclesSpanned)
+			this.state = FunctionalUnitState.DONE;
 	}
 
 }

@@ -111,7 +111,7 @@ public class ReservationStations {
 		
 		ReservationStation reservationStation = entries[reservationStationIndex]; 
 		   
-		
+		reservationStation.setState(ReservationStationState.ISSUED);
 		reservationStation.setBusy(true); 
 		reservationStation.setOperation(instruction.getName()); 
 		reservationStation.setDestinationROBIndex(robEntryIndex);
@@ -137,6 +137,10 @@ public class ReservationStations {
 			else{
 				reservationStation.setQj(robEntrySource2);
 			}
+			
+			if (reservationStation.getQj() == null && reservationStation.getQk() == null){
+				reservationStation.setState(ReservationStationState.READYTOEXECUTE);
+			}
 		}
 		else{
 			
@@ -147,6 +151,10 @@ public class ReservationStations {
 				}
 				else{
 					reservationStation.setQj(robEntrySource1);
+				}
+				
+				if (reservationStation.getQj() == null){
+					reservationStation.setState(ReservationStationState.READYTOEXECUTE);
 				}
 			}
 			else{
@@ -162,6 +170,10 @@ public class ReservationStations {
 				}
 				else{
 					reservationStation.setQk(robEntrySource2);
+				}
+				
+				if (reservationStation.getQj() == null && reservationStation.getQk() == null){
+					reservationStation.setState(ReservationStationState.READYTOEXECUTE);
 				}
 			}
 			
@@ -180,10 +192,12 @@ public class ReservationStations {
 		private Integer Qk;
 		private int destinationROBIndex;
 		private int addressOrImmediateValue;
+		private ReservationStationState state;
 
 		public ReservationStation(FunctionalUnit functionalUnit) {
 			this.functionalUnit = functionalUnit;
 			busy = false;
+			state = ReservationStationState.EMPTY;
 		}
 
 		public FunctionalUnit getFunctionalUnit() {
@@ -257,6 +271,16 @@ public class ReservationStations {
 		public void setDestinationROBIndex(int destinationROBIndex) {
 			this.destinationROBIndex = destinationROBIndex;
 		}
+
+		public ReservationStationState getState() {
+			return state;
+		}
+
+		public void setState(ReservationStationState state) {
+			this.state = state;
+		}
+		
+		
 
 	}
 
