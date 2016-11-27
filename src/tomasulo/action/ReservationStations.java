@@ -187,7 +187,7 @@ public class ReservationStations {
 		}
 		
 	}
-	public void getNotReadyOperands(HashMap <String, Integer> robResult, Integer reservationStationIndex){
+	public void setNotReadyOperands(HashMap <String, Integer> robResult, Integer reservationStationIndex){
 		
 		if (robResult != null){
 			
@@ -246,21 +246,22 @@ public class ReservationStations {
 			else{
 				if(entries[i].getState().equals(ReservationStationState.EXECUTING)){
 					 if(entries[i].getFunctionalUnit().isDone()){
-						 entries[i].setState(ReservationStationState.WANTTOWRITE);   
-						
+						 entries[i].setState(ReservationStationState.WANTTOWRITE);   	
 					 }
 					 else{
-						 entries[i].getFunctionalUnit().incrementCyclesSpanned();   
-						
+						 entries[i].getFunctionalUnit().incrementCyclesSpanned();   	
 					 }
-				}	
-				if(entries[i].getState().equals(ReservationStationState.WANTTOWRITE) && !resultCaptured){ 
+				}
+				else{
+					if(entries[i].getState().equals(ReservationStationState.WANTTOWRITE) && !resultCaptured){ 
 						result.put("dest", entries[i].getDestinationROBIndex());
 						result.put("value", entries[i].getFunctionalUnit().getResult()); 
 						entries[i].clearReservationStation(); 
 						resultCaptured = true;
 					}
 				}
+				
+			}
 			
 		}
 		if (resultCaptured){

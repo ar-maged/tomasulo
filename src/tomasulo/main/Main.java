@@ -141,9 +141,9 @@ public class Main {
         			if (Qk != null && reorderBuffer.isReadyEntry(Qk)){
         				robResult.put("Vk", reorderBuffer.getRegisterValue(Qk));
         			}
-    				reservationStations.getNotReadyOperands(robResult, i);
+    				reservationStations.setNotReadyOperands(robResult, i);
         		}
-        		reservationStations.getNotReadyOperands(null, null);
+        		reservationStations.setNotReadyOperands(null, null);
 			}
         	
         	HashMap<String, Integer> executed = reservationStations.executeExecutables() ;
