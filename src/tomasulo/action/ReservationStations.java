@@ -186,17 +186,40 @@ public class ReservationStations {
 	
 	public HashMap<String, Integer> executeExecutables(){ 
 		
-		HashMap<String, Integer> result = new HashMap<String, Integer>(); 
+		HashMap<String, Integer> result = new HashMap<String, Integer>();
+		boolean resultCaptured = false;
 		
 		for (int i = 0; i < entries.length; i++){
 			
 			if(entries[i].getState().equals(ReservationStationState.READYTOEXECUTE)) {
 				entries[i].getFunctionalUnit().execute(entries[i].getOperation(), entries[i].getVj(), entries[i].getVk(), entries[i].getAddressOrImmediateValue()); 
-				entries[i].getFunctionalUnit().setState(FunctionalUnitState.EXECUTING);
+				entries[i].getFunctionalUnit().incrementCyclesSpanned();
 				entries[i].setState(ReservationStationState.EXECUTING);
+			} 
+			else{
+				if(entries[i].getState().equals(ReservationStationState.EXECUTING)){
+					 if(entries[i].getFunctionalUnit().getState().equals(FunctionalUnitState.DONE)){
+						 entries[i].setState(ReservationStationState.WANTTOWRITE); 
+					 }
+					 else{
+						 entries[i].getFunctionalUnit().incrementCyclesSpanned();
+					 }
+				}
+				else{
+					if(entries[i].getState().equals(ReservationStationState.WANTTOWRITE) && !resultCaptured){
+						result.put("dest", entries[i].getDestinationROBIndex());
+						result.put("value", entries[i].getFunctionalUnit().getResult());
+						entries[i].clearReservationStation();
+						resultCaptured = true;
+					}
+				}
 			}
 		}
-		return result;
+		if (resultCaptured){
+			return result;
+		}
+		else 
+			return null;
 	}
 
 	class ReservationStation {
@@ -204,12 +227,12 @@ public class ReservationStations {
 		private FunctionalUnit functionalUnit;
 		private boolean busy;
 		private InstructionName operation;
-		private int Vj;
-		private int Vk;
+		private Integer Vj;
+		private Integer Vk;
 		private Integer Qj;
 		private Integer Qk;
-		private int destinationROBIndex;
-		private int addressOrImmediateValue;
+		private Integer destinationROBIndex;
+		private Integer addressOrImmediateValue;
 		private ReservationStationState state;
 
 		public ReservationStation(FunctionalUnit functionalUnit) {
@@ -218,6 +241,14 @@ public class ReservationStations {
 			state = ReservationStationState.EMPTY;
 		}
 
+		public void clearReservationStation(){
+			busy = false;
+			state = ReservationStationState.EMPTY;
+			operation = null;
+			Vj = Vk = Qj = Qk = destinationROBIndex = addressOrImmediateValue =  null;
+			
+		}
+		
 		public FunctionalUnit getFunctionalUnit() {
 			return functionalUnit;
 		}

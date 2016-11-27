@@ -25,6 +25,7 @@ public class FunctionalUnit {
 
 	public void incrementCyclesSpanned() {
 		this.cyclesSpanned++;
+		setState();
 	}
 
 	public int getCyclesSpanned() {
@@ -35,9 +36,11 @@ public class FunctionalUnit {
 		return state;
 	}
 
-	public void setState(FunctionalUnitState state) {
+	public void setState() {
 		if (executionCycles == cyclesSpanned)
 			this.state = FunctionalUnitState.DONE;
+		else
+			this.state = FunctionalUnitState.EXECUTING;
 	}
 	
 	public void execute(InstructionName operation, int Vj, int Vk, int addressOrImmediateValue){}
