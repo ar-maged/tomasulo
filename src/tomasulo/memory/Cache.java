@@ -126,8 +126,8 @@ public class Cache {
     public static void main(String[] args) {
 //        testDirectMap();
 //        testDirectReplace();
-        testFullAssociativity();
-//        testSetAssociativity(2);
+//        testFullAssociativity();
+        testSetAssociativity(2);
     }
 
     @Override
@@ -161,7 +161,7 @@ public class Cache {
         return map;
     }
 
-    private Block writeHelper(int entryIndex, int entryTag, Block block) {
+    private Block writeDirectMapped(int entryIndex, int entryTag, Block block) {
         CacheEntry entry = this.entries[entryIndex];
         if (entry.isValid() && entry.getTag() == entryTag) {
             if (this.writeHitPolicy == WritingPolicy.BACK) {
@@ -203,7 +203,7 @@ public class Cache {
         }
     }
 
-    private Block writeHelperII(CacheEntry entry, int entryTag, Block block) {
+    private Block writeAssociativeHelper(CacheEntry entry, int entryTag, Block block) {
         if (entry.isValid() && entry.getTag() == entryTag) {
             if (this.writeHitPolicy == WritingPolicy.BACK) {
                 entry.setBlock(block);
@@ -234,6 +234,7 @@ public class Cache {
                     return null;
                 }
             } else {
+                System.out.println("asdgasjhdjahsgdjasgdjsah");
 //                Block oldBlock = entry.getBlock();
                 entry.setBlock(block);
                 entry.setTag(entryTag);
@@ -244,13 +245,13 @@ public class Cache {
         }
     }
 
-    private Block writeFullyAssociativeHelper(int entryIndex, int entryTag, Block block){
+    private Block writeFullyAssociative(int entryIndex, int entryTag, Block block){
         CacheEntry entry = null;
         int numberOfEntriesPerSet = entries.length / (entries.length / this.associativity);
         for (int i = 0; i < this.associativity; i++) {
             entry = entries[i];
             if (entry.getTag() == entryTag) {
-                return writeHelperII(entry, entryTag, block);
+                return writeAssociativeHelper(entry, entryTag, block);
             }
         }
         for (int i = 0; i < this.associativity; i++) {
@@ -285,13 +286,13 @@ public class Cache {
         }
     }
 
-    private Block writeSetAssociativeHelper(int entryIndex, int entryTag, Block block) {
+    private Block writeSetAssociative(int entryIndex, int entryTag, Block block) {
         CacheEntry entry = null;
         int numberOfEntriesPerSet = entries.length / (entries.length / this.associativity);
         for (int i = 0; i < entries.length / this.associativity; i++) {
             entry = this.entries[entryIndex + (numberOfEntriesPerSet * i)];
             if (entry.getTag() == entryTag) {
-                return writeHelper(entryIndex, entryTag, block);
+                return writeAssociativeHelper(entry, entryTag, block);
             }
         }
         for (int i = 0; i < entries.length / this.associativity; i++) {
@@ -331,12 +332,12 @@ public class Cache {
         tagDecimal = map.get(TAG);
 
         if (associativity == 1) {
-            return writeHelper(indexDecimal, tagDecimal, block);
+            return writeDirectMapped(indexDecimal, tagDecimal, block);
         } else {
             if (associativity != this.cacheLines)
-                return writeSetAssociativeHelper(indexDecimal, tagDecimal, block);
+                return writeSetAssociative(indexDecimal, tagDecimal, block);
             else
-                return writeFullyAssociativeHelper(indexDecimal, tagDecimal, block);
+                return writeFullyAssociative(indexDecimal, tagDecimal, block);
 
         }
     }
