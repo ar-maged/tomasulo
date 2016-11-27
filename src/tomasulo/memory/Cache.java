@@ -43,35 +43,42 @@ public class Cache {
         return (int) (Math.log(n) / Math.log(2));
     }
 
-    public static void main(String[] batekha) {
-        CacheConfig config = new CacheConfig(128, 4, 32, 10, WritingPolicy.THROUGH);
+    public static void testDirectMap() {
+        CacheConfig config = new CacheConfig(128, 4, 1, 10, WritingPolicy.THROUGH, WritingPolicy.THROUGH);
         Cache cache = new Cache(config);
+        Block block = null;
+        for (int i = 0; i < 20; i += 2) {
+            block = new Block(2);
+            block.addData(i, 0);
+            block.addData(i + 1, 1);
+            System.out.println("Write (" + i + "): " + cache.write(i, block));
+        }
+        System.out.println(cache);
+    }
+    public static void testDirectReplace(){
+        CacheConfig config = new CacheConfig(128, 4, 1, 10, WritingPolicy.BACK, WritingPolicy.BACK);
+        Cache cache = new Cache(config);
+        Block block = null;
+        for (int i = 0; i < 64; i += 2) {
+            block = new Block(2);
+            block.addData(i, 0);
+            block.addData(i + 1, 1);
+//            cache.write(i, block);
+            System.out.println("Write (" + i + "): " + cache.write(i, block));
+        }
+        for (int i = 64; i < 128; i += 2) {
+            block = new Block(2);
+            block.addData(i * 2, 0);
+            block.addData(i * 2 + 1, 1);
+//            cache.write(i, block);
+            System.out.println("Write (" + i + "): " + cache.write(i, block));
+        }
+        System.out.println(cache);
+    }
 
-        Block block = new Block(2);
-        block.addData(5, 0);
-        block.addData(8, 1);
-        cache.write(0, block);
-
-        Block block2 = new Block(2);
-        block2.addData(100, 0);
-        block2.addData(2, 1);
-        cache.write(0, block2);
-
-
-        Block block3 = new Block(2);
-        block3.addData(9999, 0);
-        block3.addData(44, 1);
-        cache.write(0, block3);
-
-
-//        System.out.println(cache.read(0));
-//        System.out.println(cache.read(2));
-//        System.out.println(cache.read(4));
-//        System.out.println(cache.read(6));
-
-        cache.read(2);
-
-//        System.out.println(cache);
+    public static void main(String[] args) {
+//        testDirectMap();
+        testDirectReplace();
     }
 
     @Override
@@ -79,7 +86,7 @@ public class Cache {
         String s = "";
         //FIXME: Set it to a fixed number for now
         for (int i = 0; i < entries.length; i++) {
-            s += i + " -> \n" + entries[i].getBlock() + "\n";
+            s += i + " -> \n" + entries[i] + "\n";
         }
         return s;
     }
@@ -113,10 +120,10 @@ public class Cache {
                 entry.setDirty(true);
                 return null;
             } else {
-                Block oldBlock = entry.getBlock();
+//                Block oldBlock = entry.getBlock();
                 entry.setBlock(block);
-                System.out.println("remember me -> " + oldBlock.equals(block) + " If true :'((");
-                return oldBlock;
+//                return oldBlock;
+                return block;
             }
         } else {
             if (this.writeMissPolicy == WritingPolicy.BACK) {
@@ -136,11 +143,12 @@ public class Cache {
                     return null;
                 }
             } else {
-                Block oldBlock = entry.getBlock();
+//                Block oldBlock = entry.getBlock();
+                entry.setBlock(block);
                 entry.setTag(entryTag);
                 entry.setValid(true);
-                entry.setDirty(true);
-                return oldBlock;
+//                entry.setDirty(true);
+                return block;
             }
         }
     }

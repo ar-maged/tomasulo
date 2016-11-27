@@ -12,11 +12,12 @@ public class CacheConfig {
     public CacheConfig() {
     }
 
-    public CacheConfig(int sizeBytes, int lineSizeBytes, int associativity, int accessCycles, WritingPolicy writeMissPolicy) {
+    public CacheConfig(int sizeBytes, int lineSizeBytes, int associativity, int accessCycles, WritingPolicy writeHitPolicy, WritingPolicy writeMissPolicy) {
         this.sizeBytes = sizeBytes;
         this.lineSizeBytes = lineSizeBytes;
         this.associativity = associativity;
         this.accessCycles = accessCycles;
+        this.writeHitPolicy = writeHitPolicy;
         this.writeMissPolicy = writeMissPolicy;
     }
 

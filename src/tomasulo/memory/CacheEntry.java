@@ -46,5 +46,8 @@ public class CacheEntry {
         this.valid = valid;
     }
 
-
+    @Override
+    public String toString() {
+        return (dirty ? " Dirty " : " Not Dirty ") + (block == null?  null : block.toString());
+    }
 }
