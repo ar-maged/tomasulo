@@ -20,34 +20,48 @@ public class FunctionalUnits {
 	private BranchJumpUnit branchJumpFU;
 
 	public FunctionalUnits(FunctionalUnitsConfig functionalUnitsConfig) {
-		initializeAdditionFUs(functionalUnitsConfig.getAdditionUnitConfig());
-		initializeSubtractionFUs(functionalUnitsConfig.getSubtractionUnitConfig());
-		initializeMultiplicationFUs(functionalUnitsConfig.getMultiplicationUnitConfig());
+     
+		initializeAdditionFUs(functionalUnitsConfig.getAdditionUnitConfig()); 	
+		initializeSubtractionFUs(functionalUnitsConfig.getSubtractionUnitConfig()); 
+		initializeMultiplicationFUs(functionalUnitsConfig.getMultiplicationUnitConfig()); 
 		initializeNandFUs(functionalUnitsConfig.getNandUnitConfig());
-
-		loadStoreFU = new LoadStoreUnit(functionalUnitsConfig.getLoadUnitConfig());
+	        
+		loadStoreFU = new LoadStoreUnit(functionalUnitsConfig.getLoadUnitConfig()); 	
 		branchJumpFU = new BranchJumpUnit(functionalUnitsConfig.getBranchUnitConfig());
 	}
 
 	public void initializeAdditionFUs(FunctionalUnitConfig additionUnitConfig) {
+
+		additionFUs = new AdditionFunctionalUnit[additionUnitConfig.getUnitsCount()];
+		
 		for (int i = 0; i < additionUnitConfig.getUnitsCount(); i++) {
 			additionFUs[i] = new AdditionFunctionalUnit(additionUnitConfig);
 		}
+		
 	}
 
 	public void initializeSubtractionFUs(FunctionalUnitConfig subtractionUnitConfig) {
+		
+		subtractionFUs = new SubtractionFunctionalUnit[subtractionUnitConfig.getUnitsCount()];
+		
 		for (int i = 0; i < subtractionUnitConfig.getUnitsCount(); i++) {
 			subtractionFUs[i] = new SubtractionFunctionalUnit(subtractionUnitConfig);
 		}
 	}
 
 	public void initializeMultiplicationFUs(FunctionalUnitConfig multiplicationUnitConfig) {
+		
+		multiplicationFUs = new MultiplicationFunctionalUnit[multiplicationUnitConfig.getUnitsCount()];
+		
 		for (int i = 0; i < multiplicationUnitConfig.getUnitsCount(); i++) {
 			multiplicationFUs[i] = new MultiplicationFunctionalUnit(multiplicationUnitConfig);
 		}
 	}
 
 	public void initializeNandFUs(FunctionalUnitConfig nandUnitConfig) {
+		
+		nandFUs = new NandFunctionalUnit[nandUnitConfig.getUnitsCount()];
+		
 		for (int i = 0; i < nandUnitConfig.getUnitsCount(); i++) {
 			nandFUs[i] = new NandFunctionalUnit(nandUnitConfig);
 		}

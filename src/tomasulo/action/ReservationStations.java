@@ -10,11 +10,10 @@ public class ReservationStations {
 
 	private ReservationStation[] entries;
 
-	public ReservationStations(FunctionalUnits functionalUnits, FunctionalUnitsConfig config) {
-		int size = config.getAdditionUnitConfig().getUnitsCount()
-				+ config.getMultiplicationUnitConfig().getUnitsCount()
-				+ config.getSubtractionUnitConfig().getUnitsCount() + config.getNandUnitConfig().getUnitsCount() + 2;
-
+	public ReservationStations(FunctionalUnits functionalUnits, FunctionalUnitsConfig config){
+		int size = config.getAdditionUnitConfig().getUnitsCount() + config.getMultiplicationUnitConfig().getUnitsCount() 
+				+ config.getSubtractionUnitConfig().getUnitsCount() + config.getNandUnitConfig().getUnitsCount() + 2; 
+           
 		entries = new ReservationStation[size];
 		initializeEntries(functionalUnits);
 	}
@@ -241,26 +240,28 @@ public class ReservationStations {
 			if(entries[i].getState().equals(ReservationStationState.READYTOEXECUTE)) {
 				entries[i].getFunctionalUnit().execute(entries[i].getOperation(), entries[i].getVj(), entries[i].getVk(), entries[i].getAddressOrImmediateValue()); 
 				entries[i].getFunctionalUnit().incrementCyclesSpanned();
-				entries[i].setState(ReservationStationState.EXECUTING);
+				entries[i].setState(ReservationStationState.EXECUTING); 
+				
 			} 
 			else{
 				if(entries[i].getState().equals(ReservationStationState.EXECUTING)){
 					 if(entries[i].getFunctionalUnit().isDone()){
-						 entries[i].setState(ReservationStationState.WANTTOWRITE); 
+						 entries[i].setState(ReservationStationState.WANTTOWRITE);   
+						
 					 }
 					 else{
-						 entries[i].getFunctionalUnit().incrementCyclesSpanned();
+						 entries[i].getFunctionalUnit().incrementCyclesSpanned();   
+						
 					 }
-				}
-				else{
-					if(entries[i].getState().equals(ReservationStationState.WANTTOWRITE) && !resultCaptured){
+				}	
+				if(entries[i].getState().equals(ReservationStationState.WANTTOWRITE) && !resultCaptured){ 
 						result.put("dest", entries[i].getDestinationROBIndex());
-						result.put("value", entries[i].getFunctionalUnit().getResult());
-						entries[i].clearReservationStation();
+						result.put("value", entries[i].getFunctionalUnit().getResult()); 
+						entries[i].clearReservationStation(); 
 						resultCaptured = true;
 					}
 				}
-			}
+			
 		}
 		if (resultCaptured){
 			return result;
@@ -321,7 +322,7 @@ public class ReservationStations {
 			this.operation = operation;
 		}
 
-		public int getVj() {
+		public Integer getVj() {
 			return Vj;
 		}
 
@@ -329,7 +330,7 @@ public class ReservationStations {
 			Vj = vj;
 		}
 
-		public int getVk() {
+		public Integer getVk() {
 			return Vk;
 		}
 
@@ -353,7 +354,7 @@ public class ReservationStations {
 			Qk = qk;
 		}
 
-		public int getAddressOrImmediateValue() {
+		public Integer getAddressOrImmediateValue() {
 			return addressOrImmediateValue;
 		}
 
@@ -361,7 +362,7 @@ public class ReservationStations {
 			this.addressOrImmediateValue = addressOrImmediateValue;
 		}
 
-		public int getDestinationROBIndex() {
+		public Integer getDestinationROBIndex() {
 			return destinationROBIndex;
 		}
 

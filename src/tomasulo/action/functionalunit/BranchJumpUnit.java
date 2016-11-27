@@ -9,7 +9,7 @@ public class BranchJumpUnit extends FunctionalUnit {
 		super(config);
 	}
 
-	public void execute(InstructionName operation, int Vj, int Vk, int addressOrImmediateValue) {
+	public void execute(InstructionName operation, Integer Vj, Integer Vk, Integer addressOrImmediateValue) {
 		
 		if (operation.equals(InstructionName.BEQ)) {
 			if (Vj == Vk) {

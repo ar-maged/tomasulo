@@ -38,5 +38,5 @@ public class FunctionalUnit {
 		return executionCycles == cyclesSpanned;
 	}
 
-	public void execute(InstructionName operation, int Vj, int Vk, int addressOrImmediateValue){}
+	public void execute(InstructionName operation, Integer Vj, Integer Vk, Integer addressOrImmediateValue){}
 }

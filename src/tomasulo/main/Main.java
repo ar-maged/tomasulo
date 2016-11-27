@@ -50,9 +50,11 @@ public class Main {
 
         // Functional units configurations
         config.getFunctionalUnitsConfig().setAdditionUnitConfig(new FunctionalUnitConfig(2, 1));
-        config.getFunctionalUnitsConfig().setMultiplicationUnitConfig(new FunctionalUnitConfig(2, 10));
-        config.getFunctionalUnitsConfig().setLoadUnitConfig(new FunctionalUnitConfig(2, 15));
-        config.getFunctionalUnitsConfig().setStoreUnitConfig(new FunctionalUnitConfig(2, 15));
+        config.getFunctionalUnitsConfig().setSubtractionUnitConfig(new FunctionalUnitConfig(2, 1));
+        config.getFunctionalUnitsConfig().setMultiplicationUnitConfig(new FunctionalUnitConfig(0, 0)); 
+        config.getFunctionalUnitsConfig().setNandUnitConfig(new FunctionalUnitConfig(0,0));
+        config.getFunctionalUnitsConfig().setLoadUnitConfig(new FunctionalUnitConfig(0, 0));
+        config.getFunctionalUnitsConfig().setBranchUnitConfig(new FunctionalUnitConfig(0, 0));
 
         /////////////// INIT ///////////////
         FileReader fileReader = new FileReader();
@@ -69,27 +71,38 @@ public class Main {
         /////////////// PRE-EXECUTION ///////////////
         String[] stringInstructions = fileReader.readFile("assembly/arithmetic-1.asm");
         ArrayList<Instruction> instructions = assembler.parseInstructions(stringInstructions);
-        memory.loadProgram(instructions, 0);
+        //memory.loadProgram(instructions, 0);
 
         // for (int i = 0; i < instructions.size(); i++) {
         // System.out.println(memory.readBlock(i * blockSizeInBytes));
         // }
+        
+        /////////////// PERFORMANCE METRICS ///////////////
+        l.printMetrics();
 
         /////////////// EXECUTION ///////////////
         // TODO: Tomasulo's algorithm
         
-        while(true) {
-        	
-        	for (int i = 0; i < config.getPipelineWidth(); i++) {
-        		instructionBuffer.insertInstructions(memory.readInstruction());
-			}
+     	int size = Math.min(config.getPipelineWidth(),instructions.size()) ;
+    	Instruction[] instructionArray = new Instruction[size]; //testing
+
+    	for (int i = 0;  i < size; i++) {
+        
+    		instructionArray[i] = instructions.get(i);
+    		
+    		//instructionBuffer.insertInstructions(memory.readInstruction());
+		}
+    	
+    	instructionBuffer.insertInstructions(instructionArray);
+        
+        while(instructionBuffer.getInstructionBuffer().size() != 0) {
         	
         	Instruction instruction = instructionBuffer.readFirstInstruction();
         	Integer reservationStationIndex = reservationStations.hasAvailableStation(instruction);
-        	Integer source1 =null;
-        	Integer source2 =null;
-        	Integer robEntrySrc1 =null;
-        	Integer robEntrySrc2 =null;
+        	Integer source1 = null;
+        	Integer source2 = null;
+        	Integer robEntrySrc1 = null;
+        	Integer robEntrySrc2 = null;
         	
         	if ( reservationStationIndex != null && !reorderBuffer.isFull()){
         		int robEntryIndex = reorderBuffer.addInstruction(instruction.getName(), instruction.getDestinationRegister());
@@ -112,9 +125,7 @@ public class Main {
         		reservationStations.issue(instruction, reservationStationIndex, robEntryIndex, source1, source2, robEntrySrc1, robEntrySrc2);
         		instructionBuffer.removeFirstInstruction();
         	}
-        	
-        	/////////////////////
-        	
+        	        	
         	for (Integer i = 0; i < reservationStations.getEntries().length; i++) {
         		
         		HashMap<String, Integer>  missed = reservationStations.missingOperand(reservationStations.getEntries()[i]);
@@ -135,7 +146,6 @@ public class Main {
         		reservationStations.getNotReadyOperands(null, null);
 			}
         	
-        	////////////////////
         	HashMap<String, Integer> executed = reservationStations.executeExecutables() ;
         	if(executed != null){
         		reorderBuffer.setRegisterValue(executed.get("dest"), executed.get("value"));
@@ -147,9 +157,6 @@ public class Main {
         		reorderBuffer.incrementHead();
         	}
         }
-
-        /////////////// PERFORMANCE METRICS ///////////////
-        l.printMetrics();
 
     }
 

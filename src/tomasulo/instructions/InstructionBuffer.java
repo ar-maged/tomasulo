@@ -38,4 +38,10 @@ public class InstructionBuffer {
             return null;
     }
 
+	public ArrayList<Instruction> getInstructionBuffer() {
+		return instructionBuffer;
+	}
+    
+    
+
 }
