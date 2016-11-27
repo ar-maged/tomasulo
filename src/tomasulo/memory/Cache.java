@@ -75,10 +75,22 @@ public class Cache {
         }
         System.out.println(cache);
     }
-
+    public static void testFullAssociativity(){
+        CacheConfig config = new CacheConfig(128, 4, 32, 10, WritingPolicy.THROUGH, WritingPolicy.BACK);
+        Cache cache = new Cache(config);
+        Block block = null;
+        for (int i = 0; i < 128; i += 2) {
+            block = new Block(2);
+            block.addData(i, 0);
+            block.addData(i + 1, 1);
+            System.out.println("Write (" + i + "): " + cache.write(i, block));
+        }
+        System.out.println(cache);
+    }
     public static void main(String[] args) {
 //        testDirectMap();
-        testDirectReplace();
+//        testDirectReplace();
+        testFullAssociativity();
     }
 
     @Override
