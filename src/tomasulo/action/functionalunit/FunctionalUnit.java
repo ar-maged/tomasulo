@@ -8,11 +8,12 @@ public class FunctionalUnit {
 	int executionCycles;
 	int cyclesSpanned;
 	int result; 
-	FunctionalUnitState state;
-
+    boolean done; 
+    
 	public FunctionalUnit(FunctionalUnitConfig config) {
 		this.executionCycles = config.getExecutionCycles();
-		state = FunctionalUnitState.IDLE;
+		this.done=false;
+
 	}
 
 	public int getExecutionCycles() {
@@ -25,23 +26,17 @@ public class FunctionalUnit {
 
 	public void incrementCyclesSpanned() {
 		this.cyclesSpanned++;
-		setState();
 	}
 
 	public int getCyclesSpanned() {
 		return cyclesSpanned;
 	}
 
-	public FunctionalUnitState getState() {
-		return state;
+	
+	
+	public boolean isDone() {
+		return executionCycles == cyclesSpanned;
 	}
 
-	public void setState() {
-		if (executionCycles == cyclesSpanned)
-			this.state = FunctionalUnitState.DONE;
-		else
-			this.state = FunctionalUnitState.EXECUTING;
-	}
-	
 	public void execute(InstructionName operation, int Vj, int Vk, int addressOrImmediateValue){}
 }

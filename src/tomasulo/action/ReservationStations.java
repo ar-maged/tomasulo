@@ -245,7 +245,7 @@ public class ReservationStations {
 			} 
 			else{
 				if(entries[i].getState().equals(ReservationStationState.EXECUTING)){
-					 if(entries[i].getFunctionalUnit().getState().equals(FunctionalUnitState.DONE)){
+					 if(entries[i].getFunctionalUnit().isDone()){
 						 entries[i].setState(ReservationStationState.WANTTOWRITE); 
 					 }
 					 else{
