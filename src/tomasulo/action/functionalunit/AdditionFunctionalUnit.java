@@ -10,13 +10,13 @@ public class AdditionFunctionalUnit extends FunctionalUnit {
 		super(config);
 	}
 
-	public void execute(Instruction instruction) {
-		if (instruction.getName().equals(InstructionName.ADD)) {
-			this.result = instruction.getSourceRegister1() + instruction.getSourceRegister2();
+	public void execute(InstructionName operation, int Vj, int Vk, int addressOrImmediateValue) {
+		if (operation.equals(InstructionName.ADD)) {
+			this.result = Vj + Vk;
 		}
 
-		if (instruction.getName().equals(InstructionName.ADDI)) {
-			this.result = instruction.getSourceRegister1() + instruction.getImmediate();
+		if (operation.equals(InstructionName.ADDI)) {
+			this.result = Vj + addressOrImmediateValue;
 		}
 	}
 

@@ -10,9 +10,9 @@ public class NandFunctionalUnit extends FunctionalUnit {
 		super(config);
 	}
 
-	public void execute(Instruction instruction) {
-		if (instruction.getName().equals(InstructionName.NAND)) {
-			this.result = ~(instruction.getSourceRegister1() & instruction.getSourceRegister2());
+	public void execute(InstructionName operation, int Vj, int Vk, int addressOrImmediateValue) {
+		if (operation.equals(InstructionName.NAND)) {
+			this.result = ~(Vj & Vk);
 		}
 	}
 

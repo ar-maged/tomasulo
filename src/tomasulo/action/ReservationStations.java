@@ -1,5 +1,7 @@
 package tomasulo.action;
 
+import java.util.HashMap;
+
 import tomasulo.action.functionalunit.*;
 import tomasulo.configuration.action.FunctionalUnitsConfig;
 import tomasulo.instructions.*;
@@ -144,7 +146,8 @@ public class ReservationStations {
 		}
 		else{
 			
-			if (instruction.getName().equals(InstructionName.LW)){
+			if (instruction.getName().equals(InstructionName.LW) || instruction.getName().equals(InstructionName.JMP) ||
+					instruction.getName().equals(InstructionName.JALR)){
 				
 				if (source1 != null){
 					reservationStation.setVj(source1);
@@ -158,7 +161,6 @@ public class ReservationStations {
 				}
 			}
 			else{
-				
 				if (source1 != null){
 					reservationStation.setVj(source1);
 				}
@@ -175,10 +177,27 @@ public class ReservationStations {
 				if (reservationStation.getQj() == null && reservationStation.getQk() == null){
 					reservationStation.setState(ReservationStationState.READYTOEXECUTE);
 				}
+				
 			}
 			
 		}
 		
+	}
+	
+	public HashMap<String, Integer> executeExecutables(){ 
+		
+		HashMap<String, Integer> result = new HashMap<String, Integer>(); 
+		
+		for (int i = 0; i < entries.length; i++) {
+			if(entries[i].getState().equals(ReservationStationState.READYTOEXECUTE)) {
+				entries[i].getFunctionalUnit().execute(entries[i].getOperation(), entries[i].getVj(), entries[i].getVk(), entries[i].getAddressOrImmediateValue()); 
+				entries[i].getFunctionalUnit().setState(FunctionalUnitState.EXECUTING);
+				entries[i].setState(ReservationStationState.EXECUTING);
+			}
+			
+		}
+		
+		return result;
 	}
 
 	class ReservationStation {

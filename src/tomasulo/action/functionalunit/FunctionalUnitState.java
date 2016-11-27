@@ -1,5 +1,5 @@
 package tomasulo.action.functionalunit;
 
 public enum FunctionalUnitState {
-     EXECUTING,DONE
+     IDLE,EXECUTING,DONE
 }

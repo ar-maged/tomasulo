@@ -10,10 +10,12 @@ public class LoadStoreUnit extends FunctionalUnit {
 		super(config);
 	}
 
-	public void execute(Instruction instruction) {
-		if ((instruction.getName().equals(InstructionName.LW)) || ((instruction.getName().equals(InstructionName.SW)))) {
-			this.result = instruction.getSourceRegister1() + instruction.getImmediate();
+	public void execute(InstructionName operation, int Vj, int Vk, int addressOrImmediateValue) {
+		if (operation.equals(InstructionName.LW) || operation.equals(InstructionName.SW))
+		{
+			this.result = Vj + addressOrImmediateValue;
 		}
+		
 	}
 
 }

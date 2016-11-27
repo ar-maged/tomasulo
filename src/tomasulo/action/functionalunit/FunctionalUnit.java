@@ -1,6 +1,8 @@
 package tomasulo.action.functionalunit;
 
 import tomasulo.configuration.action.FunctionalUnitConfig;
+import tomasulo.instructions.Instruction;
+import tomasulo.instructions.InstructionName;
 
 public class FunctionalUnit {
 
@@ -11,7 +13,7 @@ public class FunctionalUnit {
 
 	public FunctionalUnit(FunctionalUnitConfig config) {
 		this.executionCycles = config.getExecutionCycles();
-		state = FunctionalUnitState.EXECUTING;
+		state = FunctionalUnitState.IDLE;
 	}
 
 	public int getExecutionCycles() {
@@ -37,6 +39,11 @@ public class FunctionalUnit {
 	public void setState(FunctionalUnitState state) {
 		if (executionCycles == cyclesSpanned)
 			this.state = FunctionalUnitState.DONE;
+	}
+	
+	public void execute(InstructionName operation, int Vj, int Vk, int addressOrImmediateValue){
+		
+		
 	}
 
 }
