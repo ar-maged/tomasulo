@@ -7,10 +7,20 @@ import java.util.Collections;
 import java.util.Stack;
 
 public class MainMemory {
-
-    public static int memoryCapacity = 64 * 1024;
+    //     public static int memoryCapacity = 64 * 1024;
+    public static int memoryCapacity = 128;
     private Block[] blocks;
     private int blockSizeWords;
+
+    @Override
+    public String toString() {
+        String s = "";
+        //FIXME: Set it to a fixed number for now
+        for (int i = 0; i < blocks.length; i++) {
+            s += i + " -> \n" + blocks[i] + "\n";
+        }
+        return s;
+    }
 
     public MainMemory(int blockSizeWords) {
         this.blockSizeWords = blockSizeWords;

@@ -135,14 +135,13 @@ public class Cache {
     @Override
     public String toString() {
         String s = "";
-        //FIXME: Set it to a fixed number for now
         for (int i = 0; i < entries.length; i++) {
             s += i + " -> \n" + entries[i] + "\n";
         }
         return s;
     }
 
-    public HashMap<Integer, Integer> convertAddress(int addressWords) {
+    public  HashMap<Integer, Integer> convertAddress(int addressWords) {
         HashMap<Integer, Integer> map = new HashMap<>();
         String binaryAddress = String.format("%16s", Integer.toBinaryString(addressWords)).replace(' ', '0');
         String tagBinary, indexBinary, offsetBinary;
@@ -164,7 +163,9 @@ public class Cache {
     }
 
     private Block writeDirectMapped(int entryIndex, int entryTag, Block block) {
+
         CacheEntry entry = this.entries[entryIndex];
+//        System.out.println("Ahmed \n" + entry.getBlock());
         if (entry.isValid() && entry.getTag() == entryTag) {
             if (this.writeHitPolicy == WritingPolicy.BACK) {
                 entry.setBlock(block);
@@ -341,6 +342,17 @@ public class Cache {
         }
     }
 
+    public void writeTrivial(int addressWords, Block block) {
+        HashMap<Integer, Integer> map = convertAddress(addressWords);
+        int indexDecimal = map.get(INDEX);
+        int tagDecimal = map.get(TAG);
+        CacheEntry entry = this.entries[indexDecimal];
+        entry.setBlock(block);
+        entry.setValid(true);
+        entry.setDirty(false);
+        entry.setTag(tagDecimal);
+    }
+
     public Block read(int addressWords) {
         HashMap<Integer, Integer> map = convertAddress(addressWords);
         int offsetDecimal, indexDecimal, tagDecimal;
@@ -350,24 +362,18 @@ public class Cache {
         tagDecimal = map.get(TAG);
         if (associativity == 1) {
             CacheEntry entry = this.entries[indexDecimal];
-            if (entry.isValid() && entry.getTag() == tagDecimal) {
-                return entry.getBlock();
-            }
+            if (entry.isValid() && entry.getTag() == tagDecimal) return entry.getBlock();
         } else if (associativity == this.cacheLines) {
             for (int i = 0; i < entries.length; i++) {
                 CacheEntry entry = entries[i];
-                System.out.println(entry.getBlock() + " " + entry.getTag());
-                if (entry.getTag() == tagDecimal) {
-                    return entry.getBlock();
-                }
+                if (entry.isValid() && entry.getTag() == tagDecimal) return entry.getBlock();
             }
         } else {
             CacheEntry entry;
-            for (int i = 0; i < this.associativity; i++) {
-                int numberOfEntriesPerSet = entries.length / this.associativity;
-                entry = this.entries[indexDecimal + (numberOfEntriesPerSet * i)];
-                if (entry.isValid() && entry.getTag() == tagDecimal) {
-                    return entry.getBlock();
+            for (int i = indexDecimal * associativity; i < (indexDecimal * associativity) + associativity; i++) {
+                entry = this.entries[i];
+                if (entry.getTag() == tagDecimal) {
+                    return this.entries[i].getBlock();
                 }
             }
         }

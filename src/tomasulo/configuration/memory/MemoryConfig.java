@@ -9,7 +9,6 @@ public class MemoryConfig {
     private MainMemoryConfig mainMemoryConfig;
     private WritingPolicy hitWritingPolicy;
     private WritingPolicy missWritingPolicy;
-
     public MemoryConfig() {
         cachesConfig = new ArrayList<CacheConfig>();
         mainMemoryConfig = new MainMemoryConfig();
