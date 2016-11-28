@@ -7,18 +7,15 @@ public class MemoryConfig {
     private int blockSizeBytes;
     private ArrayList<CacheConfig> cachesConfig;
     private MainMemoryConfig mainMemoryConfig;
-    private WritingPolicy hitWritingPolicy;
-    private WritingPolicy missWritingPolicy;
+
     public MemoryConfig() {
         cachesConfig = new ArrayList<CacheConfig>();
         mainMemoryConfig = new MainMemoryConfig();
     }
 
-    public MemoryConfig(int blockSizeBytes, WritingPolicy hitWritingPolicy, WritingPolicy missWritingPolcity) {
+    public MemoryConfig(int blockSizeBytes) {
         this();
         this.blockSizeBytes = blockSizeBytes;
-        this.hitWritingPolicy = hitWritingPolicy;
-        this.missWritingPolicy = missWritingPolcity;
     }
 
     public ArrayList<CacheConfig> getCachesConfig() {
@@ -39,22 +36,6 @@ public class MemoryConfig {
 
     public void setMainMemoryConfig(MainMemoryConfig mainMemoryConfig) {
         this.mainMemoryConfig = mainMemoryConfig;
-    }
-
-    public WritingPolicy getHitWritingPolicy() {
-        return hitWritingPolicy;
-    }
-
-    public void setHitWritingPolicy(WritingPolicy hitWritingPolicy) {
-        this.hitWritingPolicy = hitWritingPolicy;
-    }
-
-    public WritingPolicy getMissWritingPolicy() {
-        return missWritingPolicy;
-    }
-
-    public void setMissWritingPolicy(WritingPolicy missWritingPolicy) {
-        this.missWritingPolicy = missWritingPolicy;
     }
 
     public int getBlockSizeBytes() { return blockSizeBytes; }

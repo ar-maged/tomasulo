@@ -58,6 +58,10 @@ public class Memory {
 
     }
 
+    public Instruction readInstruction(int addressWords){
+        return (Instruction) this.mainMemory.readBlock(addressWords).readInstructionOrData(addressWords);
+    }
+
 
 
     public void writeBlock(int addressWords, Block block) {
@@ -78,8 +82,8 @@ public class Memory {
 //        this.mainMemory.writeBlock(addressWords, block);
     }
 
-    public void loadProgram(ArrayList<Instruction> instructions, int startAddressBytes) {
-        this.mainMemory.loadProgram(instructions, startAddressBytes / 2);
+    public void loadProgram(ArrayList<Instruction> instructions, int startAddressWords) {
+        this.mainMemory.loadProgram(instructions, startAddressWords);
     }
 
     public static void main(String[] args){
@@ -87,8 +91,8 @@ public class Memory {
 
         // Memory configurations
         config.getMemoryConfig().setBlockSizeBytes(8);
-        config.getMemoryConfig().setHitWritingPolicy(WritingPolicy.ALLOCATE);
-        config.getMemoryConfig().setMissWritingPolicy(WritingPolicy.AROUND);
+//        config.getMemoryConfig().setHitWritingPolicy(WritingPolicy.ALLOCATE);
+//        config.getMemoryConfig().setMissWritingPolicy(WritingPolicy.AROUND);
 
         // Main memory configurations
         config.getMemoryConfig().getMainMemoryConfig().setAccessCycles(100);

@@ -15,10 +15,10 @@ public class InstructionBuffer {
         this.maxSize = maxSize;
     }
 
-    public void insertInstructions(Instruction[] instructions) {
-        for (int i = 0; i < instructions.length; i++) {
+    public void insertInstructions(ArrayList<Instruction> instructions) {
+        for (int i = 0; i < instructions.size(); i++) {
             if (this.instructionBuffer.size() < this.maxSize)
-                instructionBuffer.add(instructions[i]);
+                instructionBuffer.add(instructions.get(i));
             else
                 throw new InstructionBufferOverflowException();
         }

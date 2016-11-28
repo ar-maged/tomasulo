@@ -33,17 +33,15 @@ public class Main {
         Config config = new Config();
 
         // General configurations
-        config.setPipelineWidth(4);
+        config.setPipelineWidth(2);
         config.setInstructionBufferSize(20);
         config.setReorderBufferSize(10);
 
         // Memory configurations
-        config.getMemoryConfig().setBlockSizeBytes(16);
-        config.getMemoryConfig().setHitWritingPolicy(WritingPolicy.ALLOCATE);
-        config.getMemoryConfig().setMissWritingPolicy(WritingPolicy.AROUND);
+        config.getMemoryConfig().setBlockSizeBytes(4);
 
         // Main memory configurations
-        config.getMemoryConfig().getMainMemoryConfig().setAccessCycles(100);
+        config.getMemoryConfig().getMainMemoryConfig().setAccessCycles(50);
 
         // Cache(s) configurations
         config.getMemoryConfig().addCacheConfig(new CacheConfig(16 * 1024, 16, 1, 5, WritingPolicy.THROUGH, WritingPolicy.THROUGH));
@@ -52,10 +50,10 @@ public class Main {
         // Functional units configurations
         config.getFunctionalUnitsConfig().setAdditionUnitConfig(new FunctionalUnitConfig(2, 1));
         config.getFunctionalUnitsConfig().setSubtractionUnitConfig(new FunctionalUnitConfig(2, 1));
-        config.getFunctionalUnitsConfig().setMultiplicationUnitConfig(new FunctionalUnitConfig(1, 1));
-        config.getFunctionalUnitsConfig().setNandUnitConfig(new FunctionalUnitConfig(1, 1));
-        config.getFunctionalUnitsConfig().setLoadUnitConfig(new FunctionalUnitConfig(1, 1));
-        config.getFunctionalUnitsConfig().setBranchUnitConfig(new FunctionalUnitConfig(1, 1));
+        config.getFunctionalUnitsConfig().setMultiplicationUnitConfig(new FunctionalUnitConfig(2, 1));
+        config.getFunctionalUnitsConfig().setNandUnitConfig(new FunctionalUnitConfig(2, 1));
+        config.getFunctionalUnitsConfig().setLoadUnitConfig(new FunctionalUnitConfig(0, 0));
+        config.getFunctionalUnitsConfig().setBranchUnitConfig(new FunctionalUnitConfig(0, 0));
 
         /////////////// INIT ///////////////
         FileReader fileReader = new FileReader();
@@ -69,44 +67,29 @@ public class Main {
         ReservationStations reservationStations = new ReservationStations(functionalUnits, config.getFunctionalUnitsConfig());
         Logger l = new Logger();
 
-        Integer PC = 5;
+        // TODO: Increment PC
+        Integer PC = 0;
 
         /////////////// PRE-EXECUTION ///////////////
         String[] stringInstructions = fileReader.readFile("assembly/arithmetic-1.asm");
         ArrayList<Instruction> instructions = assembler.parseInstructions(stringInstructions);
-        //memory.loadProgram(instructions, 0);
+        memory.loadProgram(instructions, 0);
 
-        // for (int i = 0; i < instructions.size(); i++) {
-        // System.out.println(memory.readBlock(i * blockSizeInBytes));
-        // }
-
-        /////////////// PERFORMANCE METRICS ///////////////
-        l.printMetrics();
 
         /////////////// EXECUTION ///////////////
-        // TODO: Tomasulo's algorithm
-
-        registerFile.writeRegister(1, 2);
-        registerFile.writeRegister(2, 3);
-
-        int size = Math.min(config.getPipelineWidth(), instructions.size());
-        Instruction[] instructionArray = new Instruction[size]; //testing
-
-        for (int i = 0; i < size; i++) {
-
-            instructionArray[i] = instructions.get(i);
-
-            //instructionBuffer.insertInstructions(memory.readInstruction());
-        }
-
-        instructionBuffer.insertInstructions(instructionArray);
-
         do {
-            // TODO: Handle null
+            ArrayList<Instruction> instructionsToBeLoaded = new ArrayList<Instruction>();
+
+            for (int i = 0; i < config.getPipelineWidth(); i++) {
+                instructionsToBeLoaded.add(memory.readInstruction(PC++));
+            }
+
+            instructionBuffer.insertInstructions(instructionsToBeLoaded);
             Instruction instruction = instructionBuffer.readFirstInstruction();
+
             ArrayList<Integer> immutableReservationStations = new ArrayList<Integer>();
 
-            if(instruction != null){
+            if (instruction != null) {
                 Integer reservationStationIndex = reservationStations.hasAvailableStation(instruction);
                 Integer source1 = null;
                 Integer source2 = null;
@@ -117,13 +100,13 @@ public class Main {
                     int robEntryIndex = reorderBuffer.addInstruction(instruction.getName(), instruction.getDestinationRegister());
                     registerStatus.setROBEntryIndex(instruction.getDestinationRegister(), robEntryIndex);
 
-                    if (registerStatus.getROBEntryIndex(instruction.getSourceRegister1()) == null && instruction.getSourceRegister1() !=null) {
+                    if (registerStatus.getROBEntryIndex(instruction.getSourceRegister1()) == null && instruction.getSourceRegister1() != null) {
                         source1 = registerFile.readRegister(instruction.getSourceRegister1());
                     } else {
                         robEntrySrc1 = registerStatus.getROBEntryIndex(instruction.getSourceRegister1());
                     }
 
-                    if (registerStatus.getROBEntryIndex(instruction.getSourceRegister2()) == null && instruction.getSourceRegister2() !=null) {
+                    if (registerStatus.getROBEntryIndex(instruction.getSourceRegister2()) == null && instruction.getSourceRegister2() != null) {
                         source2 = registerFile.readRegister(instruction.getSourceRegister2());
                     } else {
                         robEntrySrc2 = registerStatus.getROBEntryIndex(instruction.getSourceRegister2());
@@ -135,7 +118,6 @@ public class Main {
 
                 immutableReservationStations.add(reservationStationIndex);
             }
-
 
 
             for (Integer i = 0; i < reservationStations.getEntries().length; i++) {
@@ -166,16 +148,12 @@ public class Main {
             Integer excluded = null;
 
             if (executed != null) {
-                if(reorderBuffer.getTypeofEntry(executed.get("dest")).equals(ReorderBuffer.Type.LW))
-                {
-//                    reorderBuffer.setRegisterValue(executed.get("dest"), memory.getInstructionOrData(executed.get("value")));
-                }
-                else{
-                    if(reorderBuffer.getTypeofEntry(executed.get("dest")).equals(ReorderBuffer.Type.SW))
-                    {
+                if (reorderBuffer.getTypeofEntry(executed.get("dest")).equals(ReorderBuffer.Type.LW)) {
+//                    reorderBuffer.setRegisterValue(executed.get("dest"), (Integer) memory.readInstructionOrData(executed.get("value")));
+                } else {
+                    if (reorderBuffer.getTypeofEntry(executed.get("dest")).equals(ReorderBuffer.Type.SW)) {
 //                        reorderBuffer.setRegisterValue(executed.get("dest"), memory.storeData(executed.get("value"), executed.get("Vk")));
-                    }
-                    else{
+                    } else {
                         reorderBuffer.setRegisterValue(executed.get("dest"), executed.get("value"));
                         excluded = executed.get("dest");
                     }
@@ -190,6 +168,9 @@ public class Main {
                 reorderBuffer.incrementHead();
             }
         } while (!instructionBuffer.isEmpty() || !reservationStations.isEmpty() || !reorderBuffer.isEmpty());
+
+        /////////////// PERFORMANCE METRICS ///////////////
+        l.printMetrics();
 
     }
 
