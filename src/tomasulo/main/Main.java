@@ -4,7 +4,6 @@ import tomasulo.action.FunctionalUnits;
 import tomasulo.action.ReorderBuffer;
 import tomasulo.action.ReservationStationState;
 import tomasulo.action.ReservationStations;
-import tomasulo.action.functionalunit.FunctionalUnit;
 import tomasulo.configuration.Config;
 import tomasulo.configuration.action.FunctionalUnitConfig;
 import tomasulo.configuration.memory.CacheConfig;
@@ -21,7 +20,6 @@ import tomasulo.util.logging.Logger;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 
 public class Main {
 
@@ -51,8 +49,8 @@ public class Main {
         // Functional units configurations
         config.getFunctionalUnitsConfig().setAdditionUnitConfig(new FunctionalUnitConfig(2, 1));
         config.getFunctionalUnitsConfig().setSubtractionUnitConfig(new FunctionalUnitConfig(2, 1));
-        config.getFunctionalUnitsConfig().setMultiplicationUnitConfig(new FunctionalUnitConfig(0, 0)); 
-        config.getFunctionalUnitsConfig().setNandUnitConfig(new FunctionalUnitConfig(0,0));
+        config.getFunctionalUnitsConfig().setMultiplicationUnitConfig(new FunctionalUnitConfig(0, 0));
+        config.getFunctionalUnitsConfig().setNandUnitConfig(new FunctionalUnitConfig(0, 0));
         config.getFunctionalUnitsConfig().setLoadUnitConfig(new FunctionalUnitConfig(0, 0));
         config.getFunctionalUnitsConfig().setBranchUnitConfig(new FunctionalUnitConfig(0, 0));
 
@@ -76,96 +74,101 @@ public class Main {
         // for (int i = 0; i < instructions.size(); i++) {
         // System.out.println(memory.readBlock(i * blockSizeInBytes));
         // }
-        
+
         /////////////// PERFORMANCE METRICS ///////////////
         l.printMetrics();
 
         /////////////// EXECUTION ///////////////
         // TODO: Tomasulo's algorithm
-        
+
         registerFile.writeRegister(1, 2);
         registerFile.writeRegister(2, 3);
-        
-     	int size = Math.min(config.getPipelineWidth(),instructions.size()) ;
-    	Instruction[] instructionArray = new Instruction[size]; //testing
 
-    	for (int i = 0;  i < size; i++) {
-        
-    		instructionArray[i] = instructions.get(i);
-    		
-    		//instructionBuffer.insertInstructions(memory.readInstruction());
-		}
-    	
-    	instructionBuffer.insertInstructions(instructionArray);
-        
-        while(true) {
-        	// TODO: Handle null
-        	Instruction instruction = instructionBuffer.readFirstInstruction();
-        	Integer reservationStationIndex = reservationStations.hasAvailableStation(instruction);
-        	Integer source1 = null;
-        	Integer source2 = null;
-        	Integer robEntrySrc1 = null;
-        	Integer robEntrySrc2 = null;
-        	
-        	if ( reservationStationIndex != null && !reorderBuffer.isFull()){
-        		int robEntryIndex = reorderBuffer.addInstruction(instruction.getName(), instruction.getDestinationRegister());
-        		registerStatus.setROBEntryIndex(instruction.getDestinationRegister(), robEntryIndex);
-        		
-        		if (registerStatus.getROBEntryIndex(instruction.getSourceRegister1()) == null){
-            		source1= registerFile.readRegister(instruction.getSourceRegister1());
-        		}
-        		else {
-        			robEntrySrc1 = registerStatus.getROBEntryIndex(instruction.getSourceRegister1());
-        		}
-        		
-        		if (registerStatus.getROBEntryIndex(instruction.getSourceRegister2()) == null){
-            		source2 = registerFile.readRegister(instruction.getSourceRegister2());
-        		}
-        		else {
-        			robEntrySrc2 = registerStatus.getROBEntryIndex(instruction.getSourceRegister2());
-        		}
-        		
-        		reservationStations.issue(instruction, reservationStationIndex, robEntryIndex, source1, source2, robEntrySrc1, robEntrySrc2);
-        		instructionBuffer.removeFirstInstruction();
-        	}
-        	
-        	ArrayList<Integer> immutableReservationStations = new ArrayList<Integer>();
-        	immutableReservationStations.add(reservationStationIndex);
-        	        	
-        	for (Integer i = 0; i < reservationStations.getEntries().length; i++) {
-        		
-        		if (reservationStations.getEntries()[i].getState().equals(ReservationStationState.ISSUED) && i != reservationStationIndex){
-        			
-        			HashMap<String, Integer>  missed = reservationStations.missingOperand(reservationStations.getEntries()[i]);
-            		HashMap<String, Integer> robResult = new HashMap<String, Integer>();
-            		
-            		if (missed != null ){
-            			Integer Qj = missed.get("Qj");
-            			if (Qj != null && reorderBuffer.isReadyEntry(Qj)){
-            				robResult.put("Vj", reorderBuffer.getRegisterValue(Qj));
-            			}
-            			
-            			Integer Qk = missed.get("Qk");
-            			if (Qk != null && reorderBuffer.isReadyEntry(Qk)){
-            				robResult.put("Vk", reorderBuffer.getRegisterValue(Qk));
-            			}
-        				reservationStations.setNotReadyOperands(robResult, i);
-        				immutableReservationStations.add(i);
-            		}
-        		}
-        		
-			}
-        	
-        	HashMap<String, Integer> executed = reservationStations.executeExecutables(immutableReservationStations);
-        	if(executed != null){
-        		reorderBuffer.setRegisterValue(executed.get("dest"), executed.get("value"));
-        	}
-        	
-        	if (reorderBuffer.commit()){
-        		registerFile.writeRegister(reorderBuffer.getRegisterIndex(reorderBuffer.getHead()), reorderBuffer.getRegisterValue(reorderBuffer.getHead()));
-        		registerStatus.clearROBEntryIndex(reorderBuffer.getRegisterIndex(reorderBuffer.getHead()));
-        		reorderBuffer.incrementHead();
-        	}
+        int size = Math.min(config.getPipelineWidth(), instructions.size());
+        Instruction[] instructionArray = new Instruction[size]; //testing
+
+        for (int i = 0; i < size; i++) {
+
+            instructionArray[i] = instructions.get(i);
+
+            //instructionBuffer.insertInstructions(memory.readInstruction());
+        }
+
+        instructionBuffer.insertInstructions(instructionArray);
+
+        int c = 0;
+
+        while (c++ < 5) {
+            // TODO: Handle null
+            Instruction instruction = instructionBuffer.readFirstInstruction();
+            ArrayList<Integer> immutableReservationStations = new ArrayList<Integer>();
+
+            if(instruction != null){
+                Integer reservationStationIndex = reservationStations.hasAvailableStation(instruction);
+                Integer source1 = null;
+                Integer source2 = null;
+                Integer robEntrySrc1 = null;
+                Integer robEntrySrc2 = null;
+
+                if (reservationStationIndex != null && !reorderBuffer.isFull()) {
+                    int robEntryIndex = reorderBuffer.addInstruction(instruction.getName(), instruction.getDestinationRegister());
+                    registerStatus.setROBEntryIndex(instruction.getDestinationRegister(), robEntryIndex);
+
+                    if (registerStatus.getROBEntryIndex(instruction.getSourceRegister1()) == null) {
+                        source1 = registerFile.readRegister(instruction.getSourceRegister1());
+                    } else {
+                        robEntrySrc1 = registerStatus.getROBEntryIndex(instruction.getSourceRegister1());
+                    }
+
+                    if (registerStatus.getROBEntryIndex(instruction.getSourceRegister2()) == null) {
+                        source2 = registerFile.readRegister(instruction.getSourceRegister2());
+                    } else {
+                        robEntrySrc2 = registerStatus.getROBEntryIndex(instruction.getSourceRegister2());
+                    }
+
+                    reservationStations.issue(instruction, reservationStationIndex, robEntryIndex, source1, source2, robEntrySrc1, robEntrySrc2);
+                    instructionBuffer.removeFirstInstruction();
+                }
+
+                immutableReservationStations.add(reservationStationIndex);
+            }
+
+
+
+            for (Integer i = 0; i < reservationStations.getEntries().length; i++) {
+
+                if (reservationStations.getEntries()[i].getState().equals(ReservationStationState.ISSUED) && !immutableReservationStations.contains(i)) {
+
+                    HashMap<String, Integer> missed = reservationStations.missingOperand(reservationStations.getEntries()[i]);
+                    HashMap<String, Integer> robResult = new HashMap<String, Integer>();
+
+                    if (missed != null) {
+                        Integer Qj = missed.get("Qj");
+                        if (Qj != null && reorderBuffer.isReadyEntry(Qj)) {
+                            robResult.put("Vj", reorderBuffer.getRegisterValue(Qj));
+                        }
+
+                        Integer Qk = missed.get("Qk");
+                        if (Qk != null && reorderBuffer.isReadyEntry(Qk)) {
+                            robResult.put("Vk", reorderBuffer.getRegisterValue(Qk));
+                        }
+                        reservationStations.setNotReadyOperands(robResult, i);
+                        immutableReservationStations.add(i);
+                    }
+                }
+
+            }
+
+            HashMap<String, Integer> executed = reservationStations.executeExecutables(immutableReservationStations);
+            if (executed != null) {
+                reorderBuffer.setRegisterValue(executed.get("dest"), executed.get("value"));
+            }
+
+            if (reorderBuffer.commit()) {
+                registerFile.writeRegister(reorderBuffer.getRegisterIndex(reorderBuffer.getHead()), reorderBuffer.getRegisterValue(reorderBuffer.getHead()));
+                registerStatus.clearROBEntryIndex(reorderBuffer.getRegisterIndex(reorderBuffer.getHead()));
+                reorderBuffer.incrementHead();
+            }
         }
 
     }

@@ -17,7 +17,10 @@ public class ReorderBuffer {
     }
 
     public boolean commit() {
-        return entries[head].isReady();
+        if (entries[head] != null){
+            return entries[head].isReady();
+        }
+        return false;
     }
 
     public Integer addInstruction(InstructionName instruction, int reg) {
