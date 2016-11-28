@@ -86,8 +86,8 @@ public class Main {
         /////////////// EXECUTION ///////////////
         // TODO: Tomasulo's algorithm
 
-        registerFile.writeRegister(1, 2);
-        registerFile.writeRegister(2, 3);
+//        registerFile.writeRegister(1, 2);
+//        registerFile.writeRegister(2, 3);
 
         int size = Math.min(config.getPipelineWidth(), instructions.size());
         Instruction[] instructionArray = new Instruction[size]; //testing
@@ -190,6 +190,10 @@ public class Main {
                 reorderBuffer.incrementHead();
             }
         } while (!instructionBuffer.isEmpty() || !reservationStations.isEmpty() || !reorderBuffer.isEmpty());
+
+        System.out.println(registerFile.readRegister(1));
+        System.out.println(registerFile.readRegister(2));
+        System.out.println(registerFile.readRegister(3));
 
     }
 
