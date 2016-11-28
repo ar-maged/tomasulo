@@ -8,6 +8,8 @@ import tomasulo.configuration.Config;
 import tomasulo.configuration.action.FunctionalUnitConfig;
 import tomasulo.configuration.memory.CacheConfig;
 import tomasulo.configuration.memory.WritingPolicy;
+import tomasulo.data.DataAssembler;
+import tomasulo.data.MemoryEntry;
 import tomasulo.instructions.Assembler;
 import tomasulo.instructions.Instruction;
 import tomasulo.instructions.InstructionBuffer;
@@ -60,6 +62,7 @@ public class Main {
         /////////////// INIT ///////////////
         FileReader fileReader = new FileReader();
         Assembler assembler = new Assembler();
+        DataAssembler dataAssembler = new DataAssembler(8);
         InstructionBuffer instructionBuffer = new InstructionBuffer(config.getInstructionBufferSize());
         ReorderBuffer reorderBuffer = new ReorderBuffer(config.getReorderBufferSize());
         RegisterFile registerFile = new RegisterFile();
@@ -73,9 +76,14 @@ public class Main {
 
         /////////////// PRE-EXECUTION ///////////////
         String[] stringInstructions = fileReader.readFile("assembly/arithmetic-1.asm");
+        System.out.println("NOW READING arithmetic-1.asm");
         ArrayList<Instruction> instructions = assembler.parseInstructions(stringInstructions);
         //memory.loadProgram(instructions, 0);
 
+        String [] data = fileReader.readFile("data/data.txt");
+        System.out.println("\nNOW READING data.txt");
+        System.out.println("line size is "+dataAssembler.getLineSize());
+        ArrayList<MemoryEntry> memoryEntries = dataAssembler.parseAllData(data);
         // for (int i = 0; i < instructions.size(); i++) {
         // System.out.println(memory.readBlock(i * blockSizeInBytes));
         // }
