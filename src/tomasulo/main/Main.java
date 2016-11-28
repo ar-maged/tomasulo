@@ -131,7 +131,7 @@ public class Main {
         }
 
         /////////////// PERFORMANCE METRICS ///////////////
-//        l.printMetrics();
+        l.printMetrics();
 
     }
 
