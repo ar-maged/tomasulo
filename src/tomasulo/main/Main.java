@@ -50,9 +50,9 @@ public class Main {
         config.getFunctionalUnitsConfig().setAdditionUnitConfig(new FunctionalUnitConfig(2, 1));
         config.getFunctionalUnitsConfig().setSubtractionUnitConfig(new FunctionalUnitConfig(2, 1));
         config.getFunctionalUnitsConfig().setMultiplicationUnitConfig(new FunctionalUnitConfig(1, 1));
-        config.getFunctionalUnitsConfig().setNandUnitConfig(new FunctionalUnitConfig(0, 0));
-        config.getFunctionalUnitsConfig().setLoadUnitConfig(new FunctionalUnitConfig(0, 0));
-        config.getFunctionalUnitsConfig().setBranchUnitConfig(new FunctionalUnitConfig(0, 0));
+        config.getFunctionalUnitsConfig().setNandUnitConfig(new FunctionalUnitConfig(1, 1));
+        config.getFunctionalUnitsConfig().setLoadUnitConfig(new FunctionalUnitConfig(1, 1));
+        config.getFunctionalUnitsConfig().setBranchUnitConfig(new FunctionalUnitConfig(1, 1));
 
         /////////////// INIT ///////////////
         FileReader fileReader = new FileReader();
@@ -173,8 +173,6 @@ public class Main {
                 reorderBuffer.incrementHead();
             }
         }
-
-        System.out.println("Should be 50: " + registerFile.readRegister(3));
 
     }
 
