@@ -49,6 +49,7 @@ public class DataAssembler {
 		}
 		}
 		else throw new MemoryDataLoadingException("too many entries, line size can take only " + LineSize+" entries");
+	
 		
 		System.out.print(memoryEntry.getMemoryLocation() +" ");
 		for(int i = 0; i<memoryEntry.getData().size(); i++)
