@@ -160,11 +160,14 @@ public class Main {
             }
 
             HashMap<String, Integer> executed = reservationStations.executeExecutables(immutableReservationStations);
+            Integer excluded = null;
+
             if (executed != null) {
                 reorderBuffer.setRegisterValue(executed.get("dest"), executed.get("value"));
+                excluded = executed.get("dest");
             }
 
-            if (reorderBuffer.commit()) {
+            if (reorderBuffer.isHeadCommitable(excluded)) {
                 registerFile.writeRegister(reorderBuffer.getRegisterIndex(reorderBuffer.getHead()), reorderBuffer.getRegisterValue(reorderBuffer.getHead()));
                 registerStatus.clearROBEntryIndex(reorderBuffer.getRegisterIndex(reorderBuffer.getHead()));
                 reorderBuffer.incrementHead();

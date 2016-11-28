@@ -16,9 +16,15 @@ public class ReorderBuffer {
         head = tail = 0;
     }
 
-    public boolean commit() {
-        if (entries[head] != null){
-            return entries[head].isReady();
+    public boolean isHeadCommitable(Integer excluded) {
+        if (entries[head] != null) {
+            if (excluded != null) {
+                if (excluded != head) {
+                    return entries[head].isReady();
+                }
+            } else{
+                return entries[head].isReady();
+            }
         }
         return false;
     }
@@ -50,6 +56,10 @@ public class ReorderBuffer {
         return entries;
     }
 
+    public void setEntries(ROBEntry[] entries) {
+        this.entries = entries;
+    }
+
     public ROBEntry getFirst() {
         if (isEmpty())
             return null;
@@ -59,7 +69,7 @@ public class ReorderBuffer {
     public ROBEntry getEntry(int address) {
         return entries[address];
     }
-    
+
     public boolean isReadyEntry(int address) {
         return entries[address].isReady();
     }
@@ -72,12 +82,8 @@ public class ReorderBuffer {
         return entries[address].getRegister();
     }
 
-    public void setEntries(ROBEntry[] entries) {
-        this.entries = entries;
-    }
-
     public void setRegisterValue(int address, int value) {
-        entries[address].setRegister(value);
+        entries[address].setValue(value);
         entries[address].setReady(true);
     }
 
@@ -100,6 +106,10 @@ public class ReorderBuffer {
 
     public void setTail(int tail) {
         this.tail = tail;
+    }
+
+    enum Type {
+        FP, INT, LW, SW, BRANCH, JUMP
     }
 
     class ROBEntry {
@@ -164,10 +174,6 @@ public class ReorderBuffer {
             }
             return Type.INT;
         }
-    }
-
-    enum Type {
-        FP, INT, LW, SW, BRANCH, JUMP
     }
 
 }

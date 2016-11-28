@@ -243,13 +243,16 @@ public class ReservationStations {
 				if(entries[i].getState().equals(ReservationStationState.READYTOEXECUTE)) {
 					entries[i].getFunctionalUnit().execute(entries[i].getOperation(), entries[i].getVj(), entries[i].getVk(), entries[i].getAddressOrImmediateValue()); 
 					entries[i].getFunctionalUnit().incrementCyclesSpanned();
-					entries[i].setState(ReservationStationState.EXECUTING); 
-					
+					if (entries[i].getFunctionalUnit().isDone()){
+						entries[i].setState(ReservationStationState.WANTTOWRITE);
+					}
+					else
+						entries[i].setState(ReservationStationState.EXECUTING);
 				} 
 				else{
 					if(entries[i].getState().equals(ReservationStationState.EXECUTING)){
 						 if(entries[i].getFunctionalUnit().isDone()){
-							 entries[i].setState(ReservationStationState.WANTTOWRITE);   	
+							 entries[i].setState(ReservationStationState.WANTTOWRITE);
 						 }
 						 else{
 							 entries[i].getFunctionalUnit().incrementCyclesSpanned();   	
@@ -301,7 +304,7 @@ public class ReservationStations {
 			state = ReservationStationState.EMPTY;
 			operation = null;
 			Vj = Vk = Qj = Qk = destinationROBIndex = addressOrImmediateValue =  null;
-			
+			this.functionalUnit.clear();
 		}
 		
 		public FunctionalUnit getFunctionalUnit() {

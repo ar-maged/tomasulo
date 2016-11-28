@@ -25,7 +25,7 @@ public class FunctionalUnit {
 	}
 
 	public void incrementCyclesSpanned() {
-		this.cyclesSpanned++;
+		this.done = (this.executionCycles == ++this.cyclesSpanned);
 	}
 
 	public int getCyclesSpanned() {
@@ -35,8 +35,14 @@ public class FunctionalUnit {
 	
 	
 	public boolean isDone() {
-		return executionCycles == cyclesSpanned;
+		return done;
 	}
 
 	public void execute(InstructionName operation, Integer Vj, Integer Vk, Integer addressOrImmediateValue){}
+
+	public void clear(){
+		this.cyclesSpanned = 0;
+		this.done = false;
+		this.result = 0;
+	}
 }
