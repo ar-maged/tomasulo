@@ -7,6 +7,7 @@ import tomasulo.configuration.memory.WritingPolicy;
 import tomasulo.instructions.Instruction;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Memory {
 
@@ -60,14 +61,18 @@ public class Memory {
 
 
     public void writeBlock(int addressWords, Block block) {
-        Block returnedBlock = null;
+        HashMap<String, Object> returnedBlock = null;
         int i;
         for (i = 0; i < caches.length; i++) {
             returnedBlock = caches[i].write(addressWords, block);
             if(returnedBlock == null) break;
         }
         if(i == caches.length){
-            this.mainMemory.writeBlock(addressWords, returnedBlock);
+            if(returnedBlock.get("enable").equals(true)){
+                this.mainMemory.writeBlock((int)returnedBlock.get("address"), (Block)returnedBlock.get("block"));
+            }else{
+                this.mainMemory.writeBlock(addressWords, (Block)returnedBlock.get("block"));
+            }
         }
 //        if()
 //        this.mainMemory.writeBlock(addressWords, block);
@@ -98,14 +103,14 @@ public class Memory {
         block.addData(13,1);
         block.addData(14,2);
         block.addData(15,3);
-        memory.writeBlock(63, block);
+        memory.writeBlock(24, block);
 
         Block block2 = new Block(8/2);
         block2.addData(120,0);
         block2.addData(130,1);
         block2.addData(140,2);
         block2.addData(150,3);
-        memory.writeBlock(15, block2);
+        memory.writeBlock(56, block2);
 
 //        System.out.println("Memory \n" + memory.readBlock(63));
         System.out.println("Cache 1 \n" + memory.mainMemory);

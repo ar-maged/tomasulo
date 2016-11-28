@@ -5,6 +5,7 @@ import tomasulo.configuration.memory.WritingPolicy;
 
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 public class Cache {
 
@@ -129,8 +130,10 @@ public class Cache {
 //        testDirectMap();
 //        testDirectReplace();
 //        testFullAssociativity();
-        testSetAssociativity(2);
+//        testSetAssociativity(2);
+//        System.out.println(reconstructOldAddress(5, 6));
     }
+
 
     @Override
     public String toString() {
@@ -162,7 +165,15 @@ public class Cache {
         return map;
     }
 
-    private Block writeDirectMapped(int entryIndex, int entryTag, Block block) {
+
+    private HashMap<String, Object> convertBlockToHashMap(Block block, int address, boolean oldAddressEnabler){
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("address", address);
+        map.put("block", block);
+        map.put("enable", oldAddressEnabler);
+        return map;
+    }
+    private HashMap<String, Object> writeDirectMapped(int entryIndex, int entryTag, Block block) {
 
         CacheEntry entry = this.entries[entryIndex];
 //        System.out.println("Ahmed \n" + entry.getBlock());
@@ -176,18 +187,19 @@ public class Cache {
                 entry.setBlock(block);
                 entry.setDirty(false);
 //                return oldBlock;
-                return block;
+                return convertBlockToHashMap(block, 0, false);
             }
         } else {
             if (this.writeMissPolicy == WritingPolicy.BACK) {
                 if (entry.isDirty()) {
                     boolean isValid = entry.isValid();
                     Block oldBlock = entry.getBlock();
+                    int oldAdress = reconstructOldAddress(entryIndex, entry.getTag());
                     entry.setBlock(block);
                     entry.setTag(entryTag);
                     entry.setValid(true);
                     entry.setDirty(true);
-                    return isValid ? oldBlock : null;
+                    return isValid ? convertBlockToHashMap(oldBlock, oldAdress, true): null;
                 } else {
                     entry.setBlock(block);
                     entry.setTag(entryTag);
@@ -201,12 +213,27 @@ public class Cache {
                 entry.setTag(entryTag);
                 entry.setValid(true);
                 entry.setDirty(false);
-                return block;
+                return convertBlockToHashMap(block, 0, false);
             }
         }
     }
 
-    private Block writeAssociativeHelper(CacheEntry entry, int entryTag, Block block) {
+    private Integer reconstructOldAddress(int indexDecimal, int tagDecimal) {
+
+        String address = "";
+
+        address += Integer.toBinaryString(indexDecimal);
+        address += Integer.toBinaryString(tagDecimal);
+
+
+        for (int i = 0; i < this.offsetBits; i++) {
+            address += "0";
+        }
+        return Integer.parseInt(address, 2);
+
+    }
+
+    private HashMap<String, Object> writeAssociativeHelper(CacheEntry entry, int entryTag, Block block) {
         if (entry.isValid() && entry.getTag() == entryTag) {
             if (this.writeHitPolicy == WritingPolicy.BACK) {
                 entry.setBlock(block);
@@ -217,18 +244,20 @@ public class Cache {
                 entry.setBlock(block);
                 entry.setDirty(false);
 //                return oldBlock;
-                return block;
+                return convertBlockToHashMap(block, 0, false);
             }
         } else {
             if (this.writeMissPolicy == WritingPolicy.BACK) {
                 if (entry.isDirty()) {
                     boolean isValid = entry.isValid();
                     Block oldBlock = entry.getBlock();
+                    //FIXME: send me the set index please
+//                    int oldAdress = reconstructOldAddress(entryIndex, entry.getTag());
                     entry.setBlock(block);
                     entry.setTag(entryTag);
                     entry.setValid(true);
                     entry.setDirty(true);
-                    return isValid ? oldBlock : null;
+                    return isValid ? convertBlockToHashMap(oldBlock,0, false ): null;
                 } else {
                     entry.setBlock(block);
                     entry.setTag(entryTag);
@@ -242,12 +271,12 @@ public class Cache {
                 entry.setTag(entryTag);
                 entry.setValid(true);
                 entry.setDirty(false);
-                return block;
+                return convertBlockToHashMap(block,0, false );
             }
         }
     }
 
-    private Block writeFullyAssociative(int entryTag, Block block) {
+    private HashMap<String, Object> writeFullyAssociative(int entryTag, Block block) {
         CacheEntry entry = null;
         for (int i = 0; i < this.associativity; i++) {
             entry = entries[i];
@@ -266,7 +295,7 @@ public class Cache {
                     return null;
                 } else {
                     entry.setDirty(false);
-                    return block;
+                    return convertBlockToHashMap(block,0, false );
                 }
             }
         }
@@ -277,17 +306,15 @@ public class Cache {
         if (this.writeMissPolicy == WritingPolicy.BACK) {
             boolean isDirty = entry.isDirty();
             entry.setDirty(true);
-//            System.out.println("sagdjhasgjgashdgajhsd ghas dgsha dasgdh ashjd gsaj dhasghdjhas");
-//            System.out.println("old block => " + oldBlock );
-//            System.out.println("New Block => " + block);
-            return isDirty ? oldBlock : null;
+            //FIXME: old address should be cacl here
+            return isDirty ? convertBlockToHashMap(oldBlock, 0, false) : null;
         } else {
             entry.setDirty(false);
-            return block;
+            return convertBlockToHashMap(block, 0, false) ;
         }
     }
 
-    private Block writeSetAssociative(int setIndex, int entryTag, Block block) {
+    private HashMap<String,Object> writeSetAssociative(int setIndex, int entryTag, Block block) {
         CacheEntry entry = null;
         for (int i = setIndex * associativity; i < (setIndex * associativity) + associativity; i++) {
             entry = this.entries[i];
@@ -306,25 +333,27 @@ public class Cache {
                     return null;
                 } else {
                     entry.setDirty(false);
-                    return block;
+                    return convertBlockToHashMap(block, 0, false) ;
                 }
             }
         }
         Block oldBlock = entry.getBlock();
+        int oldAddress = reconstructOldAddress(setIndex, entryTag);
         entry.setBlock(block);
         entry.setTag(entryTag);
         entry.setValid(true);
         if (this.writeMissPolicy == WritingPolicy.BACK) {
             boolean isDirty = entry.isDirty();
             entry.setDirty(true);
-            return isDirty ? oldBlock : null;
+
+            return isDirty ? convertBlockToHashMap(oldBlock, oldAddress, true): null;
         } else {
             entry.setDirty(false);
-            return block;
+            return convertBlockToHashMap(block, 0, false);
         }
     }
 
-    public Block write(int addressWords, Block block) {
+    public HashMap<String, Object> write(int addressWords, Block block) {
         HashMap<Integer, Integer> map = convertAddress(addressWords);
         int offsetDecimal, indexDecimal, tagDecimal;
         offsetDecimal = map.get(OFFSET);
