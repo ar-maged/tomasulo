@@ -1,15 +1,19 @@
 package tomasulo.action.functionalunit;
 
 import tomasulo.configuration.action.FunctionalUnitConfig;
+import tomasulo.instructions.InstructionName;
 
 public class FunctionalUnit {
 
 	int executionCycles;
 	int cyclesSpanned;
-	int result;
-
+	int result; 
+    boolean done; 
+    
 	public FunctionalUnit(FunctionalUnitConfig config) {
 		this.executionCycles = config.getExecutionCycles();
+		this.done=false;
+
 	}
 
 	public int getExecutionCycles() {
@@ -21,11 +25,24 @@ public class FunctionalUnit {
 	}
 
 	public void incrementCyclesSpanned() {
-		this.cyclesSpanned++;
+		this.done = (this.executionCycles == ++this.cyclesSpanned);
 	}
 
 	public int getCyclesSpanned() {
 		return cyclesSpanned;
 	}
 
+	
+	
+	public boolean isDone() {
+		return done;
+	}
+
+	public void execute(InstructionName operation, Integer Vj, Integer Vk, Integer addressOrImmediateValue){}
+
+	public void clear(){
+		this.cyclesSpanned = 0;
+		this.done = false;
+		this.result = 0;
+	}
 }

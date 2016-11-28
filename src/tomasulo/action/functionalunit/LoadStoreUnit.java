@@ -1,7 +1,6 @@
 package tomasulo.action.functionalunit;
 
 import tomasulo.configuration.action.FunctionalUnitConfig;
-import tomasulo.instructions.Instruction;
 import tomasulo.instructions.InstructionName;
 
 public class LoadStoreUnit extends FunctionalUnit {
@@ -10,10 +9,13 @@ public class LoadStoreUnit extends FunctionalUnit {
 		super(config);
 	}
 
-	public void execute(Instruction instruction) {
-		if ((instruction.getName().equals(InstructionName.LW)) || ((instruction.getName().equals(InstructionName.SW)))) {
-			this.result = instruction.getSourceRegister1() + instruction.getImmediate();
+	public void execute(InstructionName operation, Integer Vj, Integer Vk, Integer addressOrImmediateValue) {
+		
+		if (operation.equals(InstructionName.LW) || operation.equals(InstructionName.SW))
+		{
+			this.result = Vj + addressOrImmediateValue;
 		}
+		
 	}
 
 }

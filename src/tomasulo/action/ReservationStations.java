@@ -1,5 +1,8 @@
 package tomasulo.action;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import tomasulo.action.functionalunit.*;
 import tomasulo.configuration.action.FunctionalUnitsConfig;
 import tomasulo.instructions.*;
@@ -8,11 +11,10 @@ public class ReservationStations {
 
 	private ReservationStation[] entries;
 
-	public ReservationStations(FunctionalUnits functionalUnits, FunctionalUnitsConfig config) {
-		int size = config.getAdditionUnitConfig().getUnitsCount()
-				+ config.getMultiplicationUnitConfig().getUnitsCount()
-				+ config.getSubtractionUnitConfig().getUnitsCount() + config.getNandUnitConfig().getUnitsCount() + 2;
-
+	public ReservationStations(FunctionalUnits functionalUnits, FunctionalUnitsConfig config){
+		int size = config.getAdditionUnitConfig().getUnitsCount() + config.getMultiplicationUnitConfig().getUnitsCount() 
+				+ config.getSubtractionUnitConfig().getUnitsCount() + config.getNandUnitConfig().getUnitsCount() + 2; 
+           
 		entries = new ReservationStation[size];
 		initializeEntries(functionalUnits);
 	}
@@ -40,6 +42,11 @@ public class ReservationStations {
 		entries[index++] = new ReservationStation(functionalUnits.getBranchJumpFU());
 	}
 	
+	
+	public ReservationStation[] getEntries() {
+		return entries;
+	}
+
 	public Integer hasAvailableStation(Instruction instruction){
 		
 		InstructionName instructionName = instruction.getName();
@@ -111,7 +118,7 @@ public class ReservationStations {
 		
 		ReservationStation reservationStation = entries[reservationStationIndex]; 
 		   
-		
+		reservationStation.setState(ReservationStationState.ISSUED);
 		reservationStation.setBusy(true); 
 		reservationStation.setOperation(instruction.getName()); 
 		reservationStation.setDestinationROBIndex(robEntryIndex);
@@ -120,7 +127,7 @@ public class ReservationStations {
 			instruction.getName().equals(InstructionName.BEQ) || instruction.getName().equals(InstructionName.JMP) || 
 			instruction.getName().equals(InstructionName.ADDI)){
 			reservationStation.setAddressOrImmediateValue(instruction.getImmediate());
-		} 
+		}
 		
 		if(instruction.getName().equals(InstructionName.SW)){
 			
@@ -137,10 +144,15 @@ public class ReservationStations {
 			else{
 				reservationStation.setQj(robEntrySource2);
 			}
+			
+			if (reservationStation.getQj() == null && reservationStation.getQk() == null){
+				reservationStation.setState(ReservationStationState.READYTOEXECUTE);
+			}
 		}
 		else{
 			
-			if (instruction.getName().equals(InstructionName.LW)){
+			if (instruction.getName().equals(InstructionName.LW) || instruction.getName().equals(InstructionName.JMP) ||
+					instruction.getName().equals(InstructionName.JALR) || instruction.getName().equals(InstructionName.ADDI)){
 				
 				if (source1 != null){
 					reservationStation.setVj(source1);
@@ -148,9 +160,12 @@ public class ReservationStations {
 				else{
 					reservationStation.setQj(robEntrySource1);
 				}
+				
+				if (reservationStation.getQj() == null){
+					reservationStation.setState(ReservationStationState.READYTOEXECUTE);
+				}
 			}
 			else{
-				
 				if (source1 != null){
 					reservationStation.setVj(source1);
 				}
@@ -163,29 +178,144 @@ public class ReservationStations {
 				else{
 					reservationStation.setQk(robEntrySource2);
 				}
+				
+				if (reservationStation.getQj() == null && reservationStation.getQk() == null){
+					reservationStation.setState(ReservationStationState.READYTOEXECUTE);
+				}
+				
 			}
 			
 		}
 		
 	}
+	public void setNotReadyOperands(HashMap <String, Integer> robResult, Integer reservationStationIndex){
+		
+		if (robResult != null){
+			
+			if(robResult.get("Vj") != null){
+				entries[reservationStationIndex].setVj(robResult.get("Vj"));
+				entries[reservationStationIndex].setQj(null);
+			}
+			if(robResult.get("Vk") != null){
+				entries[reservationStationIndex].setVk(robResult.get("Vk"));
+				entries[reservationStationIndex].setQk(null);
+			}
+			
+			if (entries[reservationStationIndex].getQj() == null && entries[reservationStationIndex].getQk() == null){
+				entries[reservationStationIndex].setState(ReservationStationState.READYTOEXECUTE);
+			}	
+			
+		}
+		
+	}
+	
+	public HashMap<String, Integer> missingOperand(ReservationStation reservationStation) {
+		
+		boolean thereIsMissing = false;
+		HashMap<String, Integer> robEntryIndex = new HashMap<String, Integer>();
+		
+		if(reservationStation.getQj()!=null){ 		
+			robEntryIndex.put("Qj", reservationStation.getQj());
+			thereIsMissing = true;
+		}
+		
+		if(reservationStation.getQk()!=null){ 		
+			robEntryIndex.put("Qk", reservationStation.getQk());
+			thereIsMissing = true;
+		}
+		
+		if (thereIsMissing) 
+			return robEntryIndex;
+		else 
+			return null;
+		
+	}
+	
+	public HashMap<String, Integer> executeExecutables(ArrayList<Integer> immutables){ 
+		
+		HashMap<String, Integer> result = new HashMap<String, Integer>();
+		boolean resultCaptured = false;
+		
+		for (int i = 0; i < entries.length; i++){
+			
+			if(!immutables.contains(i)){
+				
+				if(entries[i].getState().equals(ReservationStationState.READYTOEXECUTE)) {
+					entries[i].getFunctionalUnit().execute(entries[i].getOperation(), entries[i].getVj(), entries[i].getVk(), entries[i].getAddressOrImmediateValue()); 
+					entries[i].getFunctionalUnit().incrementCyclesSpanned();
+					if (entries[i].getFunctionalUnit().isDone()){
+						entries[i].setState(ReservationStationState.WANTTOWRITE);
+					}
+					else
+						entries[i].setState(ReservationStationState.EXECUTING);
+				} 
+				else{
+					if(entries[i].getState().equals(ReservationStationState.EXECUTING)){
+						 if(entries[i].getFunctionalUnit().isDone()){
+							 entries[i].setState(ReservationStationState.WANTTOWRITE);
+						 }
+						 else{
+							 entries[i].getFunctionalUnit().incrementCyclesSpanned();   	
+						 }
+					}
+					else{
+						if(entries[i].getState().equals(ReservationStationState.WANTTOWRITE) && !resultCaptured){ 
+							result.put("dest", entries[i].getDestinationROBIndex());
+							result.put("value", entries[i].getFunctionalUnit().getResult()); 
+							entries[i].clearReservationStation(); 
+							resultCaptured = true;
+						}
+					}
+					
+				}
+				
+			}
+			
+		}
+		if (resultCaptured){
+			return result;
+		}
+		else 
+			return null;
+	}
 
-	class ReservationStation {
+	public boolean isEmpty(){
+		boolean isEmpty = true;
+
+		for(int i = 0; i < this.entries.length; i++)
+			isEmpty &= entries[i].getState() == ReservationStationState.EMPTY;
+
+		return isEmpty;
+	}
+
+	public class ReservationStation {
 
 		private FunctionalUnit functionalUnit;
 		private boolean busy;
 		private InstructionName operation;
-		private int Vj;
-		private int Vk;
+		private Integer Vj;
+		private Integer Vk;
 		private Integer Qj;
 		private Integer Qk;
-		private int destinationROBIndex;
-		private int addressOrImmediateValue;
+		private Integer destinationROBIndex;
+		private Integer addressOrImmediateValue;
+		private ReservationStationState state;
 
 		public ReservationStation(FunctionalUnit functionalUnit) {
 			this.functionalUnit = functionalUnit;
 			busy = false;
+			state = ReservationStationState.EMPTY;
+			Vj = Vk = Qj = Qk = destinationROBIndex = addressOrImmediateValue =  null;
 		}
 
+		public void clearReservationStation(){
+			busy = false;
+			state = ReservationStationState.EMPTY;
+			operation = null;
+			Vj = Vk = Qj = Qk = destinationROBIndex = addressOrImmediateValue =  null;
+			this.functionalUnit.clear();
+		}
+		
 		public FunctionalUnit getFunctionalUnit() {
 			return functionalUnit;
 		}
@@ -210,7 +340,7 @@ public class ReservationStations {
 			this.operation = operation;
 		}
 
-		public int getVj() {
+		public Integer getVj() {
 			return Vj;
 		}
 
@@ -218,7 +348,7 @@ public class ReservationStations {
 			Vj = vj;
 		}
 
-		public int getVk() {
+		public Integer getVk() {
 			return Vk;
 		}
 
@@ -242,7 +372,7 @@ public class ReservationStations {
 			Qk = qk;
 		}
 
-		public int getAddressOrImmediateValue() {
+		public Integer getAddressOrImmediateValue() {
 			return addressOrImmediateValue;
 		}
 
@@ -250,13 +380,22 @@ public class ReservationStations {
 			this.addressOrImmediateValue = addressOrImmediateValue;
 		}
 
-		public int getDestinationROBIndex() {
+		public Integer getDestinationROBIndex() {
 			return destinationROBIndex;
 		}
 
 		public void setDestinationROBIndex(int destinationROBIndex) {
 			this.destinationROBIndex = destinationROBIndex;
 		}
+
+		public ReservationStationState getState() {
+			return state;
+		}
+
+		public void setState(ReservationStationState state) {
+			this.state = state;
+		}
+
 
 	}
 

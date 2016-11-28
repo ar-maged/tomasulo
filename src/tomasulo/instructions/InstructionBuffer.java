@@ -38,4 +38,14 @@ public class InstructionBuffer {
             return null;
     }
 
+    public boolean isEmpty(){
+        return this.instructionBuffer.isEmpty();
+    }
+
+	public ArrayList<Instruction> getInstructionBuffer() {
+		return instructionBuffer;
+	}
+    
+    
+
 }
