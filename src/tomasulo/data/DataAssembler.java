@@ -5,7 +5,11 @@ import java.util.ArrayList;
 
 public class DataAssembler {
 	
-	
+	int LineSize;
+	public DataAssembler(int lineSize)
+	{
+		this.LineSize = lineSize;
+	}
 	
 	public ArrayList<MemoryEntry> parseAllData(String [] stringData)
 	{
