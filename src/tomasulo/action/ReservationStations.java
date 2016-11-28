@@ -259,11 +259,23 @@ public class ReservationStations {
 						 }
 					}
 					else{
-						if(entries[i].getState().equals(ReservationStationState.WANTTOWRITE) && !resultCaptured){ 
+						if(entries[i].getState().equals(ReservationStationState.WANTTOWRITE) && !resultCaptured){
+
+							if(entries[i].getOperation().equals(InstructionName.SW)){
+
+								result.put("Vk", entries[i].getVk());
+
+							}
+
+
 							result.put("dest", entries[i].getDestinationROBIndex());
-							result.put("value", entries[i].getFunctionalUnit().getResult()); 
-							entries[i].clearReservationStation(); 
+
+							result.put("value", entries[i].getFunctionalUnit().getResult());
+
+							entries[i].clearReservationStation();
+
 							resultCaptured = true;
+
 						}
 					}
 					
