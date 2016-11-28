@@ -1,33 +1,22 @@
 package tomasulo.action.functionalunit;
 
 import tomasulo.configuration.action.FunctionalUnitConfig;
-import tomasulo.instructions.Instruction;
 import tomasulo.instructions.InstructionName;
 
 public class AdditionFunctionalUnit extends FunctionalUnit {
 
-    private int executionCycles;
-    private int result;
+	public AdditionFunctionalUnit(FunctionalUnitConfig config) {
+		super(config);
+	}
 
-    public AdditionFunctionalUnit(FunctionalUnitConfig additionFunctionalUnitConfig) {
-        this.executionCycles = additionFunctionalUnitConfig.getExecutionCycles();
-    }
+	public void execute(InstructionName operation, Integer Vj, Integer Vk, Integer addressOrImmediateValue) {
+		if (operation.equals(InstructionName.ADD)) {
+			this.result = Vj + Vk;
+		}
 
-    public void execute(Instruction instruction) {
-        if (instruction.getName().equals(InstructionName.ADD)) {
-            this.result = instruction.getSourceRegister1() + instruction.getSourceRegister2();
-        }
+		if (operation.equals(InstructionName.ADDI)) {
+			this.result = Vj + addressOrImmediateValue;
+		}
+	}
 
-        if (instruction.getName().equals(InstructionName.ADDI)) {
-            this.result = instruction.getSourceRegister1() + instruction.getImmediate();
-        }
-    }
-
-    public int getResult() {
-        return result;
-    }
-
-    public int getExecutionCycles() {
-        return executionCycles;
-    }
 }
