@@ -65,7 +65,7 @@ public class Main {
         Memory memory = new Memory(config.getMemoryConfig());
         FunctionalUnits functionalUnits = new FunctionalUnits(config.getFunctionalUnitsConfig());
         ReservationStations reservationStations = new ReservationStations(functionalUnits, config.getFunctionalUnitsConfig());
-       Logger l = new Logger();
+        Logger l = new Logger();
 
         /////////////// PRE-EXECUTION ///////////////
         String[] stringInstructions = fileReader.readFile("assembly/arithmetic-1.asm");

@@ -2,6 +2,7 @@ package tomasulo.data;
 
 import java.util.ArrayList;
 
+import tomasulo.exceptions.*;
 
 public class DataAssembler {
 	
@@ -11,6 +12,14 @@ public class DataAssembler {
 		this.LineSize = lineSize;
 	}
 	
+	public int getLineSize() {
+		return LineSize;
+	}
+
+	public void setLineSize(int lineSize) {
+		LineSize = lineSize;
+	}
+
 	public ArrayList<MemoryEntry> parseAllData(String [] stringData)
 	{
 		 ArrayList<MemoryEntry> parsedData = new ArrayList<MemoryEntry>();
@@ -29,11 +38,17 @@ public class DataAssembler {
 		memoryEntry.setMemoryLocation(Integer.parseInt(entrySplitted[0]));
 
 		String [] dataSplitted = entrySplitted[1].split(",");
+		int maxEntries = this.getLineSize()/2;
+		if(dataSplitted.length<=maxEntries){
 		for (int i = 0; i<dataSplitted.length; i++)
 		{
-			
-			memoryEntry.getData().add(Integer.parseInt(dataSplitted[i]));
+			Integer num = Integer.parseInt(dataSplitted[i]);
+			if(checkVal(num)){
+			memoryEntry.getData().add(num);}
+			else throw new MemoryDataLoadingException("value out of range, has to be within -32768 to 32767");
 		}
+		}
+		else throw new MemoryDataLoadingException("too many entries, line size can take only " + LineSize+" entries");
 		
 		System.out.print(memoryEntry.getMemoryLocation() +" ");
 		for(int i = 0; i<memoryEntry.getData().size(); i++)
@@ -42,6 +57,14 @@ public class DataAssembler {
 		}
 		System.out.println();
 		return memoryEntry;
+	}
+	
+	private boolean checkVal(Integer num)
+	{
+		if(num>= -32768 &&num<= 32767){
+			return true;
+		}
+		else return false;
 	}
 
 }
