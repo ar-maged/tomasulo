@@ -31,6 +31,7 @@ public class DataAssembler {
 		String [] dataSplitted = entrySplitted[1].split(",");
 		for (int i = 0; i<dataSplitted.length; i++)
 		{
+			
 			memoryEntry.getData().add(Integer.parseInt(dataSplitted[i]));
 		}
 		
