@@ -11,8 +11,10 @@ public class RegisterStatus {
         Arrays.fill(registersEntries, null);
     }
 
-    public Integer getROBEntryIndex(int registerIndex) {
-        return registersEntries[registerIndex];
+    public Integer getROBEntryIndex(Integer registerIndex) {
+        if(registerIndex != null)
+            return registersEntries[registerIndex];
+        return null;
     }
 
     public void setROBEntryIndex(int registerIndex, int robEntryIndex) {

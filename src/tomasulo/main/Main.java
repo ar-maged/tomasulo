@@ -49,7 +49,7 @@ public class Main {
         // Functional units configurations
         config.getFunctionalUnitsConfig().setAdditionUnitConfig(new FunctionalUnitConfig(2, 1));
         config.getFunctionalUnitsConfig().setSubtractionUnitConfig(new FunctionalUnitConfig(2, 1));
-        config.getFunctionalUnitsConfig().setMultiplicationUnitConfig(new FunctionalUnitConfig(0, 0));
+        config.getFunctionalUnitsConfig().setMultiplicationUnitConfig(new FunctionalUnitConfig(1, 1));
         config.getFunctionalUnitsConfig().setNandUnitConfig(new FunctionalUnitConfig(0, 0));
         config.getFunctionalUnitsConfig().setLoadUnitConfig(new FunctionalUnitConfig(0, 0));
         config.getFunctionalUnitsConfig().setBranchUnitConfig(new FunctionalUnitConfig(0, 0));
@@ -98,7 +98,7 @@ public class Main {
 
         int c = 0;
 
-        while (c++ < 5) {
+        while (c++ < 10) {
             // TODO: Handle null
             Instruction instruction = instructionBuffer.readFirstInstruction();
             ArrayList<Integer> immutableReservationStations = new ArrayList<Integer>();
@@ -114,13 +114,13 @@ public class Main {
                     int robEntryIndex = reorderBuffer.addInstruction(instruction.getName(), instruction.getDestinationRegister());
                     registerStatus.setROBEntryIndex(instruction.getDestinationRegister(), robEntryIndex);
 
-                    if (registerStatus.getROBEntryIndex(instruction.getSourceRegister1()) == null) {
+                    if (registerStatus.getROBEntryIndex(instruction.getSourceRegister1()) == null && instruction.getSourceRegister1() !=null) {
                         source1 = registerFile.readRegister(instruction.getSourceRegister1());
                     } else {
                         robEntrySrc1 = registerStatus.getROBEntryIndex(instruction.getSourceRegister1());
                     }
 
-                    if (registerStatus.getROBEntryIndex(instruction.getSourceRegister2()) == null) {
+                    if (registerStatus.getROBEntryIndex(instruction.getSourceRegister2()) == null && instruction.getSourceRegister2() !=null) {
                         source2 = registerFile.readRegister(instruction.getSourceRegister2());
                     } else {
                         robEntrySrc2 = registerStatus.getROBEntryIndex(instruction.getSourceRegister2());
@@ -173,6 +173,8 @@ public class Main {
                 reorderBuffer.incrementHead();
             }
         }
+
+        System.out.println("Should be 50: " + registerFile.readRegister(3));
 
     }
 
