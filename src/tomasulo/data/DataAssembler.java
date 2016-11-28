@@ -22,18 +22,18 @@ public class DataAssembler {
 	{
 		MemoryEntry memoryEntry = new MemoryEntry();
 		String [] entrySplitted = data.split(" ");
-		memoryEntry.memoryLocation = Integer.parseInt(entrySplitted[0]);
+		memoryEntry.setMemoryLocation(Integer.parseInt(entrySplitted[0]));
 
 		String [] dataSplitted = entrySplitted[1].split(",");
 		for (int i = 0; i<dataSplitted.length; i++)
 		{
-			memoryEntry.data.add(Integer.parseInt(dataSplitted[i]));
+			memoryEntry.getData().add(Integer.parseInt(dataSplitted[i]));
 		}
 		
-		System.out.print(memoryEntry.memoryLocation +" ");
-		for(int i = 0; i<memoryEntry.data.size(); i++)
+		System.out.print(memoryEntry.getMemoryLocation() +" ");
+		for(int i = 0; i<memoryEntry.getData().size(); i++)
 		{
-			System.out.print(memoryEntry.data.get(i) +",");
+			System.out.print(memoryEntry.getData().get(i) +", ");
 		}
 		System.out.println();
 		return memoryEntry;

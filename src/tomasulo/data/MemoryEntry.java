@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class MemoryEntry {
 	
-	Integer memoryLocation;
-	ArrayList<Integer> data;
+	private Integer memoryLocation;
+	private ArrayList<Integer> data;
 	
 	
 	public MemoryEntry()
