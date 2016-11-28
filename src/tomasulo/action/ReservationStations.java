@@ -152,7 +152,7 @@ public class ReservationStations {
 		else{
 			
 			if (instruction.getName().equals(InstructionName.LW) || instruction.getName().equals(InstructionName.JMP) ||
-					instruction.getName().equals(InstructionName.JALR)){
+					instruction.getName().equals(InstructionName.JALR) || instruction.getName().equals(InstructionName.ADDI)){
 				
 				if (source1 != null){
 					reservationStation.setVj(source1);
@@ -279,6 +279,15 @@ public class ReservationStations {
 			return null;
 	}
 
+	public boolean isEmpty(){
+		boolean isEmpty = true;
+
+		for(int i = 0; i < this.entries.length; i++)
+			isEmpty &= entries[i].getState() == ReservationStationState.EMPTY;
+
+		return isEmpty;
+	}
+
 	public class ReservationStation {
 
 		private FunctionalUnit functionalUnit;
@@ -386,8 +395,7 @@ public class ReservationStations {
 		public void setState(ReservationStationState state) {
 			this.state = state;
 		}
-		
-		
+
 
 	}
 

@@ -66,6 +66,8 @@ public class Main {
         ReservationStations reservationStations = new ReservationStations(functionalUnits, config.getFunctionalUnitsConfig());
         Logger l = new Logger();
 
+        Integer PC = 5;
+
         /////////////// PRE-EXECUTION ///////////////
         String[] stringInstructions = fileReader.readFile("assembly/arithmetic-1.asm");
         ArrayList<Instruction> instructions = assembler.parseInstructions(stringInstructions);
@@ -96,9 +98,7 @@ public class Main {
 
         instructionBuffer.insertInstructions(instructionArray);
 
-        int c = 0;
-
-        while (c++ < 10) {
+        do {
             // TODO: Handle null
             Instruction instruction = instructionBuffer.readFirstInstruction();
             ArrayList<Integer> immutableReservationStations = new ArrayList<Integer>();
@@ -163,8 +163,22 @@ public class Main {
             Integer excluded = null;
 
             if (executed != null) {
-                reorderBuffer.setRegisterValue(executed.get("dest"), executed.get("value"));
-                excluded = executed.get("dest");
+                if(reorderBuffer.getTypeofEntry(executed.get("dest")).equals(ReorderBuffer.Type.LW))
+                {
+//                    reorderBuffer.setRegisterValue(executed.get("dest"), memory.getInstructionOrData(executed.get("value")));
+                }
+                else{
+                    if(reorderBuffer.getTypeofEntry(executed.get("dest")).equals(ReorderBuffer.Type.SW))
+                    {
+//                        reorderBuffer.setRegisterValue(executed.get("dest"), memory.storeData(executed.get("value"), executed.get("Vk")));
+                    }
+                    else{
+                        reorderBuffer.setRegisterValue(executed.get("dest"), executed.get("value"));
+                        excluded = executed.get("dest");
+                    }
+                }
+
+
             }
 
             if (reorderBuffer.isHeadCommitable(excluded)) {
@@ -172,7 +186,7 @@ public class Main {
                 registerStatus.clearROBEntryIndex(reorderBuffer.getRegisterIndex(reorderBuffer.getHead()));
                 reorderBuffer.incrementHead();
             }
-        }
+        } while (!instructionBuffer.isEmpty() || !reservationStations.isEmpty() || !reorderBuffer.isEmpty());
 
     }
 

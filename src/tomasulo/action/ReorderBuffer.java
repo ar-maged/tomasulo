@@ -70,6 +70,10 @@ public class ReorderBuffer {
         return entries[address];
     }
 
+    public Type getTypeofEntry(Integer address) {
+        return entries[address].getInstructionType();
+    }
+
     public boolean isReadyEntry(int address) {
         return entries[address].isReady();
     }
@@ -108,7 +112,7 @@ public class ReorderBuffer {
         this.tail = tail;
     }
 
-    enum Type {
+    public enum Type {
         FP, INT, LW, SW, BRANCH, JUMP
     }
 
