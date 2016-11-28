@@ -1,3 +1,3 @@
 ADDI R1, R0, 10
-ADDI R2, R0, 5
-MUL R3, R1, R2
+ADDI R2, R0, 7
+

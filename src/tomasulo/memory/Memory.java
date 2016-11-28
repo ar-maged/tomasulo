@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 public class Memory {
 
-    private MainMemory mainMemory;
+    public MainMemory mainMemory;
     private Cache[] caches;
 
     public Memory(MemoryConfig memoryConfig) {
@@ -58,6 +58,9 @@ public class Memory {
 
     }
 
+    public Instruction readInstruction(int addressWords){
+        return (Instruction) this.mainMemory.readBlock(addressWords).readInstructionOrData(addressWords);
+    }
 
 
     public void writeBlock(int addressWords, Block block) {
@@ -118,4 +121,11 @@ public class Memory {
 //        System.out.println("Cache 2 \n" + memory.caches[1]);
 
     }
+
+    public void storeData(Integer address, Integer data, int blockSize) {
+        Block block = new Block(blockSize);
+        block.addData(data, 0);
+        this.mainMemory.writeBlock(address, block);
+    }
+
 }

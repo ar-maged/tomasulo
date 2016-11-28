@@ -17,10 +17,10 @@ public class InstructionBuffer {
 
     public void insertInstructions(Instruction[] instructions) {
         for (int i = 0; i < instructions.length; i++) {
-            if (this.instructionBuffer.size() < this.maxSize)
+//            if (this.instructionBuffer.size() < this.maxSize)
                 instructionBuffer.add(instructions[i]);
-            else
-                throw new InstructionBufferOverflowException();
+//            else
+//                throw new InstructionBufferOverflowException();
         }
     }
 

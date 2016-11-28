@@ -72,24 +72,22 @@ public class Main {
         ReservationStations reservationStations = new ReservationStations(functionalUnits, config.getFunctionalUnitsConfig());
         Logger l = new Logger();
 
-        Integer PC = 5;
+        int PC = 0;
 
         /////////////// PRE-EXECUTION ///////////////
         String[] stringInstructions = fileReader.readFile("assembly/arithmetic-1.asm");
-        System.out.println("NOW READING arithmetic-1.asm");
+//        System.out.println("NOW READING arithmetic-1.asm");
         ArrayList<Instruction> instructions = assembler.parseInstructions(stringInstructions);
-        //memory.loadProgram(instructions, 0);
+        memory.loadProgram(instructions, 0);
 
         String [] data = fileReader.readFile("data/data.txt");
-        System.out.println("\nNOW READING data.txt");
-        System.out.println("line size is "+dataAssembler.getLineSize());
+//        System.out.println("\nNOW READING data.txt");
+//        System.out.println("line size is "+dataAssembler.getLineSize());
         ArrayList<MemoryEntry> memoryEntries = dataAssembler.parseAllData(data);
-        // for (int i = 0; i < instructions.size(); i++) {
-        // System.out.println(memory.readBlock(i * blockSizeInBytes));
-        // }
+
 
         /////////////// PERFORMANCE METRICS ///////////////
-        l.printMetrics();
+//        l.printMetrics();
 
         /////////////// EXECUTION ///////////////
         // TODO: Tomasulo's algorithm
@@ -97,20 +95,20 @@ public class Main {
 //        registerFile.writeRegister(1, 2);
 //        registerFile.writeRegister(2, 3);
 
-        int size = Math.min(config.getPipelineWidth(), instructions.size());
-        Instruction[] instructionArray = new Instruction[size]; //testing
-
-        for (int i = 0; i < size; i++) {
-
-            instructionArray[i] = instructions.get(i);
-
-            //instructionBuffer.insertInstructions(memory.readInstruction());
-        }
-
-        instructionBuffer.insertInstructions(instructionArray);
 
         do {
-            // TODO: Handle null
+
+
+
+//            int size = Math.min(config.getPipelineWidth(), instructions.size());
+            Instruction[] instructionArray = new Instruction[20]; //testing
+
+            for (int i = 0; i < config.getPipelineWidth(); i++) {
+                instructionArray[i] = memory.readInstruction(PC++);
+            }
+            instructionBuffer.insertInstructions(instructionArray);
+
+
             Instruction instruction = instructionBuffer.readFirstInstruction();
             ArrayList<Integer> immutableReservationStations = new ArrayList<Integer>();
 
@@ -176,12 +174,13 @@ public class Main {
             if (executed != null) {
                 if(reorderBuffer.getTypeofEntry(executed.get("dest")).equals(ReorderBuffer.Type.LW))
                 {
-//                    reorderBuffer.setRegisterValue(executed.get("dest"), memory.getInstructionOrData(executed.get("value")));
+                    reorderBuffer.setRegisterValue(executed.get("dest"), (Integer)memory.readInstructionOrData(executed.get("value")));
                 }
                 else{
                     if(reorderBuffer.getTypeofEntry(executed.get("dest")).equals(ReorderBuffer.Type.SW))
                     {
-//                        reorderBuffer.setRegisterValue(executed.get("dest"), memory.storeData(executed.get("value"), executed.get("Vk")));
+//                        reorderBuffer.setRegisterValue(executed.get("dest"), );
+                        memory.storeData(executed.get("value"), executed.get("Vk"), config.getMemoryConfig().getBlockSizeBytes() / 2);
                     }
                     else{
                         reorderBuffer.setRegisterValue(executed.get("dest"), executed.get("value"));
@@ -197,11 +196,11 @@ public class Main {
                 registerStatus.clearROBEntryIndex(reorderBuffer.getRegisterIndex(reorderBuffer.getHead()));
                 reorderBuffer.incrementHead();
             }
-        } while (!instructionBuffer.isEmpty() || !reservationStations.isEmpty() || !reorderBuffer.isEmpty());
+        } while ((!instructionBuffer.isEmpty() || !reservationStations.isEmpty() || !reorderBuffer.isEmpty()) && PC < memory.mainMemory.memoryCapacity / 2 );
 
-        System.out.println(registerFile.readRegister(1));
-        System.out.println(registerFile.readRegister(2));
-        System.out.println(registerFile.readRegister(3));
+//        System.out.println(registerFile.readRegister(1));
+//        System.out.println(registerFile.readRegister(2));
+        System.out.println(registerFile.readRegister(4));
 
     }
 
