@@ -8,6 +8,8 @@ import tomasulo.configuration.Config;
 import tomasulo.configuration.action.FunctionalUnitConfig;
 import tomasulo.configuration.memory.CacheConfig;
 import tomasulo.configuration.memory.WritingPolicy;
+import tomasulo.data.DataAssembler;
+import tomasulo.data.MemoryEntry;
 import tomasulo.instructions.Assembler;
 import tomasulo.instructions.Instruction;
 import tomasulo.instructions.InstructionBuffer;
@@ -55,6 +57,7 @@ public class Main {
         /////////////// INIT ///////////////
         FileReader fileReader = new FileReader();
         Assembler assembler = new Assembler();
+        DataAssembler dataAssembler = new DataAssembler();
         InstructionBuffer instructionBuffer = new InstructionBuffer(config.getInstructionBufferSize());
         ReorderBuffer reorderBuffer = new ReorderBuffer(config.getReorderBufferSize());
         RegisterFile registerFile = new RegisterFile();
@@ -62,13 +65,15 @@ public class Main {
         Memory memory = new Memory(config.getMemoryConfig());
         FunctionalUnits functionalUnits = new FunctionalUnits(config.getFunctionalUnitsConfig());
         ReservationStations reservationStations = new ReservationStations(functionalUnits, config.getFunctionalUnitsConfig());
-        Logger l = new Logger();
+       Logger l = new Logger();
 
         /////////////// PRE-EXECUTION ///////////////
         String[] stringInstructions = fileReader.readFile("assembly/arithmetic-1.asm");
         ArrayList<Instruction> instructions = assembler.parseInstructions(stringInstructions);
         memory.loadProgram(instructions, 0);
 
+        String [] data = fileReader.readFile("data/data.txt");
+        ArrayList<MemoryEntry> memoryEntries = dataAssembler.parseAllData(data);
         // for (int i = 0; i < instructions.size(); i++) {
         // System.out.println(memory.readBlock(i * blockSizeInBytes));
         // }
@@ -126,7 +131,7 @@ public class Main {
         }
 
         /////////////// PERFORMANCE METRICS ///////////////
-        l.printMetrics();
+//        l.printMetrics();
 
     }
 
