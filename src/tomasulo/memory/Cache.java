@@ -55,7 +55,8 @@ public class Cache {
         }
         System.out.println(cache);
     }
-    public static void testDirectReplace(){
+
+    public static void testDirectReplace() {
         CacheConfig config = new CacheConfig(128, 4, 1, 10, WritingPolicy.BACK, WritingPolicy.BACK);
         Cache cache = new Cache(config);
         Block block = null;
@@ -75,19 +76,19 @@ public class Cache {
 //        }
 
         block = new Block(2);
-        block.addData(128,0);
-        block.addData(129,1);
-        System.out.println(cache.write(4,block));
+        block.addData(128, 0);
+        block.addData(129, 1);
+        System.out.println(cache.write(4, block));
         block = new Block(2);
         block.addData(208, 0);
         block.addData(100, 1);
         System.out.println(cache.write(4, block));
 
 
-
         System.out.println(cache);
     }
-    public static void testFullAssociativity(){
+
+    public static void testFullAssociativity() {
         CacheConfig config = new CacheConfig(128, 4, 32, 10, WritingPolicy.BACK, WritingPolicy.BACK);
         Cache cache = new Cache(config);
         Block block = null;
@@ -99,19 +100,19 @@ public class Cache {
         }
 
         block = new Block(2);
-        block.addData(500,0);
-        block.addData(501,1);
-        System.out.println(cache.write(4,block));
+        block.addData(500, 0);
+        block.addData(501, 1);
+        System.out.println(cache.write(4, block));
         block = new Block(2);
         block.addData(600, 0);
         block.addData(601, 1);
         System.out.println(cache.write(6, block));
 
 
-
         System.out.println(cache);
     }
-    public static void testSetAssociativity(int associativity){
+
+    public static void testSetAssociativity(int associativity) {
         CacheConfig config = new CacheConfig(128, 4, associativity, 10, WritingPolicy.THROUGH, WritingPolicy.THROUGH);
         Cache cache = new Cache(config);
         Block block = null;
@@ -123,6 +124,7 @@ public class Cache {
         }
         System.out.println(cache);
     }
+
     public static void main(String[] args) {
 //        testDirectMap();
 //        testDirectReplace();
@@ -234,7 +236,6 @@ public class Cache {
                     return null;
                 }
             } else {
-                System.out.println("asdgasjhdjahsgdjasgdjsah");
 //                Block oldBlock = entry.getBlock();
                 entry.setBlock(block);
                 entry.setTag(entryTag);
@@ -245,9 +246,8 @@ public class Cache {
         }
     }
 
-    private Block writeFullyAssociative(int entryIndex, int entryTag, Block block){
+    private Block writeFullyAssociative(int entryTag, Block block) {
         CacheEntry entry = null;
-        int numberOfEntriesPerSet = entries.length / (entries.length / this.associativity);
         for (int i = 0; i < this.associativity; i++) {
             entry = entries[i];
             if (entry.getTag() == entryTag) {
@@ -286,17 +286,16 @@ public class Cache {
         }
     }
 
-    private Block writeSetAssociative(int entryIndex, int entryTag, Block block) {
+    private Block writeSetAssociative(int setIndex, int entryTag, Block block) {
         CacheEntry entry = null;
-        int numberOfEntriesPerSet = entries.length / (entries.length / this.associativity);
-        for (int i = 0; i < entries.length / this.associativity; i++) {
-            entry = this.entries[entryIndex + (numberOfEntriesPerSet * i)];
+        for (int i = setIndex * associativity; i < (setIndex * associativity) + associativity; i++) {
+            entry = this.entries[i];
             if (entry.getTag() == entryTag) {
                 return writeAssociativeHelper(entry, entryTag, block);
             }
         }
-        for (int i = 0; i < entries.length / this.associativity; i++) {
-            entry = this.entries[entryIndex + (numberOfEntriesPerSet * i)];
+        for (int i = setIndex * associativity; i < (setIndex * associativity) + associativity; i++) {
+            entry = this.entries[i];
             if (!entry.isValid()) {
                 entry.setBlock(block);
                 entry.setTag(entryTag);
@@ -337,7 +336,7 @@ public class Cache {
             if (associativity != this.cacheLines)
                 return writeSetAssociative(indexDecimal, tagDecimal, block);
             else
-                return writeFullyAssociative(indexDecimal, tagDecimal, block);
+                return writeFullyAssociative(tagDecimal, block);
 
         }
     }
